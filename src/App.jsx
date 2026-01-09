@@ -1,18 +1,11 @@
-import { useState } from "react";
-import Home from "./pages/Home";
-import AuthPage from "./pages/Authpage";
 import Header from "./components/Header";
+import Home from "./pages/Home";
 
-function App() {
-  const [page, setPage] = useState("home");
-
+export default function App() {
   return (
     <>
-      <Header setPage={setPage} />
-      {page === "home" && <Home />}
-      {page === "login" && <AuthPage />}
+      <Header />
+      <Home />
     </>
   );
 }
-
-export default App;

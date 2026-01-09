@@ -1,135 +1,99 @@
-/* HEADER */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 28px;
-  background: linear-gradient(90deg, #0b3c7d, #1e5be0);
+  padding: 14px 30px;
+  background: linear-gradient(90deg,#0b3c7d,#1e5be0);
+  color: white;
 }
 
-/* STICKY */
 .sticky {
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-/* TEXT LOGO */
-.logo-text-only {
+/* LOGO */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 22px;
   font-weight: bold;
-  color: white;
+}
+
+.logo-circle {
+  background: white;
+  color: #1e5be0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
 }
 
 /* MENU */
 .menu {
   display: flex;
-  align-items: center;
-  gap: 18px;
+  gap: 22px;
 }
 
-.menu-link {
-  background: white;
-  color: #0b3c7d;
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.menu-link:hover {
-  background: #e6ecff;
-}
-
-/* BELL + BADGE */
-.bell-wrapper {
-  position: relative;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.badge {
-  position: absolute;
-  top: -6px;
-  right: -8px;
-  background: red;
+.menu a {
   color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 50%;
+  text-decoration: none;
+  opacity: .85;
 }
 
-/* NOTIFICATION POPUP */
-.notification-popup {
-  position: absolute;
-  top: 70px;
-  right: 28px;
-  width: 260px;
-  background: white;
-  color: #333;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
-  padding: 12px;
-  z-index: 2000;
+/* ACTIONS */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.notification-popup h4 {
-  margin: 0 0 8px;
-  font-size: 14px;
+.login-btn {
+  background: #ffd000;
+  padding: 7px 14px;
+  border-radius: 8px;
   color: #0b3c7d;
+  font-weight: bold;
+  text-decoration: none;
 }
 
-.notification-popup ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.notification-popup li {
-  font-size: 13px;
-  padding: 6px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.notification-popup li:last-child {
-  border-bottom: none;
-}
-/* DARK MODE TOGGLE BUTTON */
-.dark-toggle {
-  font-size: 18px;
+.icon-btn {
+  background: none;
+  border: none;
+  color: white;
   cursor: pointer;
-  padding: 4px 6px;
 }
 
-/* DARK MODE GLOBAL */
-body.dark {
-  background: #0f172a;
-  color: #e5e7eb;
+/* MOBILE */
+.menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
 }
 
-/* Make cards dark */
-body.dark .feature-card {
-  background: #1e293b;
-  color: #e5e7eb;
+@media (max-width: 900px) {
+  .menu {
+    position: absolute;
+    top: 64px;
+    right: 0;
+    background: #0b3c7d;
+    flex-direction: column;
+    width: 200px;
+    padding: 20px;
+    display: none;
+    animation: slide 0.3s ease;
+  }
+
+  .menu.open { display: flex; }
+
+  .menu-btn { display: block; }
 }
 
-body.dark .feature-card p {
-  color: #cbd5f5;
-}
-
-/* Make header darker */
-body.dark .header {
-  background: linear-gradient(90deg, #020617, #0f172a);
-}
-
-/* Buttons in dark mode */
-body.dark .menu-link {
-  background: #1e293b;
-  color: #e5e7eb;
-}
-
-body.dark .menu-link:hover {
-  background: #334155;
+@keyframes slide {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
 }

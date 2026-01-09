@@ -1,50 +1,52 @@
 import "./Home.css";
+import {
+  GraduationCap,
+  Briefcase,
+  HelpCircle,
+  Brain,
+  FileText,
+  TrendingUp,
+} from "lucide-react";
 
-function Home() {
+export default function Home() {
   return (
     <div className="home">
-      {/* Hero Section */}
+
+      {/* HERO */}
       <section className="hero">
-        <h2>Your Campus Placement Partner</h2>
-        <p>
-          One platform for placements, preparation, resume analysis,
-          and AI-powered practice.
-        </p>
+        <h1>
+          Everything You Need to <span>Succeed</span>
+        </h1>
+        <p>Comprehensive tools for your placement journey</p>
       </section>
 
-      {/* Features Section */}
+      {/* FEATURES */}
       <section className="features">
-        <div className="feature-grid">
-
-          <div className="feature-card">
-            <h3>🎓 Student Dashboard</h3>
-            <p>Track your profile, applications, and placement progress.</p>
-          </div>
-
-          <div className="feature-card">
-            <h3>🏢 Company & Placements</h3>
-            <p>Explore companies, roles, and placement opportunities.</p>
-          </div>
-
-          <div className="feature-card">
-            <h3>📚 Question Bank</h3>
-            <p>Practice interview and aptitude questions anytime.</p>
-          </div>
-
-          <div className="feature-card">
-            <h3>🤖 AI Question Generator</h3>
-            <p>Generate smart questions based on your skills.</p>
-          </div>
-
-          <div className="feature-card">
-            <h3>📄 Resume Analysis</h3>
-            <p>Get AI-powered feedback on your resume.</p>
-          </div>
-
+        <div className="grid">
+          <Card icon={<GraduationCap />} title="Student Dashboard" desc="Track your preparation progress and drives" />
+          <Card icon={<Briefcase />} title="Company & Placements" desc="Browse companies and placement insights" />
+          <Card icon={<HelpCircle />} title="Question Bank" desc="Practice real interview questions" />
+          <Card icon={<Brain />} title="AI Question Generator" desc="Generate tailored practice questions" />
+          <Card icon={<FileText />} title="Resume Analysis" desc="Get AI-powered feedback" />
+          <Card icon={<TrendingUp />} title="Progress Tracking" desc="Monitor your learning journey" />
         </div>
+      </section>
+
+      {/* CTA */}
+      <section className="cta">
+        <h2>Ready to start your placement journey?</h2>
+        <button>Get Started Now →</button>
       </section>
     </div>
   );
 }
 
-export default Home;
+function Card({ icon, title, desc }) {
+  return (
+    <div className="card">
+      <div className="icon">{icon}</div>
+      <h3>{title}</h3>
+      <p>{desc}</p>
+    </div>
+  );
+}

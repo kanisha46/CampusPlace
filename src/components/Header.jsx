@@ -1,78 +1,41 @@
-import { useState, useRef, useEffect } from "react";
+import { Bell, Moon, Sun, Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import "./Header.css";
 
-export default function Header({ setPage }) {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const notificationRef = useRef(null);
+export default function Header() {
+  const [dark, setDark] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  // close popup when clicking outside
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(e.target)
-      ) {
-        setShowNotifications(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // apply dark mode to body
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-  }, [darkMode]);
+  const toggleDark = () => {
+    document.body.classList.toggle("dark");
+    setDark(!dark);
+  };
 
   return (
     <header className="header sticky">
-      {/* Text logo */}
-      <div className="logo-text-only">CampusPlace</div>
+      <div className="logo">
+        <div className="logo-circle">CP</div>
+        <span>Campus<span>Place</span></span>
+      </div>
 
-      {/* Right menu */}
-      <div className="menu">
-        <button className="menu-link" onClick={() => setPage("home")}>
-          Home
+      <nav className={`menu ${open ? "open" : ""}`}>
+        <Link to="/">Home</Link>
+        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/companies">Companies</Link>
+        <Link to="/questions">Questions</Link>
+      </nav>
+
+      <div className="actions">
+        <Bell size={18} />
+        <button className="icon-btn" onClick={toggleDark}>
+          {dark ? <Sun size={18} /> : <Moon size={18} />}
         </button>
-        <button className="menu-link" onClick={() => setPage("login")}>
-          Login
+        <Link to="/login" className="login-btn">Login</Link>
+
+        <button className="menu-btn" onClick={() => setOpen(!open)}>
+          {open ? <X /> : <Menu />}
         </button>
-
-        {/* 🌙 Dark mode toggle */}
-        <div
-          className="dark-toggle"
-          onClick={() => setDarkMode(!darkMode)}
-          title="Toggle dark mode"
-        >
-          {darkMode ? "☀️" : "🌙"}
-        </div>
-
-        {/* 🔔 Bell */}
-        <div
-          className="bell-wrapper"
-          onClick={() => setShowNotifications(!showNotifications)}
-        >
-          🔔
-          <span className="badge">3</span>
-        </div>
-
-        {/* Notification popup */}
-        {showNotifications && (
-          <div className="notification-popup" ref={notificationRef}>
-            <h4>Notifications</h4>
-            <ul>
-              <li>📢 New company added</li>
-              <li>📄 Resume review completed</li>
-              <li>📝 Mock test available</li>
-            </ul>
-          </div>
-        )}
       </div>
     </header>
   );
