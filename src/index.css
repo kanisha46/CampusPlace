@@ -1,0 +1,82 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f6fb;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(90deg, #1e3c72, #2a5298);
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.logo {
+  font-size: 28px;
+}
+
+.header button {
+  margin-left: 15px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: white;
+  color: #1e3c72;
+  font-weight: bold;
+}
+
+.login-btn {
+  background: #ffd000;
+}
+
+/* HERO */
+.hero {
+  padding: 80px 20px;
+  text-align: center;
+  color: white;
+  background: linear-gradient(180deg, #2a5298, #1e3c72);
+}
+
+.hero h2 {
+  font-size: 42px;
+}
+
+.cta {
+  margin-top: 20px;
+  padding: 10px 22px;     /* 🔥 reduced width */
+  background: #ffd000;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  width: auto;          /* 🔥 prevents full width */
+  display: inline-block;
+}
+
+
+/* FEATURES */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 40px;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+}
