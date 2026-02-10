@@ -1,0 +1,117 @@
+/* ================= ABOUT SECTION ================= */
+
+.about-section {
+  padding: 80px 6%;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.about-section h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin-bottom: 12px;
+}
+
+.about-subtitle {
+  font-size: 1.05rem;
+  color: #475569;
+  max-width: 650px;
+  margin: 0 auto 60px;
+}
+
+/* ================= GRID ================= */
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 35px;
+}
+
+/* ================= CARD ================= */
+
+.about-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.15);
+}
+
+/* ICON */
+.about-icon {
+  font-size: 2.6rem;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 18px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff7d6, #fde68a);
+  transition: transform 0.4s ease;
+}
+
+.about-card:hover .about-icon {
+  transform: rotate(-6deg) scale(1.15);
+}
+
+/* TEXT */
+.about-card h4 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #1e3a8a;
+}
+
+.about-card p {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* ================= ANIMATION ================= */
+
+.animate-about {
+  opacity: 0;
+  animation: aboutFadeUp 0.8s ease forwards;
+}
+
+@keyframes aboutFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= DARK MODE ================= */
+
+body.dark .about-section {
+  background: #020617;
+}
+
+body.dark .about-card {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+body.dark .about-card h4 {
+  color: #f8fafc;
+}
+
+body.dark .about-card p {
+  color: #cbd5f5;
+}
+
+body.dark .about-subtitle {
+  color: #94a3b8;
+}

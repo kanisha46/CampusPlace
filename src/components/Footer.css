@@ -1,0 +1,96 @@
+/* ================= FOOTER ================= */
+.main-footer-light {
+  background: #0f172a; /* Solid color is slimmer than an image overlay */
+  padding: 30px 6% 15px; /* Significantly reduced vertical padding */
+  color: #e2e8f0;
+  position: relative;
+}
+
+/* Kept your nice glow divider */
+.main-footer-light::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(to right, transparent, #fbbf24, transparent);
+}
+
+/* ================= LAYOUT ================= */
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Changed from flex-start to center for slim look */
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* ================= BRAND ================= */
+.footer-logo {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.6rem; /* Slightly smaller logo */
+  font-weight: 800;
+  color: #fbbf24;
+  margin: 0; /* Removed margin */
+}
+
+.footer-brand p {
+  color: #cbd5f5;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ================= CONTACT ================= */
+.footer-contact {
+  display: flex; /* Contact items now sit side-by-side */
+  gap: 15px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 14px; /* Slimmer padding */
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.contact-item p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.contact-item:hover {
+  transform: translateY(-3px); /* Hover up instead of sideways to save width */
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ================= COPYRIGHT ================= */
+.footer-copyright {
+  text-align: center;
+  margin-top: 25px; /* Reduced from 60px */
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+/* Responsive: Stack only on very small screens */
+@media (max-width: 600px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .footer-contact {
+    flex-direction: column;
+  }
+}

@@ -3,7 +3,9 @@ body {
   font-family: "Segoe UI", sans-serif;
   background: #f4f6fb;
 }
-
+html {
+  scroll-behavior: smooth;
+}
 /* HEADER */
 .header {
   background: linear-gradient(90deg, #1e3c72, #2a5298);
@@ -100,3 +102,20 @@ body.dark .auth-card label {
   color: #cbd5f5;
 }
 
+/* STUDENT (default) */
+body.dark {
+  background: #020617;
+}
+section {
+  margin: 0;
+}
+
+/* ADMIN */
+body.admin.dark {
+  background: linear-gradient(135deg, #020617, #09090b);
+}
+
+body.admin .login-box {
+  border: 1px solid #334155;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
