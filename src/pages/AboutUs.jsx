@@ -21,7 +21,7 @@ export default function AboutUs() {
   ];
 
   return (
-    <section className="about-section">
+    <section id="about-us" className="about-section">
       <h2>About CampusPlace</h2>
       <p className="about-subtitle">
         Your all-in-one platform for placement preparation and success.

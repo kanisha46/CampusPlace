@@ -13,20 +13,19 @@ export default function App() {
       <Header />
 
       <Routes>
+        {/* Home Page */}
         <Route
           path="/"
           element={
             <div className="landing-page">
               <Hero />
-              <div id="dashboard-section" className="section-padding">
-                <Home />
-              </div>
+              <Home />
             </div>
           }
         />
 
+        {/* Login Page */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/about" element={<AboutUs />} />
       </Routes>
 
       <Footer />

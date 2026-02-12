@@ -1,12 +1,23 @@
 /* ================= FOOTER ================= */
+
 .main-footer-light {
-  background: #0f172a; /* Solid color is slimmer than an image overlay */
-  padding: 30px 6% 15px; /* Significantly reduced vertical padding */
+  background:
+    linear-gradient(
+      rgba(15, 23, 42, 0.92),
+      rgba(15, 23, 42, 0.95)
+    ),
+    url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1920');
+  background-size: cover;
+  background-position: center;
+
+  /* 🔽 Reduced height */
+  padding: 40px 6% 15px;
+
   color: #e2e8f0;
   position: relative;
 }
 
-/* Kept your nice glow divider */
+/* subtle top divider glow */
 .main-footer-light::before {
   content: "";
   position: absolute;
@@ -18,79 +29,92 @@
 }
 
 /* ================= LAYOUT ================= */
-.footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
 
-.footer-content {
+.footer-container {
+  max-width: 1300px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  align-items: center; /* Changed from flex-start to center for slim look */
+  align-items: flex-start;
+
+  /* 🔽 Reduced gap */
+  gap: 40px;
   flex-wrap: wrap;
-  gap: 20px;
 }
 
 /* ================= BRAND ================= */
+
 .footer-logo {
   font-family: 'Poppins', sans-serif;
-  font-size: 1.6rem; /* Slightly smaller logo */
+
+  /* 🔽 Slightly smaller */
+  font-size: 1.8rem;
+
   font-weight: 800;
   color: #fbbf24;
-  margin: 0; /* Removed margin */
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
 }
 
 .footer-brand p {
   color: #cbd5f5;
-  font-size: 0.85rem;
-  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-width: 260px;
 }
 
 /* ================= CONTACT ================= */
-.footer-contact {
-  display: flex; /* Contact items now sit side-by-side */
-  gap: 15px;
+
+.footer-contact h3 {
+  font-size: 1rem;
+  font-weight: 700;
+
+  /* 🔽 Reduced spacing */
+  margin-bottom: 14px;
+
+  color: #fbbf24;
+  letter-spacing: 1.2px;
 }
 
 .contact-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 8px 14px; /* Slimmer padding */
+  gap: 12px;
+
+  /* 🔽 Reduced spacing */
+  margin-bottom: 12px;
+  padding: 10px 16px;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
   border-radius: 10px;
   transition: all 0.3s ease;
 }
 
-.contact-item p {
-  margin: 0;
-  font-size: 0.85rem;
+.contact-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
-.contact-item:hover {
-  transform: translateY(-3px); /* Hover up instead of sideways to save width */
-  background: rgba(255, 255, 255, 0.1);
+.contact-icon {
+  color: #fbbf24;
+  font-size: 1rem;
 }
 
 /* ================= COPYRIGHT ================= */
+
 .footer-copyright {
   text-align: center;
-  margin-top: 25px; /* Reduced from 60px */
-  padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
-  font-size: 0.75rem;
-}
 
-/* Responsive: Stack only on very small screens */
-@media (max-width: 600px) {
-  .footer-content {
-    flex-direction: column;
-    text-align: center;
-  }
-  .footer-contact {
-    flex-direction: column;
-  }
+  /* 🔽 Reduced spacing */
+  margin-top: 30px;
+  padding-top: 12px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  font-size: 0.8rem;
+  letter-spacing: 0.4px;
 }

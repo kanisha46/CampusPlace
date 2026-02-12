@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "./Header.css";
 
-export default function Header({ isAboutVisible }) {
+export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
+
+  // Check login status
+  const isLoggedIn = !!localStorage.getItem("token");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    setShowDropdown(false);
+    navigate("/login");
+    window.location.reload(); // Ensures the header updates immediately
+  };
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -20,47 +34,72 @@ export default function Header({ isAboutVisible }) {
   return (
     <header className={`main-header ${scrolled ? "is-scrolled" : "at-top"}`}>
       <div className="nav-container">
-        
-        {/* LOGO */}
+
+        {/* LOGO - Preserved exactly from your original code */}
         <Link to="/" className="logo-link">
-          <div className="logo-icon-svg">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path
-                d="M12 6V18M12 6C12 6 11 4 6 4C2 4 2 8 2 8V19C2 19 2 15 6 15C11 15 12 18 12 18M12 6C12 6 13 4 18 4C22 4 22 8 22 8V19C22 19 22 15 18 15C13 15 12 18 12 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
           <span className="styled-logo-text">CampusPlace</span>
         </Link>
 
-        {/* NAV */}
+        {/* NAVIGATION */}
         <nav className="nav-links">
-  <NavLink to="/" end>HOME</NavLink>
-  <NavLink to="/dashboard">DASHBOARD</NavLink>
-  <NavLink to="/companies">COMPANIES</NavLink>
-
-  {/* About Us scroll link */}
-  <a
-  href="/#about-us"
-  className={isAboutVisible ? "active" : ""}
->
-  ABOUT US
-</a>
-</nav>
+          <button
+            className={activeSection === "home" ? "active nav-btn" : "nav-btn"}
+            onClick={() => {
+              setActiveSection("home");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
+            HOME
+          </button>
+          <NavLink to="/dashboard">DASHBOARD</NavLink>
+          <NavLink to="/companies">COMPANIES</NavLink>
+          <button
+            className={`nav-link-custom ${activeSection === "about" ? "active" : ""}`}
+            onClick={() => {
+              document.getElementById("about-us")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            ABOUT US
+          </button>
+        </nav>
 
         {/* ACTIONS */}
         <div className="header-actions">
           <button className="theme-toggle-btn" onClick={toggleTheme}>
             {isDarkMode ? "☀️" : "🌙"}
           </button>
-          <Link to="/login" className="btn-login-only">
-            LOGIN
-          </Link>
-        </div>
 
+          {!isLoggedIn ? (
+            <Link to="/login" className="btn-login-only">
+              LOGIN
+            </Link>
+          ) : (
+            /* PROFILE LOGO ONLY (No PRO tag) */
+            <div className="profile-wrapper">
+              <div 
+                className="avatar-ring" 
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+                <img 
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Kanisha" 
+                  alt="Profile" 
+                  className="profile-img"
+                />
+              </div>
+
+              {showDropdown && (
+                <div className="profile-dropdown">
+                  <div className="dropdown-info">
+                    <p>Kanisha Jasoliya</p>
+                  </div>
+                  <hr />
+                  <button onClick={() => navigate("/dashboard")}>My Dashboard</button>
+                  <button onClick={handleLogout} className="logout-btn">Logout</button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
