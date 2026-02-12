@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import AboutUs from "./AboutUs";
 import "./Home.css";
 
@@ -14,15 +14,14 @@ const dashboardItems = [
 export default function Home({ setAboutVisible }) {
   return (
     <div className="home-container">
-      
-      {/* DASHBOARD BLOCKS */}
-      <div className="dashboard-grid">
+      {/* ✅ DASHBOARD BLOCKS (SCROLL TARGET) */}
+      <div id="explore-section" className="dashboard-grid">
         {dashboardItems.map((item, index) => (
           <div
-  className={`feature-card-block accent-${index}`}
-  key={item.id}
-  style={{ animationDelay: `${index * 0.1}s` }}
->
+            className={`feature-card-block accent-${index}`}
+            key={item.id}
+            style={{ animationDelay: `${index * 0.1}s` }}
+          >
             <div className="icon-box">{item.icon}</div>
             <h3>{item.title}</h3>
             <p>{item.desc}</p>

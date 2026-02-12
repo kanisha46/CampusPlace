@@ -7,8 +7,10 @@
   z-index: 1000;
   transition: all 0.35s ease;
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
+/* At top */
 .at-top {
   background: linear-gradient(
     to bottom,
@@ -17,10 +19,11 @@
   );
 }
 
+/* Scrolled */
 .is-scrolled {
   height: 70px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: var(--nav-bg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
 }
 
 /* ================= CONTAINER ================= */
@@ -42,17 +45,6 @@
   text-decoration: none;
 }
 
-.logo-icon-svg {
-  width: 36px;
-  height: 36px;
-  color: #fbbf24;
-  transition: transform 0.4s ease;
-}
-
-.logo-link:hover .logo-icon-svg {
-  transform: rotate(-6deg) scale(1.05);
-}
-
 .styled-logo-text {
   font-size: 1.6rem;
   font-weight: 800;
@@ -62,27 +54,60 @@
 }
 
 .is-scrolled .styled-logo-text {
-  color: #1e3a8a;
+  color: var(--nav-text);
 }
 
 /* ================= NAV LINKS ================= */
 .nav-links {
   display: flex;
   gap: 40px;
+  align-items: center;
 }
 
-.nav-links a {
+/* Common nav text style */
+.nav-links a,
+.nav-btn,
+.nav-link-custom {
   position: relative;
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.6px;
-  color: #ffffff;
+  color: var(--nav-text);
   padding: 6px 0;
   transition: color 0.3s ease;
+  font-family: inherit;
 }
 
-.nav-links a::after {
+/* Remove default button styles */
+.nav-links button {
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.nav-links button:focus,
+.nav-links button:active {
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Keyboard accessibility */
+.nav-links button:focus-visible {
+  outline: 2px solid #fbbf24;
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* Underline animation */
+.nav-links a::after,
+.nav-btn::after,
+.nav-link-custom::after {
   content: "";
   position: absolute;
   bottom: -6px;
@@ -94,12 +119,26 @@
 }
 
 .nav-links a:hover::after,
-.nav-links a.active::after {
+.nav-links a.active::after,
+.nav-btn:hover::after,
+.nav-btn.active::after,
+.nav-link-custom:hover::after,
+.nav-link-custom.active::after {
   width: 100%;
 }
 
-.is-scrolled .nav-links a {
-  color: #1e3a8a;
+/* Hover */
+.nav-links a:hover,
+.nav-btn:hover,
+.nav-link-custom:hover {
+  color: #fbbf24;
+}
+
+/* Active */
+.nav-links .active,
+.nav-btn.active,
+.nav-link-custom.active {
+  color: #fbbf24;
 }
 
 /* ================= ACTIONS ================= */
@@ -114,21 +153,16 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: none;
+  border: 1px solid var(--border);
   cursor: pointer;
   font-size: 1.1rem;
-  background: rgba(255, 255, 255, 0.18);
-  color: white;
-  transition: transform 0.3s ease, background 0.3s ease;
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--nav-text);
+  transition: transform 0.3s ease;
 }
 
 .theme-toggle-btn:hover {
   transform: rotate(12deg) scale(1.08);
-}
-
-.is-scrolled .theme-toggle-btn {
-  background: #f1f5f9;
-  color: #1e3a8a;
 }
 
 /* LOGIN BUTTON */
@@ -148,37 +182,8 @@
   transform: translateY(-3px);
   box-shadow: 0 12px 28px rgba(251, 191, 36, 0.45);
 }
-.nav-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font: inherit;
-  color: inherit;
-}
 
-/* Make button look like NavLink */
-.nav-link-custom {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font: inherit;
-  text-decoration: none;
-  padding: 0;
-  color: #e2e8f0; /* same as dashboard/companies */
-  position: relative;
-}
-
-/* Hover effect same as others */
-.nav-link-custom:hover {
-  color: #fbbf24;
-}
-
-/* Active underline same as HOME */
-.nav-links .active {
-  color: #fbbf24;
-  border-bottom: 2px solid #fbbf24;
-}
-/* ================= PROFILE STYLES ================= */
+/* ================= PROFILE ================= */
 .profile-wrapper {
   position: relative;
   display: flex;
@@ -186,17 +191,6 @@
   gap: 12px;
 }
 
-.pro-tag {
-  background: #1e293b;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 4px;
-  letter-spacing: 0.5px;
-}
-
-/* The Gradient Ring */
 .avatar-ring {
   width: 42px;
   height: 42px;
@@ -215,30 +209,30 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: white;
-  border: 2px solid white; /* Gap between ring and image */
+  background: var(--surface-solid, #fff);
+  border: 2px solid var(--surface-solid, #fff);
   object-fit: cover;
 }
 
-/* Dropdown Menu */
+/* Dropdown */
 .profile-dropdown {
   position: absolute;
   top: 55px;
   right: 0;
   width: 180px;
-  background: white;
+  background: var(--surface-solid, #fff);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   padding: 8px 0;
   z-index: 2000;
-  overflow: hidden;
   animation: fadeIn 0.2s ease-out;
 }
 
 .dropdown-info {
   padding: 10px 16px;
   font-weight: 700;
-  color: #1e3a8a;
+  color: var(--text);
   font-size: 0.85rem;
 }
 
@@ -246,22 +240,23 @@
   width: 100%;
   padding: 12px 16px;
   border: none;
-  background: none;
+  background: transparent;
   text-align: left;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  color: #475569;
+  color: var(--muted);
 }
 
 .profile-dropdown button:hover {
-  background: #f1f5f9;
+  background: rgba(148, 163, 184, 0.18);
 }
 
 .logout-btn {
   color: #ef4444 !important;
 }
 
+/* Animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
