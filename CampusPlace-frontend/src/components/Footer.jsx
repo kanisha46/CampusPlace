@@ -3,7 +3,7 @@ import "./Footer.css";
 
 export default function Footer() {
   return (
-    <footer className="main-footer-light">
+    <footer id="contact-us" className="main-footer-light">
       <div className="footer-container">
         <div className="footer-brand">
           <h2 className="footer-logo">CampusPlace</h2>
@@ -22,7 +22,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      
+
       <div className="footer-copyright">
         <p>© 2026 CampusPlace. All rights reserved.</p>
       </div>
