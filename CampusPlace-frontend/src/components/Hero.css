@@ -1,0 +1,73 @@
+.hero-visual {
+  height: 85vh; /* Reduced height for better balance */
+  width: 100%;
+  background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), 
+              url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1920');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+}
+
+.hero-content {
+  max-width: 800px;
+  padding: 0 20px;
+}
+.hero {
+  padding: 80px 20px 0; /* remove bottom padding */
+}
+/* Scaled Typography */
+.hero-content h1 {
+  font-size: 3.2rem; /* Reduced from 4rem for better UI */
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  letter-spacing: -1.5px;
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-content p {
+  font-size: 1.15rem;
+  color: #cbd5e1;
+  margin-bottom: 35px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* EXPLORE NOW Button */
+.glow-btn-large {
+  background: #fbbf24;
+  color: #1e3a8a;
+  padding: 16px 40px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 25px rgba(251, 191, 36, 0.4);
+}
+
+.glow-btn-large:hover {
+  transform: scale(1.08) translateY(-3px);
+  box-shadow: 0 0 35px rgba(251, 191, 36, 0.7); /* The "yessss" glow effect */
+}
+
+/* Animation on entry */
+.animate-pop {
+  animation: popUp 1s ease-out forwards;
+}
+
+@keyframes popUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
