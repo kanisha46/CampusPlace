@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
-import userlogo from "../assets/userlogo.png";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -13,29 +12,6 @@ export default function Header() {
   const location = useLocation();
 
   const isLoggedIn = !!localStorage.getItem("token");
-
-  // ✅ Retrieve actual logged-in user's name
-  const userName = localStorage.getItem("userName");
-
-  // ✅ Helper for dynamic background color based on name
-  const getAvatarStyle = (name) => {
-    const colors = ["#4285F4", "#34A853", "#FBBC05", "#EA4335", "#9b59b6", "#34495e"];
-    const charCode = name && name.length > 0 ? name.charCodeAt(0) : 0;
-    const bgColor = colors[charCode % colors.length];
-
-    return {
-      backgroundColor: bgColor,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: "50%",
-      color: "white",
-      fontWeight: "bold",
-      width: "100%",
-      height: "100%",
-      textTransform: "uppercase",
-    };
-  };
 
   // Load theme from localStorage on start
   useEffect(() => {
@@ -53,14 +29,18 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Route-aware highlight (Dashboard/Companies)
+  // ✅ Route-aware highlight (Dashboard/Companies)
   useEffect(() => {
     if (location.pathname === "/dashboard") setActiveSection("dashboard");
     else if (location.pathname === "/companies") setActiveSection("companies");
     else if (location.pathname === "/") setActiveSection("home");
   }, [location.pathname]);
 
-  // Scroll highlight on HOME page only
+  // ✅ Scroll highlight on HOME page only
+  // Rules:
+  // - Very bottom => CONTACT US
+  // - About section => ABOUT US
+  // - Near top => HOME
   useEffect(() => {
     if (location.pathname !== "/") return;
 
@@ -72,11 +52,13 @@ export default function Header() {
       const windowHeight = window.innerHeight;
       const docHeight = document.documentElement.scrollHeight;
 
+      // ✅ 1) Absolute bottom => CONTACT US
       if (scrollTop + windowHeight >= docHeight - 5) {
         setActiveSection("contact");
         return;
       }
 
+      // ✅ 2) ABOUT US area => ABOUT US
       const aboutTop = aboutEl.getBoundingClientRect().top + window.pageYOffset;
 
       if (scrollTop >= aboutTop - 120) {
@@ -84,13 +66,14 @@ export default function Header() {
         return;
       }
 
+      // ✅ 3) Top => HOME
       if (scrollTop < 200) {
         setActiveSection("home");
       }
     };
 
     window.addEventListener("scroll", onScroll);
-    onScroll();
+    onScroll(); // run once on load
 
     return () => window.removeEventListener("scroll", onScroll);
   }, [location.pathname]);
@@ -98,12 +81,12 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    localStorage.removeItem("userName"); // ✅ Clear name on logout
     setShowDropdown(false);
     navigate("/login");
     window.location.reload();
   };
 
+  // Theme toggle
   const toggleTheme = () => {
     setIsDarkMode((prev) => {
       const next = !prev;
@@ -115,21 +98,25 @@ export default function Header() {
 
   const scrollToTop = () => {
     setActiveSection("home");
+
     if (location.pathname !== "/") {
       navigate("/");
       setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80);
       return;
     }
+
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const scrollToAbout = () => {
     setActiveSection("about");
+
     const go = () => {
       const el = document.getElementById("about-us");
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth" });
     };
+
     if (location.pathname !== "/") {
       navigate("/");
       setTimeout(go, 200);
@@ -140,11 +127,13 @@ export default function Header() {
 
   const scrollToContact = () => {
     setActiveSection("contact");
+
     const go = () => {
       const el = document.getElementById("contact-us");
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth" });
     };
+
     if (location.pathname !== "/") {
       navigate("/");
       setTimeout(go, 200);
@@ -222,28 +211,20 @@ export default function Header() {
                 role="button"
                 tabIndex={0}
               >
-                {/* ✅ DYNAMIC AVATAR LOGIC */}
-                {userName ? (
-                  <div style={getAvatarStyle(userName)}>
-                    {userName.charAt(0)}
-                  </div>
-                ) : (
-                  <img
-                    src={userlogo}
-                    alt="Profile"
-                    className="profile-img"
-                  />
-                )}
+                <img
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=Kanisha"
+                  alt="Profile"
+                  className="profile-img"
+                />
               </div>
 
               {showDropdown && (
                 <div className="profile-dropdown">
                   <div className="dropdown-info">
-                    {/* ✅ SHOW ACTUAL LOGGED IN USER NAME */}
-                    <p>{userName || "User"}</p>
+                    <p>Kanisha Jasoliya</p>
                   </div>
                   <hr />
-                  <button onClick={() => { navigate("/dashboard"); setShowDropdown(false); }} type="button">
+                  <button onClick={() => navigate("/dashboard")} type="button">
                     My Dashboard
                   </button>
                   <button onClick={handleLogout} className="logout-btn" type="button">
@@ -253,12 +234,6 @@ export default function Header() {
               )}
             </div>
           )}
-
-          {/* ✅ DASHBOARD SHORTCUT ICON (The "Empty Space" Fix) */}
-          <div className="header-profile-shortcut" onClick={() => navigate("/dashboard")}>
-            <img src={userlogo} alt="Go to Dashboard" className="shortcut-img" />
-          </div>
-
         </div>
       </div>
     </header>
