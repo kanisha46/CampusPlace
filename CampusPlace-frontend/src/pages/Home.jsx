@@ -1,5 +1,6 @@
 import React from "react";
 import AboutUs from "./AboutUs";
+
 import "./Home.css";
 
 const dashboardItems = [
@@ -14,7 +15,7 @@ const dashboardItems = [
 export default function Home({ setAboutVisible }) {
   return (
     <div className="home-container">
-      {/* ✅ DASHBOARD BLOCKS (SCROLL TARGET) */}
+      {/* DASHBOARD BLOCKS */}
       <div id="explore-section" className="dashboard-grid">
         {dashboardItems.map((item, index) => (
           <div
@@ -31,6 +32,7 @@ export default function Home({ setAboutVisible }) {
 
       {/* ABOUT US */}
       <AboutUs onVisible={setAboutVisible} />
+      
     </div>
   );
 }

@@ -21,13 +21,62 @@ export default function Header() {
     document.body.classList.toggle("dark", shouldDark);
   }, []);
 
-  // Scroll header style
+  // Header style on scroll
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // ✅ Route-aware highlight (Dashboard/Companies)
+  useEffect(() => {
+    if (location.pathname === "/dashboard") setActiveSection("dashboard");
+    else if (location.pathname === "/companies") setActiveSection("companies");
+    else if (location.pathname === "/") setActiveSection("home");
+  }, [location.pathname]);
+
+  // ✅ Scroll highlight on HOME page only
+  // Rules:
+  // - Very bottom => CONTACT US
+  // - About section => ABOUT US
+  // - Near top => HOME
+  useEffect(() => {
+    if (location.pathname !== "/") return;
+
+    const aboutEl = document.getElementById("about-us");
+    if (!aboutEl) return;
+
+    const onScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+
+      // ✅ 1) Absolute bottom => CONTACT US
+      if (scrollTop + windowHeight >= docHeight - 5) {
+        setActiveSection("contact");
+        return;
+      }
+
+      // ✅ 2) ABOUT US area => ABOUT US
+      const aboutTop = aboutEl.getBoundingClientRect().top + window.pageYOffset;
+
+      if (scrollTop >= aboutTop - 120) {
+        setActiveSection("about");
+        return;
+      }
+
+      // ✅ 3) Top => HOME
+      if (scrollTop < 200) {
+        setActiveSection("home");
+      }
+    };
+
+    window.addEventListener("scroll", onScroll);
+    onScroll(); // run once on load
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -37,7 +86,7 @@ export default function Header() {
     window.location.reload();
   };
 
-  // Stable theme toggle + save
+  // Theme toggle
   const toggleTheme = () => {
     setIsDarkMode((prev) => {
       const next = !prev;
@@ -50,50 +99,48 @@ export default function Header() {
   const scrollToTop = () => {
     setActiveSection("home");
 
-    // ✅ Always go to home page first (important if you are on /dashboard or /companies)
     if (location.pathname !== "/") {
       navigate("/");
-      // Wait a tick for Home to render, then scroll
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }, 50);
+      setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80);
       return;
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // ✅ UPDATED: About scroll works from any page
-const scrollToAbout = () => {
-  setActiveSection("about");
+  const scrollToAbout = () => {
+    setActiveSection("about");
 
-  const go = () => {
-    const el = document.getElementById("about-us");
-    if (!el) return;
+    const go = () => {
+      const el = document.getElementById("about-us");
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth" });
+    };
 
-    // ✅ Exact header offset (your header is 70–82px)
-    const headerOffset = 75;
-
-    // ✅ Bring section closer to header like your 1st screenshot
-    const extraLift = -80; // reduce the gap above heading (try 100–160)
-
-    const y =
-      el.getBoundingClientRect().top +
-      window.pageYOffset -
-      headerOffset -
-      extraLift;
-
-    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(go, 200);
+    } else {
+      go();
+    }
   };
 
-  // If user is not on home page, go home first then scroll
-  if (location.pathname !== "/") {
-    navigate("/");
-    setTimeout(go, 250);
-  } else {
-    go();
-  }
-};
+  const scrollToContact = () => {
+    setActiveSection("contact");
+
+    const go = () => {
+      const el = document.getElementById("contact-us");
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth" });
+    };
+
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(go, 200);
+    } else {
+      go();
+    }
+  };
 
   return (
     <header className={`main-header ${scrolled ? "is-scrolled" : "at-top"}`}>
@@ -113,22 +160,36 @@ const scrollToAbout = () => {
             HOME
           </button>
 
-          <NavLink to="/dashboard" onClick={() => setActiveSection("dashboard")}>
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={() => setActiveSection("dashboard")}
+          >
             DASHBOARD
           </NavLink>
 
-          <NavLink to="/companies" onClick={() => setActiveSection("companies")}>
+          <NavLink
+            to="/companies"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={() => setActiveSection("companies")}
+          >
             COMPANIES
           </NavLink>
 
           <button
-            className={`nav-link-custom ${
-              activeSection === "about" ? "active" : ""
-            }`}
+            className={`nav-link-custom ${activeSection === "about" ? "active" : ""}`}
             onClick={scrollToAbout}
             type="button"
           >
             ABOUT US
+          </button>
+
+          <button
+            className={`nav-link-custom ${activeSection === "contact" ? "active" : ""}`}
+            onClick={scrollToContact}
+            type="button"
+          >
+            CONTACT US
           </button>
         </nav>
 
