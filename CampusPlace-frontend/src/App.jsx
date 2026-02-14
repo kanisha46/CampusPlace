@@ -5,6 +5,7 @@ import Hero from "./components/Hero";
 
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
+import Companies from "./pages/Companies";
 import AboutUs from "./pages/AboutUs";
 // 1. Import your Dashboard component here
 import Dashboard from "./pages/Dashboard"; 
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         
         {/* Optional: Add a route for Companies if you have that page too */}
+           <Route path="/companies" element={<Companies />} />
         {/* <Route path="/companies" element={<CompaniesPage />} /> */}
       </Routes>
 

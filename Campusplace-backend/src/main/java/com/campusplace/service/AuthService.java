@@ -41,25 +41,44 @@ public class AuthService {
 
     public Map<String, Object> login(LoginRequest request) {
 
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    )
-            );
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid email or password");
-        }
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtService.generateToken(user);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
 
         return Map.of(
-                "token", token,
+                "accessToken", accessToken,
+                "refreshToken", refreshToken,
                 "role", user.getRole().name()
+        );
+    }
+    public Map<String, Object> refresh(String refreshToken) {
+
+        String email = jwtService.extractUsername(refreshToken);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!refreshToken.equals(user.getRefreshToken())) {
+            throw new RuntimeException("Invalid refresh token");
+        }
+
+        String newAccessToken = jwtService.generateAccessToken(user);
+
+        return Map.of(
+                "accessToken", newAccessToken,
+                "refreshToken", user.getRefreshToken()
         );
     }
 

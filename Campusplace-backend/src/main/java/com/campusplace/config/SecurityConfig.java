@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -31,16 +33,37 @@ public class SecurityConfig {
 
         return http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> {})
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/profile/**").authenticated()
+                        .requestMatchers("/api/companies/**").permitAll()
                         .anyRequest().authenticated()
                 )
+
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
                 .addFilterBefore(jwtFilter(),
                         UsernamePasswordAuthenticationFilter.class)
+
                 .build();
+    }
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+
+        var configuration = new org.springframework.web.cors.CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        var source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
     // 🔥 Required for authentication
