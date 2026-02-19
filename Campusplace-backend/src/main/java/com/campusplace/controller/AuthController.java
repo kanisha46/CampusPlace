@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,14 +31,7 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
-    @PostMapping("/refresh")
-    public ResponseEntity<Map<String, Object>> refresh(
-            @RequestBody RefreshRequest request) {
 
-        return ResponseEntity.ok(
-                authService.refresh(request.getRefreshToken())
-        );
-    }
     @GetMapping("/users")
     public List<UserResponse> getAllUsers() {
         return authService.getAllUsers();
