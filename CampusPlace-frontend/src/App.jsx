@@ -5,6 +5,7 @@ import Hero from "./components/Hero";
 // src/App.jsx
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
+import Companies from "./pages/Companies";
 import AboutUs from "./pages/AboutUs";
 import Dashboard from "./pages/Dashboard";
 
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         
         {/* Optional: Add a route for Companies if you have that page too */}
+           <Route path="/companies" element={<Companies />} />
         {/* <Route path="/companies" element={<CompaniesPage />} /> */}
       </Routes>
 
