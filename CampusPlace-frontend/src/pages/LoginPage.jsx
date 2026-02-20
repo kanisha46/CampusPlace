@@ -67,18 +67,15 @@ export default function LoginPage() {
       // Navigate only after successful login
       navigate(role === "ADMIN" ? "/admin" : "/dashboard");
 
-    } catch (error) {
-      // ... inside your handleSubmit catch block ...
-const { token, role, name } = res.data; // Ensure your backend sends 'name'
+    }  catch (error) {
+  console.error("Login error:", error);
 
-localStorage.setItem("token", token);
-localStorage.setItem("role", role);
-localStorage.setItem("userName", name || "User"); // Store the actual name
+  setMessage(
+    error.response?.data?.message || "Login failed. Please try again."
+  );
 
-setLoading(false);
-// Force a hard redirect to ensure Header reads the new localStorage data
-window.location.href = role === "ADMIN" ? "/admin" : "/dashboard";
-    }
+  setLoading(false);
+}
   };
 
   return (

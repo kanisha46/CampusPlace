@@ -13,14 +13,22 @@ const Companies = () => {
   /* ================= FETCH FROM MYSQL ================= */
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8082/api/companies")
-      .then((res) => {
-        console.log("DATA FROM BACKEND:", res.data);
-        setCompanies(res.data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  const token = localStorage.getItem("token");
+
+  axios
+    .get("http://localhost:8082/api/companies", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => {
+      console.log("DATA FROM BACKEND:", res.data);
+      setCompanies(res.data);
+    })
+    .catch((err) => {
+      console.error("Error fetching companies:", err);
+    });
+}, []);
 
   /* ================= FILTER ================= */
 

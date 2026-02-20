@@ -1,5 +1,5 @@
 package com.campusplace.entity;
-
+import com.campusplace.entity.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
