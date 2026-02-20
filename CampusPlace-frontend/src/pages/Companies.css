@@ -141,3 +141,105 @@
   .filter-bar input, .filter-bar select { min-width: 100%; }
   .companies-grid { grid-template-columns: 1fr; }
 }
+
+/* ================================
+   COMPANIES PAGE - DARK MODE FIX
+   ================================ */
+body.dark .companies-page,
+body.dark .companies-container,
+body.dark .companies-wrapper {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+/* Heading */
+body.dark .companies-title,
+body.dark h1,
+body.dark h2 {
+  color: var(--text) !important;
+}
+
+/* Cards */
+body.dark .company-card,
+body.dark .company-card * {
+  color: var(--text) !important;
+}
+
+body.dark .company-card {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* Muted lines like location/category */
+body.dark .company-location,
+body.dark .company-domain,
+body.dark .company-subtitle {
+  color: var(--muted) !important;
+}
+
+/* Search + dropdown */
+body.dark input[type="text"],
+body.dark input[type="search"],
+body.dark select {
+  background: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+body.dark input::placeholder {
+  color: var(--muted) !important;
+}
+
+/* Buttons */
+body.dark .visit-btn,
+body.dark .company-btn {
+  background: transparent !important;
+  color: var(--primary) !important;
+  border: 1px solid var(--primary) !important;
+}
+
+body.dark .visit-btn:hover,
+body.dark .company-btn:hover {
+  background: rgba(255, 204, 0, 0.12) !important;
+}
+
+/* ================================
+   OPEN POSITIONS BADGE – DARK MODE
+   ================================ */
+
+body.dark .open-positions,
+body.dark .positions-badge,
+body.dark .open-position,
+body.dark .company-positions {
+  background: rgba(255, 204, 0, 0.15) !important; /* soft gold */
+  color: #ffcc00 !important;                     /* brand gold */
+  border: 1px solid #ffcc00 !important;
+  font-weight: 600;
+}
+
+/* If badge is a button or span */
+body.dark .open-positions span,
+body.dark .company-card .open-positions {
+  color: #ffcc00 !important;
+}
+
+/* =====================================
+   OPEN POSITIONS BADGE – FINAL FIX
+   ===================================== */
+
+/* Light mode */
+.company-card span {
+  background: #fff2cc;        /* soft light gold */
+  color: #1e2a45;             /* navy text */
+  border: 1px solid #ffcc00;
+  font-weight: 700;
+}
+
+/* Dark mode */
+body.dark .company-card span {
+  background: #020617;        /* deep dark navy */
+  color: #ffcc00;             /* bright gold text */
+  border: 1px solid #ffcc00;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.35);
+}

@@ -1,41 +1,199 @@
-/* ============ GLOBAL FONT SYSTEM ============ */
+/* =====================================================
+   GLOBAL THEME SYSTEM (DARK MODE ENABLED BY DEFAULT)
+   ===================================================== */
 
+/* ---------- THEME VARIABLES ---------- */
+:root {
+  /* Light (fallback, unused since dark is forced) */
+  --bg: #ffffff;
+  --text: #111827;
+
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+
+  --input-bg: #ffffff;
+  --input-text: #111827;
+
+  --primary: #f4b400;
+  --danger: #ef4444;
+  --success: #22c55e;
+
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* ---------- DARK MODE (GLOBAL) ---------- */
+body.dark {
+  --bg: #0b1220;
+  --text: #e5e7eb;
+
+  --card: #0f172a;
+  --border: #243041;
+  --muted: #9ca3af;
+
+  --input-bg: #0b1220;
+  --input-text: #e5e7eb;
+
+  --primary: #facc15;
+  --danger: #f87171;
+  --success: #4ade80;
+
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* =====================================================
+   GLOBAL RESET
+   ===================================================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
-/* ✅ ONE FONT FOR ENTIRE WEBSITE */
+/* =====================================================
+   BASE TYPOGRAPHY
+   ===================================================== */
 body {
   font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
+
+  /* Header offset */
+  padding-top: 82px;
+
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-weight: 700;
   letter-spacing: -0.01em;
+  color: var(--text);
 }
 
-/* Buttons & links */
-button,
+/* Paragraphs */
+p {
+  color: var(--text);
+}
+
+/* =====================================================
+   LINKS & BUTTONS
+   ===================================================== */
 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
   font-family: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background: transparent;
+  color: inherit;
 }
 
-/* Prevent content hiding under fixed header */
-body {
-  padding-top: 82px;
+/* =====================================================
+   FORMS
+   ===================================================== */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* =====================================================
+   CARDS / PANELS
+   ===================================================== */
+.card,
+.panel,
+.container,
+.box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+/* =====================================================
+   BADGES / STATUS
+   ===================================================== */
+.badge-success {
+  color: var(--success);
+}
+
+.badge-danger {
+  color: var(--danger);
+}
+
+.badge-primary {
+  color: var(--primary);
+}
+
+/* =====================================================
+   SCROLLBAR (DARK)
+   ===================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 8px;
+}
+
+/* =====================================================
+   UTILITY CLASSES
+   ===================================================== */
+.text-muted {
+  color: var(--muted);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+/* =====================================================
+   RESPONSIVE HEADER OFFSET
+   ===================================================== */
 @media (max-width: 768px) {
   body {
     padding-top: 70px;

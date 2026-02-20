@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import userlogo from "../assets/userlogo.png";
+import campusLogo from "../assets/campuslogo.png";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -157,7 +158,14 @@ export default function Header() {
     <header className={`main-header ${scrolled ? "is-scrolled" : "at-top"}`}>
       <div className="nav-container">
         {/* LOGO */}
+        {/* LOGO */}
+        {/* LOGO */}
         <Link to="/" className="logo-link" onClick={scrollToTop}>
+          <img
+            src={campusLogo}
+            alt="CampusPlace Logo"
+            className="campus-logo"
+          />
           <span className="styled-logo-text">CampusPlace</span>
         </Link>
 

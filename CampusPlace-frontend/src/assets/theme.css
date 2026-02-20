@@ -1,50 +1,93 @@
-/* ========= THEME VARIABLES (NO TAILWIND) ========= */
+/* =====================================================
+   THEME.CSS (GLOBAL LIGHT + DARK VARIABLES)
+   ===================================================== */
 
+   
+/* LIGHT MODE DEFAULT */
 :root {
-  --bg: #f8fafc;
-  --text: #0f172a;
+  --bg: #ffffff;
+  --text: #111827;
 
-  --surface: rgba(255, 255, 255, 0.75);
-  --surface-solid: #ffffff;
-  --border: rgba(15, 23, 42, 0.12);
+  --card: #ffffff;
+  --border: #e5e7eb;
+  --muted: #6b7280;
 
-  --muted: #475569;
+  --input-bg: #ffffff;
+  --input-text: #111827;
 
-  --shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+  --primary: #ffcc00;
 
-  --nav-bg: rgba(255, 255, 255, 0.92);
-  --nav-text: #1e3a8a;
-
-  --hero-overlay: rgba(2, 6, 23, 0.35);
-
-  --icon-1: #fff7d6;
-  --icon-2: #fde68a;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
+/* DARK MODE (enabled when body has class="dark") */
 body.dark {
   --bg: #0b1220;
-  --text: #f8fafc;
+  --text: #e5e7eb;
 
-  --surface: rgba(15, 23, 42, 0.75);
-  --surface-solid: #0f172a;
-  --border: rgba(255, 255, 255, 0.10);
+  --card: #0f172a;
+  --border: #243041;
+  --muted: #9ca3af;
 
-  --muted: #cbd5e1;
+  --input-bg: #0b1220;
+  --input-text: #e5e7eb;
 
-  --shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  --primary: #ffcc00;
 
-  --nav-bg: rgba(2, 6, 23, 0.75);
-  --nav-text: #f8fafc;
-
-  --hero-overlay: rgba(2, 6, 23, 0.75);
-
-  --icon-1: #1e293b;
-  --icon-2: #334155;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
-/* Apply everywhere */
-body {
+/* FORCE THEME COLORS ON WHOLE APP */
+html, body, #root {
+  min-height: 100%;
   background: var(--bg);
   color: var(--text);
-  transition: background 0.3s ease, color 0.3s ease;
 }
+
+/* BASIC GLOBAL RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* OPTIONAL: SMOOTH FEEL */
+body {
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* ✅ FINAL FORCE DARK MODE (PUT AT END) */
+body.dark,
+body.dark #root,
+body.dark #root * {
+  color-scheme: dark;
+}
+
+body.dark,
+body.dark #root {
+  background: #0b1220 !important;
+  color: #e5e7eb !important;
+}
+
+/* Force common wrappers to dark even if they have white background */
+body.dark div,
+body.dark section,
+body.dark main,
+body.dark header,
+body.dark footer,
+body.dark nav,
+body.dark article,
+body.dark aside {
+  background-color: transparent;
+}
+
+/* If any component sets white background, override it */
+body.dark [style*="background: white"],
+body.dark [style*="background-color: white"],
+body.dark [style*="background:#fff"],
+body.dark [style*="background-color:#fff"],
+body.dark [style*="background: #fff"],
+body.dark [style*="background-color: #fff"] {
+  background: #0f172a !important;
+}
+

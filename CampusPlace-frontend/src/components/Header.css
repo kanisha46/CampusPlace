@@ -104,8 +104,12 @@
   width: 100%;
 }
 
-.nav-links a:hover, .nav-btn:hover, .nav-link-custom:hover,
-.nav-links .active, .nav-btn.active, .nav-link-custom.active {
+.nav-links a:hover,
+.nav-btn:hover,
+.nav-link-custom:hover,
+.nav-links .active,
+.nav-btn.active,
+.nav-link-custom.active {
   color: #fbbf24;
 }
 
@@ -121,7 +125,7 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 1px solid var(--border, rgba(255,255,255,0.2));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.2));
   cursor: pointer;
   font-size: 1.1rem;
   background: rgba(255, 255, 255, 0.14);
@@ -251,6 +255,152 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =====================================================
+   LIGHT / DARK MODE OVERRIDES (ADD AT END)
+   Works with your existing classes: .at-top, .is-scrolled
+   ===================================================== */
+
+/* ---------- LIGHT MODE ---------- */
+body:not(.dark) .main-header.at-top {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.75),
+    rgba(255, 255, 255, 0.35)
+  );
+}
+
+body:not(.dark) .main-header.is-scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Light mode text */
+body:not(.dark) .nav-links a,
+body:not(.dark) .nav-btn,
+body:not(.dark) .nav-link-custom {
+  color: #1e293b; /* slate-800 */
+}
+
+body:not(.dark) .is-scrolled .styled-logo-text {
+  color: #334155;
+}
+
+/* Theme toggle in light */
+body:not(.dark) .theme-toggle-btn {
+  background: rgba(0, 0, 0, 0.04);
+  color: #1e293b;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- DARK MODE ---------- */
+body.dark .main-header.at-top {
+  background: linear-gradient(
+    to bottom,
+    rgba(2, 6, 23, 0.78),
+    rgba(15, 23, 42, 0.30)
+  );
+}
+
+body.dark .main-header.is-scrolled {
+  background: rgba(2, 6, 23, 0.92);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+}
+
+/* Dark mode nav text */
+body.dark .nav-links a,
+body.dark .nav-btn,
+body.dark .nav-link-custom {
+  color: #e5e7eb;
+}
+
+/* Keep gold hover/active working */
+body.dark .nav-links a:hover,
+body.dark .nav-btn:hover,
+body.dark .nav-link-custom:hover,
+body.dark .nav-links a.active,
+body.dark .nav-btn.active,
+body.dark .nav-link-custom.active {
+  color: #fbbf24;
+}
+
+/* Theme toggle in dark */
+body.dark .theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fbbf24;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Profile shortcut should not be white in dark */
+body.dark .header-profile-shortcut {
+  background: #0b1220;
+}
+
+/* Dropdown dark mode */
+body.dark .profile-dropdown {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+}
+
+body.dark .dropdown-info {
+  color: #e5e7eb;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.dark .profile-dropdown button {
+  color: #cbd5e1;
+}
+
+body.dark .profile-dropdown button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fbbf24;
+}
+
+/* ================= CAMPUS LOGO – FINAL PERFECT FIT ================= */
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* Visible logo container */
+.logo-link .campus-logo {
+  height: 64px; /* MAIN control */
+  width: auto; /* maintain aspect ratio */
+  max-width: 180px; /* prevents overflow */
+  object-fit: cover;
+  display: block;
+
+  /* THIS fixes the extra transparent space */
+  transform: scale(1.45); /* zooms logo to remove padding */
+  transform-origin: center;
+
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.35));
+  transition: all 0.3s ease;
+}
+
+/* When header shrinks on scroll */
+.main-header.is-scrolled .logo-link .campus-logo {
+  height: 52px;
+  transform: scale(1.3);
+}
+
+/* Dark mode glow */
+body.dark .logo-link .campus-logo {
+  filter: drop-shadow(0 0 16px rgba(255, 204, 0, 0.45));
+}
+
+/* Hover polish */
+.logo-link:hover .campus-logo {
+  transform: scale(1.5);
 }

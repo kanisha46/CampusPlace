@@ -1,10 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
 import "./Dashboard.css";
 import axios from "axios";
-import userlogo from "../assets/userlogo.png"; // Ensure the extension is correct
+import userlogo from "../assets/userlogo.png";
 
 /* ================= HELPER FOR GOOGLE-STYLE AVATAR ================= */
-// This function generates the background color and initials dynamically
 const getAvatarStyle = (name) => {
   const colors = ["#4285F4", "#34A853", "#FBBC05", "#EA4335", "#9b59b6", "#34495e"];
   const charCode = name && name.length > 0 ? name.charCodeAt(0) : 0;
@@ -21,7 +20,7 @@ const getAvatarStyle = (name) => {
     textTransform: "uppercase",
     width: "100%",
     height: "100%",
-    fontFamily: "'Segoe UI', Roboto, sans-serif"
+    fontFamily: "'Segoe UI', Roboto, sans-serif",
   };
 };
 
@@ -32,9 +31,10 @@ const Dashboard = () => {
 
   const [completedSections, setCompletedSections] = useState({
     "Basic Details": false,
-    "Resume": false,
-    "About": false,
-    "Skills": false
+    Resume: false,
+    About: false,
+    Skills: false,
+    Education: false,
   });
 
   const [userType, setUserType] = useState("");
@@ -54,12 +54,40 @@ const Dashboard = () => {
   const [endYear, setEndYear] = useState("");
   const [aboutError, setAboutError] = useState("");
   const [aboutText, setAboutText] = useState("");
+
   const [skills, setSkills] = useState([]);
   const [skillInput, setSkillInput] = useState("");
+
   const [resumeFileName, setResumeFileName] = useState("No file chosen");
   const [resumeError, setResumeError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [resumeValid, setResumeValid] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null); // ✅ keep actual file
+
+  // ================= EDUCATION (NEW) =================
+  const [currentCgpa, setCurrentCgpa] = useState("");
+  const [twelfthPercentile, setTwelfthPercentile] = useState("");
+
+  const [semResultsFiles, setSemResultsFiles] = useState([]); // ✅ multiple files
+  const [semResultsFileNames, setSemResultsFileNames] = useState([]); // for showing fetched names
+
+  const [hasInternship, setHasInternship] = useState(""); // Yes/No
+  const [internshipCertFile, setInternshipCertFile] = useState(null);
+  const [internshipCertFileName, setInternshipCertFileName] = useState("");
+
+  const [hasHackathon, setHasHackathon] = useState(""); // Yes/No
+  const [hackathonDetails, setHackathonDetails] = useState("");
+
+  const [hasBacklogs, setHasBacklogs] = useState(""); // Yes/No
+  const [backlogCount, setBacklogCount] = useState("");
+
+  // ✅ ONLY for IT / CE students
+  const [leetcodePercentile, setLeetcodePercentile] = useState("");
+  const [leetcodeAccLink, setLeetcodeAccLink] = useState("");
+  const [leetcodeRank, setLeetcodeRank] = useState("");
+
+  const [githubLink, setGithubLink] = useState("");
+  const [linkedinLink, setLinkedinLink] = useState("");
 
   /* ================= DATA ================= */
 
@@ -68,6 +96,7 @@ const Dashboard = () => {
     { id: "Resume", required: true },
     { id: "About", required: true },
     { id: "Skills", required: true },
+    { id: "Education", required: true }, // ✅ added
   ];
 
   const placementSuggestions = [
@@ -80,10 +109,25 @@ const Dashboard = () => {
     "Machine Learning",
     "Communication",
     "Leadership",
-    "Problem Solving"
+    "Problem Solving",
   ];
 
-  const domains = ["Management", "Engineering", "Arts & Science", "Medicine", "Law", "Others"];
+  /* ================= HELPERS ================= */
+
+  const isValidUrl = (val) => {
+    if (!val) return false;
+    try {
+      new URL(val);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const isITorCEStudent = useMemo(() => {
+    // only for student & specialization IT/CE
+    return userType === "Student" && (specialization === "IT" || specialization === "CE");
+  }, [userType, specialization]);
 
   /* ================= SKILLS ================= */
 
@@ -93,38 +137,34 @@ const Dashboard = () => {
       const updated = [...skills, formatted];
       setSkills(updated);
       setSkillInput("");
-      setCompletedSections(prev => ({ ...prev, Skills: true }));
+      setCompletedSections((prev) => ({ ...prev, Skills: true }));
     }
   };
 
   const removeSkill = (skillToRemove) => {
-    const updated = skills.filter(s => s !== skillToRemove);
+    const updated = skills.filter((s) => s !== skillToRemove);
     setSkills(updated);
     if (updated.length === 0) {
-      setCompletedSections(prev => ({ ...prev, Skills: false }));
+      setCompletedSections((prev) => ({ ...prev, Skills: false }));
     }
   };
 
-  /* ================= SAVE / FETCH ================= */
+  /* ================= FETCH PROFILE ================= */
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("accessToken");
 
-        const response = await axios.get(
-          "http://localhost:8080/api/profile",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
+        const response = await axios.get("http://localhost:8080/api/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         const data = response.data;
 
         setFirstName(data.firstName || "");
         setLastName(data.lastName || "");
+        setUsername(data.username || "");
         setEmail(data.email || "");
         setMobile(data.mobile || "");
         setGender(data.gender || "");
@@ -145,6 +185,27 @@ const Dashboard = () => {
           setResumeValid(true);
         }
 
+        // ✅ Education (if backend returns these)
+        setCurrentCgpa(data.currentCgpa || "");
+        setTwelfthPercentile(data.twelfthPercentile || "");
+
+        setHasInternship(data.hasInternship || "");
+        setInternshipCertFileName(data.internshipCertFileName || "");
+
+        setHasHackathon(data.hasHackathon || "");
+        setHackathonDetails(data.hackathonDetails || "");
+
+        setHasBacklogs(data.hasBacklogs || "");
+        setBacklogCount(data.backlogCount || "");
+
+        setLeetcodePercentile(data.leetcodePercentile || "");
+        setLeetcodeAccLink(data.leetcodeAccLink || "");
+        setLeetcodeRank(data.leetcodeRank || "");
+
+        setGithubLink(data.githubLink || "");
+        setLinkedinLink(data.linkedinLink || "");
+
+        setSemResultsFileNames(Array.isArray(data.semResultsFileNames) ? data.semResultsFileNames : []);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -153,40 +214,70 @@ const Dashboard = () => {
     fetchProfile();
   }, []);
 
+  /* ================= SAVE (Multipart FormData) =================
+     NOTE: Your backend must accept multipart/form-data for /api/profile.
+     If your backend currently accepts JSON only, this will fail until you update it.
+  */
   const handleSave = async () => {
     try {
       const token = localStorage.getItem("accessToken");
 
-      await axios.post(
-        "http://localhost:8080/api/profile",
-        {
-          firstName,
-          lastName,
-          mobile,
-          gender,
-          userType,
-          course,
-          specialization,
-          startYear,
-          endYear,
-          facultyDept,
-          designation,
-          experience,
-          qualification,
-          about: aboutText,
-          skills
+      const profileJson = {
+        firstName,
+        lastName,
+        username,
+        mobile,
+        gender,
+        userType,
+        course,
+        specialization,
+        startYear,
+        endYear,
+        facultyDept,
+        designation,
+        experience,
+        qualification,
+        about: aboutText,
+        skills,
+
+        // ✅ education fields
+        currentCgpa,
+        twelfthPercentile,
+        hasInternship,
+        hasHackathon,
+        hackathonDetails,
+        hasBacklogs,
+        backlogCount,
+        leetcodePercentile,
+        leetcodeAccLink,
+        leetcodeRank,
+        githubLink,
+        linkedinLink,
+      };
+
+      const formData = new FormData();
+      formData.append("profile", new Blob([JSON.stringify(profileJson)], { type: "application/json" }));
+
+      // ✅ files
+      if (resumeFile) formData.append("resume", resumeFile);
+
+      semResultsFiles.forEach((f) => formData.append("semResults", f));
+
+      if (hasInternship === "Yes" && internshipCertFile) {
+        formData.append("internshipCert", internshipCertFile);
+      }
+
+      await axios.post("http://localhost:8080/api/profile", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      });
 
       alert("Saved successfully!");
     } catch (error) {
       console.error(error);
-      alert("Error saving profile");
+      alert("Error saving profile (backend must support multipart/form-data)");
     }
   };
 
@@ -201,9 +292,7 @@ const Dashboard = () => {
   /* ================= FORM VALIDATION ================= */
 
   const isFormValid = useMemo(() => {
-
     if (activeTab === "Basic Details") {
-
       if (!firstName.trim()) return false;
       if (!lastName.trim()) return false;
       if (!email.trim()) return false;
@@ -214,8 +303,7 @@ const Dashboard = () => {
       if (userType === "Student") {
         if (!course) return false;
 
-        if ((course === "BTech" || course === "MTech") && !specialization)
-          return false;
+        if ((course === "BTech" || course === "MTech") && !specialization) return false;
 
         if (!startYear || !endYear) return false;
       }
@@ -240,12 +328,41 @@ const Dashboard = () => {
       if (!resumeValid) return false;
     }
 
-    return true;
+    if (activeTab === "Education") {
+      if (!currentCgpa.trim()) return false;
+      if (!twelfthPercentile.trim()) return false;
 
+      if (!hasInternship) return false;
+      if (hasInternship === "Yes" && !internshipCertFile && !internshipCertFileName) return false;
+
+      if (!hasHackathon) return false;
+      if (hasHackathon === "Yes" && !hackathonDetails.trim()) return false;
+
+      if (!hasBacklogs) return false;
+      if (hasBacklogs === "Yes" && (!backlogCount || Number(backlogCount) <= 0)) return false;
+
+      if (!isValidUrl(githubLink)) return false;
+      if (!isValidUrl(linkedinLink)) return false;
+
+      // ✅ file requirement (either already uploaded names from backend OR selected now)
+      const hasSemFilesNow = semResultsFiles.length > 0;
+      const hasSemFilesBefore = semResultsFileNames.length > 0;
+      if (!hasSemFilesNow && !hasSemFilesBefore) return false;
+
+      // ✅ LeetCode only for IT/CE students
+      if (isITorCEStudent) {
+        if (!leetcodePercentile.trim()) return false;
+        if (!isValidUrl(leetcodeAccLink)) return false;
+        if (!leetcodeRank.trim()) return false;
+      }
+    }
+
+    return true;
   }, [
     activeTab,
     firstName,
     lastName,
+    username,
     email,
     mobile,
     gender,
@@ -260,15 +377,33 @@ const Dashboard = () => {
     qualification,
     aboutText,
     skills,
-    resumeValid
+    resumeValid,
+
+    // education deps
+    currentCgpa,
+    twelfthPercentile,
+    semResultsFiles,
+    semResultsFileNames,
+    hasInternship,
+    internshipCertFile,
+    internshipCertFileName,
+    hasHackathon,
+    hackathonDetails,
+    hasBacklogs,
+    backlogCount,
+    leetcodePercentile,
+    leetcodeAccLink,
+    leetcodeRank,
+    githubLink,
+    linkedinLink,
+    isITorCEStudent,
   ]);
 
   /* ================= AUTO MARK SECTION COMPLETE ================= */
-
   useEffect(() => {
-    setCompletedSections(prev => ({
+    setCompletedSections((prev) => ({
       ...prev,
-      [activeTab]: isFormValid
+      [activeTab]: isFormValid,
     }));
   }, [isFormValid, activeTab]);
 
@@ -277,64 +412,55 @@ const Dashboard = () => {
   return (
     <div className="dashboard-wrapper">
       <div className="dashboard-container">
+        {/* ================= SIDEBAR ================= */}
+        <aside className="sidebar">
+          <div className="profile-banner">
+            <div className="avatar-box">
+              {firstName ? (
+                <div style={getAvatarStyle(firstName)}>{firstName.charAt(0)}</div>
+              ) : (
+                <img src={userlogo} alt="CampusPlace User Logo" />
+              )}
+            </div>
+          </div>
 
-{/* ================= SIDEBAR ================= */}
-<aside className="sidebar">
-  <div className="profile-banner">
-    <div className="avatar-box">
-      {firstName ? (
-        <div style={getAvatarStyle(firstName)}>
-          {firstName.charAt(0)}
-        </div>
-      ) : (
-        <img src={userlogo} alt="CampusPlace User Logo" />
-      )}
-    </div>
-  </div>
+          <div className="completion-card">
+            <div className="progress-text">
+              <p>Complete your Profile</p>
+              <span>{completionPercent}%</span>
+            </div>
+            <div className="progress-bar-bg">
+              <div className="progress-bar-fill" style={{ width: `${completionPercent}%` }}></div>
+            </div>
+          </div>
 
-  <div className="completion-card">
-    <div className="progress-text">
-      <p>Complete your Profile</p>
-      <span>{completionPercent}%</span>
-    </div>
-    <div className="progress-bar-bg">
-      <div
-        className="progress-bar-fill"
-        style={{ width: `${completionPercent}%` }}
-      ></div>
-    </div>
-  </div>
-
-  <nav className="side-nav">
-    {menuItems.map((item) => (
-      <div
-        key={item.id}
-        className={`nav-item ${activeTab === item.id ? "active" : ""}`}
-        onClick={() => setActiveTab(item.id)}
-      >
-        <span className={`status-icon ${completedSections[item.id] ? "completed" : ""}`}>
-          {completedSections[item.id] ? "✓" : ""}
-        </span>
-        <span className="nav-text">{item.id}</span>
-        {item.required && <span className="required-label">Required</span>}
-      </div>
-    ))}
-  </nav>
-</aside>
+          <nav className="side-nav">
+            {menuItems.map((item) => (
+              <div
+                key={item.id}
+                className={`nav-item ${activeTab === item.id ? "active" : ""}`}
+                onClick={() => setActiveTab(item.id)}
+              >
+                <span className={`status-icon ${completedSections[item.id] ? "completed" : ""}`}>
+                  {completedSections[item.id] ? "✓" : ""}
+                </span>
+                <span className="nav-text">{item.id}</span>
+                {item.required && <span className="required-label">Required</span>}
+              </div>
+            ))}
+          </nav>
+        </aside>
 
         {/* ================= MAIN CONTENT ================= */}
         <main className="main-content">
-
           <header className="content-header">
             <h2>{activeTab}</h2>
           </header>
 
           <section className="form-body">
-
             {/* ================= BASIC DETAILS ================= */}
             {activeTab === "Basic Details" && (
               <div className="fade-in">
-
                 {/* PROFILE HEADER */}
                 <div className="profile-edit-header">
                   <div className="large-avatar">
@@ -346,6 +472,7 @@ const Dashboard = () => {
                       <img src={userlogo} alt="Default User Logo" />
                     )}
                   </div>
+
                   <div className="name-row">
                     <div className="form-group flex-1">
                       <label className="field-label">First Name *</label>
@@ -411,7 +538,7 @@ const Dashboard = () => {
                 <div className="form-group">
                   <label className="field-label">Gender *</label>
                   <div className="pill-group">
-                    {["Male", "Female", "More Options"].map(g => (
+                    {["Male", "Female", "More Options"].map((g) => (
                       <button
                         key={g}
                         type="button"
@@ -424,11 +551,11 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* ================= USER TYPE ================= */}
+                {/* USER TYPE */}
                 <div className="form-group divider-top">
                   <label className="field-label">User Type *</label>
                   <div className="pill-group">
-                    {["Student", "Faculty"].map(type => (
+                    {["Student", "Faculty"].map((type) => (
                       <button
                         key={type}
                         type="button"
@@ -450,10 +577,12 @@ const Dashboard = () => {
                         value={course}
                         onChange={(e) => {
                           setCourse(e.target.value);
-                          setSpecialization(""); // reset when course changes
+                          setSpecialization("");
                         }}
                       >
-                        <option value="" disabled>Select Course</option>
+                        <option value="" disabled>
+                          Select Course
+                        </option>
                         <option value="BTech">BTech</option>
                         <option value="MTech">MTech</option>
                         <option value="MCA">MCA</option>
@@ -461,7 +590,6 @@ const Dashboard = () => {
                       </select>
                     </div>
 
-                    {/* Show specialization ONLY for BTech & MTech */}
                     {(course === "BTech" || course === "MTech") && (
                       <div className="form-group">
                         <label className="field-label">Course Specialization *</label>
@@ -470,7 +598,9 @@ const Dashboard = () => {
                           value={specialization}
                           onChange={(e) => setSpecialization(e.target.value)}
                         >
-                          <option value="" disabled>Select Specialization</option>
+                          <option value="" disabled>
+                            Select Specialization
+                          </option>
                           <option>IT</option>
                           <option>CE</option>
                           <option>EC</option>
@@ -504,7 +634,6 @@ const Dashboard = () => {
                   </>
                 )}
 
-                {/* ================= FACULTY ================= */}
                 {userType === "Faculty" && (
                   <>
                     <div className="form-group">
@@ -514,7 +643,9 @@ const Dashboard = () => {
                         value={facultyDept}
                         onChange={(e) => setFacultyDept(e.target.value)}
                       >
-                        <option value="" disabled>Select Department</option>
+                        <option value="" disabled>
+                          Select Department
+                        </option>
                         <option>IT</option>
                         <option>CE</option>
                         <option>EC</option>
@@ -559,7 +690,6 @@ const Dashboard = () => {
                     </div>
                   </>
                 )}
-
               </div>
             )}
 
@@ -572,10 +702,9 @@ const Dashboard = () => {
                   </label>
 
                   <div
-                    className={`resume-upload-box
-                      ${resumeError ? "error-input" : ""}
-                      ${resumeValid ? "success-input" : ""}
-                    `}
+                    className={`resume-upload-box ${resumeError ? "error-input" : ""} ${
+                      resumeValid ? "success-input" : ""
+                    }`}
                   >
                     {isUploading ? (
                       <div className="upload-loader">
@@ -585,9 +714,7 @@ const Dashboard = () => {
                     ) : (
                       <>
                         <div className="upload-icon">📄</div>
-                        <p className="upload-prompt">
-                          Drag and drop your PDF here or
-                        </p>
+                        <p className="upload-prompt">Drag and drop your PDF here or</p>
 
                         <input
                           type="file"
@@ -595,11 +722,12 @@ const Dashboard = () => {
                           className="hidden-file-input"
                           accept=".pdf"
                           onChange={(e) => {
-                            const file = e.target.files[0];
+                            const file = e.target.files?.[0];
                             if (!file) return;
 
                             setResumeError("");
                             setResumeValid(false);
+                            setResumeFile(null);
 
                             if (file.type !== "application/pdf") {
                               setResumeError("Only PDF files are allowed.");
@@ -615,10 +743,12 @@ const Dashboard = () => {
 
                             setIsUploading(true);
 
+                            // UI fake-upload (your existing behavior)
                             setTimeout(() => {
                               setIsUploading(false);
                               setResumeFileName(file.name);
                               setResumeValid(true);
+                              setResumeFile(file); // ✅ keep file for saving
                             }, 1500);
                           }}
                         />
@@ -627,26 +757,15 @@ const Dashboard = () => {
                           Choose File
                         </label>
 
-                        <span className="file-status">
-                          {resumeFileName}
-                        </span>
+                        <span className="file-status">{resumeFileName}</span>
                       </>
                     )}
                   </div>
 
-                  {resumeError && (
-                    <p className="error-text">{resumeError}</p>
-                  )}
+                  {resumeError && <p className="error-text">{resumeError}</p>}
+                  {resumeValid && <p className="success-text">Resume uploaded successfully!</p>}
 
-                  {resumeValid && (
-                    <p className="success-text">
-                      Resume uploaded successfully!
-                    </p>
-                  )}
-
-                  <p className="helper-text-bottom">
-                    Only PDF allowed (Max 5MB)
-                  </p>
+                  <p className="helper-text-bottom">Only PDF allowed (Max 5MB)</p>
                 </div>
               </div>
             )}
@@ -659,21 +778,16 @@ const Dashboard = () => {
                     About Me <span className="required-star">*</span>
                   </label>
 
-                  <p className="about-helper">
-                    Maximum 1000 characters can be added
-                  </p>
+                  <p className="about-helper">Maximum 1000 characters can be added</p>
 
                   <textarea
-                    className={`input-field textarea-field ${aboutError ? "error-input" : ""
-                      }`}
+                    className={`input-field textarea-field ${aboutError ? "error-input" : ""}`}
                     rows="8"
                     maxLength="1000"
                     value={aboutText}
                     onChange={(e) => {
                       setAboutText(e.target.value);
-                      if (e.target.value.trim() !== "") {
-                        setAboutError("");
-                      }
+                      if (e.target.value.trim() !== "") setAboutError("");
                     }}
                     placeholder="Introduce yourself here! Share a brief overview of who you are, your interests, and connect with fellow users, recruiters & organizers."
                   ></textarea>
@@ -681,20 +795,15 @@ const Dashboard = () => {
                   {aboutError && <p className="error-text">{aboutError}</p>}
                 </div>
 
-                <button
-                  type="button"
-                  className="ai-generate-btn"
-                >
+                <button type="button" className="ai-generate-btn">
                   ⚡ Generate with AI
                 </button>
-
               </div>
             )}
 
             {/* ================= SKILLS ================= */}
             {activeTab === "Skills" && (
               <div className="fade-in">
-
                 <div className="form-group">
                   <label className="suggestion-heading">Suggestions</label>
 
@@ -735,31 +844,240 @@ const Dashboard = () => {
                     {skills.map((skill, index) => (
                       <div key={index} className="pill-btn selected">
                         {skill}
-                        <span
-                          style={{ marginLeft: "8px", cursor: "pointer" }}
-                          onClick={() => removeSkill(skill)}
-                        >
+                        <span style={{ marginLeft: "8px", cursor: "pointer" }} onClick={() => removeSkill(skill)}>
                           ✕
                         </span>
                       </div>
                     ))}
                   </div>
                 )}
+              </div>
+            )}
 
+            {/* ================= EDUCATION ================= */}
+            {activeTab === "Education" && (
+              <div className="fade-in">
+                <div className="form-group">
+                  <label className="field-label">Current CGPA *</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={currentCgpa}
+                    onChange={(e) => setCurrentCgpa(e.target.value)}
+                    placeholder="Eg: 8.5"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="field-label">12th Percentile *</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={twelfthPercentile}
+                    onChange={(e) => setTwelfthPercentile(e.target.value)}
+                    placeholder="Eg: 92.4"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="field-label">Upload All Semester Results (PDF/Image) *</label>
+                  <input
+                    type="file"
+                    multiple
+                    className="input-field"
+                    accept=".pdf,.png,.jpg,.jpeg"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      setSemResultsFiles(files);
+                      setSemResultsFileNames([]); // new selection overrides old display
+                    }}
+                  />
+
+                  {(semResultsFiles.length > 0 || semResultsFileNames.length > 0) && (
+                    <div className="helper-text-bottom">
+                      Selected:{" "}
+                      {semResultsFiles.length > 0
+                        ? semResultsFiles.map((f) => f.name).join(", ")
+                        : semResultsFileNames.join(", ")}
+                    </div>
+                  )}
+                </div>
+
+                <div className="form-group divider-top">
+                  <label className="field-label">Internship Experience *</label>
+                  <div className="pill-group">
+                    {["Yes", "No"].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        className={`pill-btn ${hasInternship === val ? "selected" : ""}`}
+                        onClick={() => {
+                          setHasInternship(val);
+                          if (val === "No") {
+                            setInternshipCertFile(null);
+                            setInternshipCertFileName("");
+                          }
+                        }}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {hasInternship === "Yes" && (
+                  <div className="form-group">
+                    <label className="field-label">Upload Internship Certificate *</label>
+                    <input
+                      type="file"
+                      className="input-field"
+                      accept=".pdf,.png,.jpg,.jpeg"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0] || null;
+                        setInternshipCertFile(f);
+                        setInternshipCertFileName("");
+                      }}
+                    />
+                    {(internshipCertFile || internshipCertFileName) && (
+                      <div className="helper-text-bottom">
+                        Selected: {internshipCertFile ? internshipCertFile.name : internshipCertFileName}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="form-group divider-top">
+                  <label className="field-label">Hackathon Participation *</label>
+                  <div className="pill-group">
+                    {["Yes", "No"].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        className={`pill-btn ${hasHackathon === val ? "selected" : ""}`}
+                        onClick={() => {
+                          setHasHackathon(val);
+                          if (val === "No") setHackathonDetails("");
+                        }}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {hasHackathon === "Yes" && (
+                  <div className="form-group">
+                    <label className="field-label">Hackathon Details *</label>
+                    <input
+                      type="text"
+                      className="input-field"
+                      value={hackathonDetails}
+                      onChange={(e) => setHackathonDetails(e.target.value)}
+                      placeholder="Eg: SIH 2025 - Finalist"
+                    />
+                  </div>
+                )}
+
+                <div className="form-group divider-top">
+                  <label className="field-label">Any Backlogs? *</label>
+                  <div className="pill-group">
+                    {["Yes", "No"].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        className={`pill-btn ${hasBacklogs === val ? "selected" : ""}`}
+                        onClick={() => {
+                          setHasBacklogs(val);
+                          if (val === "No") setBacklogCount("");
+                        }}
+                      >
+                        {val}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {hasBacklogs === "Yes" && (
+                  <div className="form-group">
+                    <label className="field-label">Backlog Count *</label>
+                    <input
+                      type="number"
+                      min="1"
+                      className="input-field"
+                      value={backlogCount}
+                      onChange={(e) => setBacklogCount(e.target.value)}
+                      placeholder="Eg: 1"
+                    />
+                  </div>
+                )}
+
+                {isITorCEStudent && (
+                  <>
+                    <div className="form-group divider-top">
+                      <label className="field-label">LeetCode Percentile *</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={leetcodePercentile}
+                        onChange={(e) => setLeetcodePercentile(e.target.value)}
+                        placeholder="Eg: 85"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label className="field-label">LeetCode Account Link *</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={leetcodeAccLink}
+                        onChange={(e) => setLeetcodeAccLink(e.target.value)}
+                        placeholder="https://leetcode.com/your-profile"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label className="field-label">LeetCode Rank *</label>
+                      <input
+                        type="text"
+                        className="input-field"
+                        value={leetcodeRank}
+                        onChange={(e) => setLeetcodeRank(e.target.value)}
+                        placeholder="Eg: 120345"
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="form-group divider-top">
+                  <label className="field-label">GitHub Profile Link *</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={githubLink}
+                    onChange={(e) => setGithubLink(e.target.value)}
+                    placeholder="https://github.com/username"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="field-label">LinkedIn Profile Link *</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={linkedinLink}
+                    onChange={(e) => setLinkedinLink(e.target.value)}
+                    placeholder="https://linkedin.com/in/username"
+                  />
+                </div>
               </div>
             )}
 
             {/* SAVE BUTTON */}
             <footer className="form-footer">
-              <button
-                className="save-btn"
-                onClick={handleSave}
-                disabled={!isFormValid}
-              >
+              <button className="save-btn" onClick={handleSave} disabled={!isFormValid}>
                 ✓ Save
               </button>
             </footer>
-
           </section>
         </main>
       </div>
