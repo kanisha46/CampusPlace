@@ -1,9 +1,8 @@
 package com.campusplace.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "companies")
@@ -11,7 +10,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Builder
 public class Company {
 
@@ -25,6 +23,10 @@ public class Company {
     private String branch;
     private String website;
 
+    private String salaryPackage;
+    private String driveDate;
+    private String roles;
+
     @Column(length = 1000)
     private String description;
 
@@ -34,6 +36,8 @@ public class Company {
     @Column(name = "total_openings")
     private int totalOpenings;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<Job> jobs;
+    /* 🔥 IMPORTANT PART */
+    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private CompanyCriteria criteria;
 }

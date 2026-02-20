@@ -1,7 +1,8 @@
 package com.campusplace.controller;
 
 import com.campusplace.entity.Company;
-import com.campusplace.service.CompanyService;
+import com.campusplace.repository.CompanyRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,14 +12,21 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class CompanyController {
 
-    private final CompanyService service;
+    private final CompanyRepository repository;
 
-    public CompanyController(CompanyService service) {
-        this.service = service;
+    public CompanyController(CompanyRepository repository) {
+        this.repository = repository;
     }
 
     @GetMapping
-    public List<Company> getCompanies() {
-        return service.getAllCompanies();
+    public List<Company> getAllCompanies() {
+        return repository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Company> getCompanyById(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

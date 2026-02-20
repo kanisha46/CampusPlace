@@ -18,4 +18,9 @@ public class CompanyService {
     public List<Company> getAllCompanies() {
         return repository.findAll();
     }
+
+    public Company getCompanyById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+    }
 }

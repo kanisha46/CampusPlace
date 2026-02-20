@@ -1,5 +1,6 @@
 package com.campusplace.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,14 +18,13 @@ public class CompanyCriteria {
     private Long id;
 
     private double minCgpa;
-
     private boolean noActiveBacklogs;
 
-    // Example: "IT,CE,EC"
     @Column(length = 200)
     private String allowedBranches;
 
     @OneToOne
     @JoinColumn(name = "company_id", nullable = false, unique = true)
+    @JsonBackReference
     private Company company;
 }

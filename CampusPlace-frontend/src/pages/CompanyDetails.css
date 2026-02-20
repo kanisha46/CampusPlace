@@ -1,0 +1,229 @@
+/* ===== Main Page Wrapper ===== */
+.company-details-page {
+  padding: 120px 5% 50px; /* Extra top padding for your fixed navbar */
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== Glass Card Container ===== */
+.details-card {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  max-width: 1200px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+/* ===== Grid Layout Fix ===== */
+.content-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Left is twice as wide as right */
+  gap: 40px;
+  align-items: start;
+}
+
+/* ===== Left Section Styling ===== */
+.industry-badge {
+  background: #eff6ff;
+  color: #3b82f6;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.header-area h1 {
+  font-size: 2.5rem;
+  color: #1e293b;
+  margin: 15px 0 5px 0;
+}
+
+.location-text {
+  color: #64748b;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+/* ===== High-Contrast Info Boxes ===== */
+.highlight-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.highlight-item {
+  flex: 1;
+  background: #f1f5f9;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.highlight-item span {
+  display: block;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.highlight-item p {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a; /* Darker text for readability */
+  margin: 0;
+}
+
+/* ===== Content Groups ===== */
+.info-group {
+  margin-bottom: 25px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.info-group h3 {
+  color: #1e293b;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  border-left: 4px solid #3b82f6;
+  padding-left: 12px;
+}
+
+.criteria-list {
+  list-style: none;
+  padding: 0;
+}
+
+.criteria-list li {
+  padding: 8px 0;
+  color: #475569;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+/* === Action Card Styling Upgrade === */
+
+.action-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px 25px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.action-card h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.action-subtext {
+  font-size: 14px;
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+/* === Checking List === */
+
+.criteria-check-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.criteria-check-list li {
+  margin: 12px 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  background: #f8f9fa;
+  transition: all 0.4s ease;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.pass {
+  background: #eafaf1;
+  color: #27ae60;
+  border-left: 5px solid #27ae60;
+}
+
+.fail {
+  background: #fdecea;
+  color: #e74c3c;
+  border-left: 5px solid #e74c3c;
+}
+
+/* === Final Status === */
+
+.final-status {
+  margin-top: 25px;
+  padding: 18px;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.final-status.eligible {
+  background: #eafaf1;
+  color: #1e8449;
+}
+
+.final-status.not-eligible {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+/* === Buttons Upgrade === */
+
+.check-btn,
+.apply-now-btn {
+  margin-top: 18px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.check-btn {
+  background: linear-gradient(135deg, #2e6df6, #1b4fd6);
+  color: white;
+}
+
+.check-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(46, 109, 246, 0.3);
+}
+
+.apply-now-btn {
+  background: linear-gradient(135deg, #27ae60, #1e8449);
+  color: white;
+}
+
+.apply-now-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+}
+
+/* === Animation === */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
