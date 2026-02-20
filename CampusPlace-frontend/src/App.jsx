@@ -6,9 +6,10 @@ import Hero from "./components/Hero";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import Companies from "./pages/Companies";
+import CompanyDetails from "./pages/CompanyDetails";
 import AboutUs from "./pages/AboutUs";
 import Dashboard from "./pages/Dashboard";
-
+import QuestionBank from "./pages/QuestionBank";
 
 
 export default function App() {
@@ -37,6 +38,9 @@ export default function App() {
         {/* Optional: Add a route for Companies if you have that page too */}
            <Route path="/companies" element={<Companies />} />
         {/* <Route path="/companies" element={<CompaniesPage />} /> */}
+        <Route path="/companies/:id" element={<CompanyDetails />} />
+
+            <Route path="/questions" element={<QuestionBank />} />
       </Routes>
 
       <Footer />
