@@ -13,14 +13,8 @@ const Companies = () => {
   /* ================= FETCH FROM MYSQL ================= */
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
-
   axios
-    .get("http://localhost:8082/api/companies", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    .get("http://localhost:8082/api/companies")
     .then((res) => {
       console.log("DATA FROM BACKEND:", res.data);
       setCompanies(res.data);
@@ -44,7 +38,8 @@ const Companies = () => {
       return matchesSearch && matchesBranch;
     });
   }, [companies, search, branch]);
-
+  console.log("COMPANIES STATE:", companies);
+  console.log("FILTERED:", filteredCompanies);
   return (
     <div className="companies-page">
       <div className="companies-header">
@@ -77,42 +72,30 @@ const Companies = () => {
       {/* ================= COMPANIES GRID ================= */}
 
       <div className="companies-grid">
-        {filteredCompanies.map((company) => (
-          <div
-            key={company.id}
-            className="company-card"
-            onClick={() => navigate(`/companies/${company.id}`)}
-            style={{ cursor: "pointer" }}
-          >
-            <img
-              src={
-                company.logoUrl
-                  ? company.logoUrl
-                  : `https://logo.clearbit.com/${new URL(
-                      company.website
-                    ).hostname}`
-              }
-              alt={company.name}
-              className="company-logo"
-            />
+  {filteredCompanies.map((company) => (
+    <div
+      key={company.id}
+      className="company-card"
+      onClick={() => navigate(`/companies/${company.id}`)}
+      style={{ cursor: "pointer" }}
+    >
+      <h3>{company.name}</h3>
+      <p>{company.location}</p>
+      <p className="industry">{company.industry}</p>
 
-            <h3>{company.name}</h3>
-            <p>{company.location}</p>
-            <p className="industry">{company.industry}</p>
+      <span>{company.totalOpenings} Open Positions</span>
 
-            <span>{company.totalOpenings} Open Positions</span>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open(company.website, "_blank");
-              }}
-            >
-              Visit Website
-            </button>
-          </div>
-        ))}
-      </div>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          window.open(company.website, "_blankرٍجة", "_blank");
+        }}
+      >
+        Visit Website
+      </button>
+    </div>
+  ))}
+</div>
     </div>
   );
 };
