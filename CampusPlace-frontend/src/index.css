@@ -3,6 +3,9 @@ body {
   font-family: "Segoe UI", sans-serif;
   background: #f4f6fb;
 }
+body {
+  padding-top: 82px; /* same as header height */
+}
 html {
   scroll-behavior: smooth;
 }

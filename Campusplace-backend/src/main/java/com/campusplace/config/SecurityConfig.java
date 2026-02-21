@@ -40,10 +40,16 @@ public class SecurityConfig {
                     config.setAllowedHeaders(List.of("*"));
                     return config;
                 }))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/companies/**").permitAll()
+                        .requestMatchers("/api/students/**").permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

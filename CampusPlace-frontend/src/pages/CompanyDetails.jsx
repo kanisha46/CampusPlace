@@ -12,22 +12,27 @@ const CompanyDetails = () => {
   const [isEligible, setIsEligible] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-    // Fetch Company & Student in parallel
-    const fetchData = async () => {
-      try {
-        const [compRes, studentRes] = await Promise.all([
-          axios.get(`http://localhost:8082/api/companies/${id}`),
-          axios.get(`http://localhost:8082/api/students/1`) // Static ID for demo
-        ]);
-        setCompany(compRes.data);
-        setStudent(studentRes.data);
-      } catch (err) {
-        console.error("Fetch error:", err);
-      }
-    };
-    fetchData();
-  }, [id]);
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const compRes = await axios.get(
+        `http://localhost:8082/api/companies/${id}`
+      );
+
+      const studentRes = await axios.get(
+        `http://localhost:8082/api/students/1`
+      );
+
+      setCompany(compRes.data);
+      setStudent(studentRes.data);
+
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
+  fetchData();
+}, [id]);
 
 const checkEligibility = () => {
   if (!company || !student || !company.criteria) return;

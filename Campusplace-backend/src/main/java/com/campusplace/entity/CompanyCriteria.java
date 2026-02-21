@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "company_criteria")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,12 +18,10 @@ public class CompanyCriteria {
 
     private double minCgpa;
     private boolean noActiveBacklogs;
-
-    @Column(length = 200)
     private String allowedBranches;
 
     @OneToOne
-    @JoinColumn(name = "company_id", nullable = false, unique = true)
-    @JsonBackReference
+    @JoinColumn(name = "company_id")
+    @JsonBackReference   // ✅ ADD THIS
     private Company company;
 }
