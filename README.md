@@ -1,16 +1,74 @@
-# React + Vite
+# 🎓 CampusPlace – All-in-One Placement Preparation Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CampusPlace is a full-stack placement management and preparation platform built using **React (Vite)** and **Spring Boot**.
 
-Currently, two official plugins are available:
+It helps students prepare for placements and allows admins to manage users and companies efficiently.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 👨‍🎓 Student Features
 
-## Expanding the ESLint configuration
+- 📊 **Student Dashboard** – Track preparation progress and drives
+- 🏢 **Company & Placements** – Browse companies and placement details
+- ❓ **Question Bank** – Practice real interview questions
+- 📄 **Resume Analysis** – AI-based resume feedback system
+- 📈 **Progress Tracking** – Monitor learning journey
+- 🎤 **Mock Test** – Practice quizzes and coding tests
+- 🌙 **Dark Mode Support**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+### 👨‍💼 Admin Features
+
+- 📊 Admin Dashboard
+- 👥 View Total Users & Companies
+- 🔍 Search Users
+- ⬆ Promote Student to Admin
+- ❌ Delete Users
+- ➕ Add / Remove Companies
+- Role-based access control
+
+---
+
+## 🔐 Authentication & Security
+
+- JWT Authentication
+- Spring Security Integration
+- Role-Based Access (ADMIN / STUDENT)
+- Protected API Endpoints
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React (Vite)
+- React Router
+- Axios
+- Custom CSS Theming
+- Dark / Light Mode Toggle
+
+### Backend
+- Spring Boot
+- Spring Security
+- JWT
+- Hibernate / JPA
+- MySQL
+
+---
+
+## 📌 Future Enhancements
+
+- 📊 Analytics Charts  
+- 📩 Email Notifications  
+- 📎 Resume Upload & Parsing  
+- ☁ Cloud Deployment  
+- 📱 Mobile Optimization  
+
+---
+
+## 📄 License
+
+This project is developed for educational purposes.
