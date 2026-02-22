@@ -31,13 +31,13 @@ public class Profile {
     // Student
     private String course;
     private String specialization;
-    private Integer startYear;
-    private Integer endYear;
+    private String startYear;
+    private String endYear;
 
     // Faculty
     private String facultyDept;
     private String designation;
-    private Integer experience;
+    private String experience;
     private String qualification;
 
     @Column(length = 1000)

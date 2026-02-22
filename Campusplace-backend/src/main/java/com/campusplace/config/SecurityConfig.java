@@ -5,6 +5,7 @@ import com.campusplace.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,9 +45,20 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // PUBLIC ENDPOINTS
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/companies/**").permitAll()
-                        .requestMatchers("/api/students/**").permitAll()
+
+                        // ADMIN ONLY FOR MODIFYING
+                        .requestMatchers(HttpMethod.POST, "/api/companies/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/companies/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/companies/**").hasRole("ADMIN")
+
+                        // STUDENT PROTECTED
+                        .requestMatchers("/api/students/**").authenticated()
+
+                        // EVERYTHING ELSE
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);

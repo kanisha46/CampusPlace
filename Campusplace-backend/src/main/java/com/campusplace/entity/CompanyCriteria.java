@@ -19,7 +19,6 @@ public class CompanyCriteria {
     private double minCgpa;
     private boolean noActiveBacklogs;
     private String allowedBranches;
-
     @OneToOne
     @JoinColumn(name = "company_id")
     @JsonBackReference   // ✅ ADD THIS

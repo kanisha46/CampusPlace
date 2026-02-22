@@ -1,7 +1,6 @@
 package com.campusplace.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import com.campusplace.entity.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,10 +8,7 @@ import lombok.Setter;
 @Setter
 public class LoginRequest {
 
-    @Email
-    @NotBlank
     private String email;
-
-    @NotBlank
     private String password;
+    private Role role;  // ✅ ADD THIS
 }

@@ -1,21 +1,26 @@
 /* ================= HEADER BASE ================= */
-.main-header {
+.header {
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
-  height: 82px;
+  height: 82px; /* exact height */
+  background: linear-gradient(90deg, #1e3c72, #2a5298);
+  padding: 0 40px; /* remove vertical padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
   z-index: 1000;
-  transition: all 0.35s ease;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 /* At top */
 .at-top {
   background: linear-gradient(
     to bottom,
-    rgba(15, 23, 42, 0.65),
-    rgba(15, 23, 42, 0.25)
+    rgba(15, 23, 42, 0.92),
+    rgba(15, 23, 42, 0.95)
   );
 }
 

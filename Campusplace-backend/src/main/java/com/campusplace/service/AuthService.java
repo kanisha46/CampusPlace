@@ -59,7 +59,8 @@ public class AuthService {
 
         return Map.of(
                 "token", token,
-                "role", user.getRole().name()
+                "role", user.getRole().name(),
+                "name", user.getName()
         );
     }
 

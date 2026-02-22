@@ -3,7 +3,6 @@ package com.campusplace.dto;
 import com.campusplace.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,15 +10,14 @@ import lombok.Setter;
 @Setter
 public class SignupRequest {
 
-    @NotBlank(message = "Name is required")
+    @NotBlank
     private String name;
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email is required")
+    @Email
     private String email;
 
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @NotBlank
     private String password;
 
-    private Role role; // optional
+    private Role role;   // ✅ ADD THIS
 }

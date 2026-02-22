@@ -20,12 +20,12 @@ public class ProfileResponse {
 
     private String course;
     private String specialization;
-    private Integer startYear;
-    private Integer endYear;
+    private String startYear;
+    private String endYear;
 
     private String facultyDept;
     private String designation;
-    private Integer experience;
+    private String experience;
     private String qualification;
 
     private String about;

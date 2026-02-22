@@ -3,25 +3,36 @@ import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import userlogo from "../assets/userlogo.png";
 import campusLogo from "../assets/campuslogo.png";
+import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const role = localStorage.getItem("role");
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isLoggedIn = !!localStorage.getItem("token");
-
   // ✅ Retrieve actual logged-in user's name
-  const userName = localStorage.getItem("userName");
+  const userName = localStorage.getItem("userName") || "";
 
   // ✅ Helper for dynamic background color based on name
   const getAvatarStyle = (name) => {
-    const colors = ["#4285F4", "#34A853", "#FBBC05", "#EA4335", "#9b59b6", "#34495e"];
-    const charCode = name && name.length > 0 ? name.charCodeAt(0) : 0;
+    const colors = [
+      "#4285F4",
+      "#34A853",
+      "#FBBC05",
+      "#EA4335",
+      "#9b59b6",
+      "#34495e",
+    ];
+
+    const charCode =
+      name && name.length > 0 ? name.charCodeAt(0) : 0;
+
     const bgColor = colors[charCode % colors.length];
 
     return {
@@ -38,6 +49,12 @@ export default function Header() {
     };
   };
 
+  {role === "ADMIN" && (
+  <NavLink to="/admin">Admin Panel</NavLink>
+)}
+{role !== "ADMIN" && (
+  <NavLink to="/dashboard">Dashboard</NavLink>
+)}
   // Load theme from localStorage on start
   useEffect(() => {
     const saved = localStorage.getItem("theme");
@@ -46,19 +63,39 @@ export default function Header() {
     document.body.classList.toggle("dark", shouldDark);
   }, []);
 
+  // Check login
+  useEffect(() => {
+    const checkLogin = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+    };
+
+    checkLogin();
+    window.addEventListener("storage", checkLogin);
+
+    return () =>
+      window.removeEventListener("storage", checkLogin);
+  }, [location.pathname]);
+
   // Header style on scroll
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () =>
+      setScrolled(window.scrollY > 50);
+
     window.addEventListener("scroll", handleScroll);
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    return () =>
+      window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Route-aware highlight (Dashboard/Companies)
+  // Route-aware highlight
   useEffect(() => {
-    if (location.pathname === "/dashboard") setActiveSection("dashboard");
-    else if (location.pathname === "/companies") setActiveSection("companies");
-    else if (location.pathname === "/") setActiveSection("home");
+    if (location.pathname === "/dashboard")
+      setActiveSection("dashboard");
+    else if (location.pathname === "/companies")
+      setActiveSection("companies");
+    else if (location.pathname === "/")
+      setActiveSection("home");
   }, [location.pathname]);
 
   // Scroll highlight on HOME page only
@@ -71,14 +108,17 @@ export default function Header() {
     const onScroll = () => {
       const scrollTop = window.scrollY;
       const windowHeight = window.innerHeight;
-      const docHeight = document.documentElement.scrollHeight;
+      const docHeight =
+        document.documentElement.scrollHeight;
 
       if (scrollTop + windowHeight >= docHeight - 5) {
         setActiveSection("contact");
         return;
       }
 
-      const aboutTop = aboutEl.getBoundingClientRect().top + window.pageYOffset;
+      const aboutTop =
+        aboutEl.getBoundingClientRect().top +
+        window.pageYOffset;
 
       if (scrollTop >= aboutTop - 120) {
         setActiveSection("about");
@@ -93,44 +133,62 @@ export default function Header() {
     window.addEventListener("scroll", onScroll);
     onScroll();
 
-    return () => window.removeEventListener("scroll", onScroll);
+    return () =>
+      window.removeEventListener("scroll", onScroll);
   }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    localStorage.removeItem("userName"); // ✅ Clear name on logout
+    localStorage.removeItem("userName");
     setShowDropdown(false);
-    navigate("/login");
-    window.location.reload();
+    setIsLoggedIn(false);
+    navigate("/");
   };
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => {
       const next = !prev;
       document.body.classList.toggle("dark", next);
-      localStorage.setItem("theme", next ? "dark" : "light");
+      localStorage.setItem(
+        "theme",
+        next ? "dark" : "light"
+      );
       return next;
     });
   };
 
   const scrollToTop = () => {
     setActiveSection("home");
+
     if (location.pathname !== "/") {
       navigate("/");
-      setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 80);
+      setTimeout(
+        () =>
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          }),
+        80
+      );
       return;
     }
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const scrollToAbout = () => {
     setActiveSection("about");
+
     const go = () => {
       const el = document.getElementById("about-us");
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth" });
     };
+
     if (location.pathname !== "/") {
       navigate("/");
       setTimeout(go, 200);
@@ -141,11 +199,13 @@ export default function Header() {
 
   const scrollToContact = () => {
     setActiveSection("contact");
+
     const go = () => {
       const el = document.getElementById("contact-us");
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth" });
     };
+
     if (location.pathname !== "/") {
       navigate("/");
       setTimeout(go, 200);
@@ -155,24 +215,35 @@ export default function Header() {
   };
 
   return (
-    <header className={`main-header ${scrolled ? "is-scrolled" : "at-top"}`}>
+    <header
+      className={`main-header ${
+        scrolled ? "is-scrolled" : "at-top"
+      }`}
+    >
       <div className="nav-container">
+
         {/* LOGO */}
-        {/* LOGO */}
-        {/* LOGO */}
-        <Link to="/" className="logo-link" onClick={scrollToTop}>
+        <Link
+          to="/"
+          className="logo-link"
+          onClick={scrollToTop}
+        >
           <img
             src={campusLogo}
             alt="CampusPlace Logo"
             className="campus-logo"
           />
-          <span className="styled-logo-text">CampusPlace</span>
+          <span className="styled-logo-text">
+            CampusPlace
+          </span>
         </Link>
 
         {/* NAVIGATION */}
         <nav className="nav-links">
           <button
-            className={`nav-btn ${activeSection === "home" ? "active" : ""}`}
+            className={`nav-btn ${
+              activeSection === "home" ? "active" : ""
+            }`}
             onClick={scrollToTop}
             type="button"
           >
@@ -181,22 +252,32 @@ export default function Header() {
 
           <NavLink
             to="/dashboard"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={() => setActiveSection("dashboard")}
+            className={({ isActive }) =>
+              isActive ? "active" : ""
+            }
+            onClick={() =>
+              setActiveSection("dashboard")
+            }
           >
             DASHBOARD
           </NavLink>
 
           <NavLink
             to="/companies"
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={() => setActiveSection("companies")}
+            className={({ isActive }) =>
+              isActive ? "active" : ""
+            }
+            onClick={() =>
+              setActiveSection("companies")
+            }
           >
             COMPANIES
           </NavLink>
 
           <button
-            className={`nav-link-custom ${activeSection === "about" ? "active" : ""}`}
+            className={`nav-link-custom ${
+              activeSection === "about" ? "active" : ""
+            }`}
             onClick={scrollToAbout}
             type="button"
           >
@@ -204,7 +285,9 @@ export default function Header() {
           </button>
 
           <button
-            className={`nav-link-custom ${activeSection === "contact" ? "active" : ""}`}
+            className={`nav-link-custom ${
+              activeSection === "contact" ? "active" : ""
+            }`}
             onClick={scrollToContact}
             type="button"
           >
@@ -214,23 +297,32 @@ export default function Header() {
 
         {/* ACTIONS */}
         <div className="header-actions">
-          <button className="theme-toggle-btn" onClick={toggleTheme} type="button">
+
+          <button
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            type="button"
+          >
             {isDarkMode ? "☀️" : "🌙"}
           </button>
 
           {!isLoggedIn ? (
-            <Link to="/login" className="btn-login-only">
+            <Link
+              to="/login"
+              className="btn-login-only"
+            >
               LOGIN
             </Link>
           ) : (
             <div className="profile-wrapper">
               <div
                 className="avatar-ring"
-                onClick={() => setShowDropdown(!showDropdown)}
+                onClick={() =>
+                  setShowDropdown(!showDropdown)
+                }
                 role="button"
                 tabIndex={0}
               >
-                {/* ✅ DYNAMIC AVATAR LOGIC */}
                 {userName ? (
                   <div style={getAvatarStyle(userName)}>
                     {userName.charAt(0)}
@@ -247,25 +339,34 @@ export default function Header() {
               {showDropdown && (
                 <div className="profile-dropdown">
                   <div className="dropdown-info">
-                    {/* ✅ SHOW ACTUAL LOGGED IN USER NAME */}
-                    <p>{userName || "User"}</p>
+                    <p>
+                      {userName || "User"}
+                    </p>
                   </div>
+
                   <hr />
-                  <button onClick={() => { navigate("/dashboard"); setShowDropdown(false); }} type="button">
+
+                  <button
+                    onClick={() => {
+                      navigate("/dashboard");
+                      setShowDropdown(false);
+                    }}
+                    type="button"
+                  >
                     My Dashboard
                   </button>
-                  <button onClick={handleLogout} className="logout-btn" type="button">
+
+                  <button
+                    onClick={handleLogout}
+                    className="logout-btn"
+                    type="button"
+                  >
                     Logout
                   </button>
                 </div>
               )}
             </div>
           )}
-
-          {/* ✅ DASHBOARD SHORTCUT ICON (The "Empty Space" Fix) */}
-          <div className="header-profile-shortcut" onClick={() => navigate("/dashboard")}>
-            <img src={userlogo} alt="Go to Dashboard" className="shortcut-img" />
-          </div>
 
         </div>
       </div>

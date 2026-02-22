@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 import "./CompanyDetails.css";
 
 const CompanyDetails = () => {
@@ -11,20 +12,33 @@ const CompanyDetails = () => {
   const [eligibilityChecked, setEligibilityChecked] = useState(false);
   const [isEligible, setIsEligible] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [editMode, setEditMode] = useState(false);
+  const [editedCompany, setEditedCompany] = useState(null);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
 
- useEffect(() => {
+useEffect(() => {
   const fetchData = async () => {
     try {
-      const compRes = await axios.get(
-        `http://localhost:8082/api/companies/${id}`
-      );
+
+      const token = localStorage.getItem("token");
+
+const compRes = await axios.get(
+  `http://localhost:8082/api/companies/${id}`
+);
 
       const studentRes = await axios.get(
-        `http://localhost:8082/api/students/1`
+        `http://localhost:8082/api/students/1`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
 
       setCompany(compRes.data);
       setStudent(studentRes.data);
+      setEditedCompany(compRes.data);
 
     } catch (err) {
       console.error("Fetch error:", err);
@@ -82,6 +96,27 @@ const checkEligibility = () => {
 
   if (!company || !student) return <div className="loading">Gathering details...</div>;
 
+  const handleUpdate = async () => {
+  try {
+    await axios.put(
+      `http://localhost:8082/api/companies/${company.id}`,
+      editedCompany,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
+    );
+
+    setCompany(editedCompany);
+    setEditMode(false);
+    alert("Company Updated Successfully!");
+
+  } catch (err) {
+    console.error("Update failed", err);
+  }
+};
+
   return (
     <div className="company-details-page">
       <div className="details-card">
@@ -91,10 +126,28 @@ const checkEligibility = () => {
           <div className="left-section">
             <div className="header-area">
               <span className="industry-badge">{company.industry}</span>
+              {editMode ? (
+              <input
+                className="edit-input"
+                value={editedCompany.name}
+                onChange={(e) =>
+                  setEditedCompany({ ...editedCompany, name: e.target.value })
+                }
+              />
+            ) : (
               <h1>{company.name}</h1>
+            )}
               <p className="location-text">📍 {company.location}</p>
             </div>
 
+            {isAdmin && (
+            <button
+              className="edit-company-btn"
+              onClick={() => setEditMode(!editMode)}
+            >
+              {editMode ? "Cancel Edit" : "Edit Company"}
+            </button>
+          )}
             <div className="highlight-container">
             <div className="highlight-item">
             <span>Annual Package</span>

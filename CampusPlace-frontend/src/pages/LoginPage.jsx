@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Github, Eye, EyeOff } from "lucide-react";
 import "./LoginPage.css";
+import { useAuth } from "../context/AuthContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,9 +14,10 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
   const navigate = useNavigate();
-
+const { login } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -56,16 +58,21 @@ export default function LoginPage() {
         throw new Error("Invalid login response");
       }
 
-      const { token, role } = res.data;
+     const { token, role: userRole, name } = res.data;
 
-      // Save token only if valid
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
+login({
+  token,
+  role: userRole,
+  name
+});
 
-      setLoading(false);
-
-      // Navigate only after successful login
-      navigate(role === "ADMIN" ? "/admin" : "/dashboard");
+if (userRole === "ADMIN") {
+  navigate("/admin");
+} else if (userRole === "FACULTY") {
+  navigate("/faculty");
+} else {
+  navigate("/dashboard");
+}
 
     }  catch (error) {
   console.error("Login error:", error);
