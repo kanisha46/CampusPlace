@@ -4,7 +4,7 @@ import { useAuth } from "./context/AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
-
+import ResumeAnalysis from "./pages/ResumeAnalysis";
 import AdminPanel from "./pages/AdminPanel";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
@@ -111,7 +111,9 @@ export default function App() {
             </PrivateRoute>
           }
         />
-
+        {/* ===== RESUME ANALYSIS ===== */}
+        <Route path="/resume-analysis" element={<ResumeAnalysis />} />
+        
         {/* ===== FALLBACK ===== */}
         <Route path="*" element={<Navigate to="/" replace />} />
 

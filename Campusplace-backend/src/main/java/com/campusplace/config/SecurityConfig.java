@@ -57,7 +57,7 @@ public class SecurityConfig {
 
                         // STUDENT PROTECTED
                         .requestMatchers("/api/students/**").authenticated()
-
+                        .requestMatchers("/api/resume/**").permitAll()
                         // EVERYTHING ELSE
                         .anyRequest().authenticated()
                 )

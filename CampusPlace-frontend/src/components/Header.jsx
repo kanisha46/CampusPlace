@@ -48,13 +48,6 @@ export default function Header() {
       textTransform: "uppercase",
     };
   };
-
-  {role === "ADMIN" && (
-  <NavLink to="/admin">Admin Panel</NavLink>
-)}
-{role !== "ADMIN" && (
-  <NavLink to="/dashboard">Dashboard</NavLink>
-)}
   // Load theme from localStorage on start
   useEffect(() => {
     const saved = localStorage.getItem("theme");
@@ -223,20 +216,15 @@ export default function Header() {
       <div className="nav-container">
 
         {/* LOGO */}
-        <Link
-          to="/"
-          className="logo-link"
-          onClick={scrollToTop}
-        >
-          <img
-            src={campusLogo}
-            alt="CampusPlace Logo"
-            className="campus-logo"
-          />
-          <span className="styled-logo-text">
-            CampusPlace
-          </span>
-        </Link>
+            <Link
+      to="/"
+      className="logo-link"
+      onClick={scrollToTop}
+    >
+      <span className="logo-text">
+        Campus<span>Place</span>
+      </span>
+    </Link>
 
         {/* NAVIGATION */}
         <nav className="nav-links">

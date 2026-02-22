@@ -21,7 +21,12 @@
 
   --shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
 }
-
+body {
+  font-family: 'Inter', sans-serif;
+}
+button {
+  font-family: inherit;
+}
 /* ---------- DARK MODE (GLOBAL) ---------- */
 body.dark {
   --bg: #0b1220;

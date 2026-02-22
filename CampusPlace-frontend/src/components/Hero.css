@@ -1,7 +1,7 @@
 .hero-visual {
   height: 85vh; /* Reduced height for better balance */
   width: 100%;
-  background: linear-gradient(rgba(15, 23, 42, 0.89), rgba(15, 23, 42, 0.90)), 
+  background: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.75)), 
               url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1920');
   background-size: cover;
   background-position: center;
@@ -58,10 +58,41 @@
 }
 
 .glow-btn-large:hover {
-  transform: scale(1.08) translateY(-3px);
-  box-shadow: 0 0 35px rgba(251, 191, 36, 0.7); /* The "yessss" glow effect */
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(251, 191, 36, 0.45);
 }
 
+.hero-content h1 {
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.hero-content h1 span {
+  color: #facc15;
+}
+
+.hero-content p {
+  font-size: 20px;
+  color: #cbd5e1;
+  margin-bottom: 40px;
+}
+.hero-btn {
+  background: linear-gradient(135deg, #facc15, #fbbf24);
+  color: #1e293b;
+  padding: 16px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hero-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(250, 204, 21, 0.4);
+}
 /* Animation on entry */
 .animate-pop {
   animation: popUp 1s ease-out forwards;
