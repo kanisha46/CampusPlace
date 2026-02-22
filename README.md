@@ -1,30 +1,43 @@
-🎓 CampusPlace – Placement Management Platform
+# 🎓 CampusPlace – All-in-One Placement Preparation Platform
 
-CampusPlace is a full-stack Placement Management System built using **React (Vite)** and **Spring Boot**.  
-It helps students track placement opportunities and allows admins to manage companies and users efficiently.
+CampusPlace is a full-stack placement management and preparation platform built using **React (Vite)** and **Spring Boot**.
+
+It helps students prepare for placements and allows admins to manage users and companies efficiently.
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-### 👨‍🎓 Student
-- View companies
-- Check eligibility
-- Browse placement details
-- Dark / Light mode support
+### 👨‍🎓 Student Features
 
-### 👨‍💼 Admin
-- Admin Dashboard
-- View total users & companies
-- Promote students to admin
-- Delete users
-- Add / Remove companies
-- Search functionality
+- 📊 **Student Dashboard** – Track preparation progress and drives
+- 🏢 **Company & Placements** – Browse companies and placement details
+- ❓ **Question Bank** – Practice real interview questions
+- 📄 **Resume Analysis** – AI-based resume feedback system
+- 📈 **Progress Tracking** – Monitor learning journey
+- 🎤 **Mock Test** – Practice quizzes and coding tests
+- 🌙 **Dark Mode Support**
 
-### 🔐 Authentication
-- JWT-based authentication
-- Role-based access control (ADMIN / STUDENT)
-- Secure API endpoints
+---
+
+### 👨‍💼 Admin Features
+
+- 📊 Admin Dashboard
+- 👥 View Total Users & Companies
+- 🔍 Search Users
+- ⬆ Promote Student to Admin
+- ❌ Delete Users
+- ➕ Add / Remove Companies
+- Role-based access control
+
+---
+
+## 🔐 Authentication & Security
+
+- JWT Authentication
+- Spring Security Integration
+- Role-Based Access (ADMIN / STUDENT)
+- Protected API Endpoints
 
 ---
 
@@ -34,16 +47,28 @@ It helps students track placement opportunities and allows admins to manage comp
 - React (Vite)
 - React Router
 - Axios
-- CSS (Custom Theming)
-- Dark Mode Support
+- Custom CSS Theming
+- Dark / Light Mode Toggle
 
 ### Backend
 - Spring Boot
 - Spring Security
-- JWT Authentication
-- JPA / Hibernate
+- JWT
+- Hibernate / JPA
 - MySQL
 
 ---
 
-## 📁 Project Structure
+## 📌 Future Enhancements
+
+- 📊 Analytics Charts  
+- 📩 Email Notifications  
+- 📎 Resume Upload & Parsing  
+- ☁ Cloud Deployment  
+- 📱 Mobile Optimization  
+
+---
+
+## 📄 License
+
+This project is developed for educational purposes.
