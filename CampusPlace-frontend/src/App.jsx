@@ -1,6 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
-
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
@@ -12,7 +11,7 @@ import Companies from "./pages/Companies";
 import CompanyDetails from "./pages/CompanyDetails";
 import Dashboard from "./pages/Dashboard";
 import QuestionBank from "./pages/QuestionBank";
-
+import OAuthSuccess from "./context/OAuthSuccess";
 /* ================= PRIVATE ROUTE ================= */
 
 const PrivateRoute = ({ children }) => {
@@ -43,9 +42,13 @@ const RoleRoute = ({ allowedRole, children }) => {
 };
 
 export default function App() {
+  const location = useLocation();
+
+  const hideLayout = location.pathname === "/login";
+
   return (
     <>
-      <Header />
+      {!hideLayout && <Header />}
 
       <Routes>
 
@@ -111,15 +114,19 @@ export default function App() {
             </PrivateRoute>
           }
         />
+
         {/* ===== RESUME ANALYSIS ===== */}
         <Route path="/resume-analysis" element={<ResumeAnalysis />} />
-        
+
+        {/* ===== OAUTH SUCCESS ===== */}
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
+
         {/* ===== FALLBACK ===== */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>
 
-      <Footer />
+      {!hideLayout && <Footer />}
     </>
   );
 }

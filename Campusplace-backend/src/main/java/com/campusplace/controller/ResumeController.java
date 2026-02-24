@@ -31,7 +31,9 @@ public class ResumeController {
     @GetMapping("/history")
     public ResponseEntity<List<ResumeAnalysis>> history(
             Principal principal
-    ) {
+    ){
+            System.out.println("Principal: " + principal);
+
         return ResponseEntity.ok(
                 resumeService.getHistory(principal.getName())
         );

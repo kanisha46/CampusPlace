@@ -1,13 +1,15 @@
 package com.campusplace.entity;
-import com.campusplace.entity.Role;
+
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder   // 🔥 ADD THIS
 public class User {
 
     @Id

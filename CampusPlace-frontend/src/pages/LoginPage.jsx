@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState("STUDENT");
   
   const navigate = useNavigate();
 const { login } = useAuth();
@@ -29,9 +30,9 @@ const { login } = useAuth();
     }
 
     const endpoint = isSignup ? "/auth/signup" : "/auth/login";
-    const payload = isSignup
-      ? { name, email, password }
-      : { email, password };
+const payload = isSignup
+  ? { name, email, password, role }
+  : { email, password };
 
     try {
       setLoading(true);
@@ -166,6 +167,35 @@ if (userRole === "ADMIN") {
               </div>
             </div>
           )}
+          {isSignup && (
+  <div className="form-field">
+    <label>Select Role</label>
+
+    <div className="role-selector">
+      <div
+        className={`role-card ${role === "STUDENT" ? "active" : ""}`}
+        onClick={() => setRole("STUDENT")}
+      >
+        <span className="role-icon">🎓</span>
+        <span>Student</span>
+        <span className="ripple"></span>
+      </div>
+
+      <div
+        className={`role-card ${role === "FACULTY" ? "active" : ""}`}
+        onClick={() => setRole("FACULTY")}
+      >
+        <span className="role-icon">👩‍🏫</span>
+        <span>Faculty</span>
+        <span className="ripple"></span>
+      </div>
+    </div>
+
+    {!role && (
+      <p className="role-error">Please select a role</p>
+    )}
+  </div>
+)}
 
           <button
             type="submit"
@@ -185,17 +215,31 @@ if (userRole === "ADMIN") {
         </div>
 
         <div className="social-grid">
-          <button className="social-btn" type="button">
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-            />
-            Google
-          </button>
-          <button className="social-btn" type="button">
-            <Github size={20} />
-            GitHub
-          </button>
+                <button
+        className="social-btn"
+        type="button"
+        onClick={() =>
+          window.location.href =
+            "http://localhost:8082/oauth2/authorization/google"
+        }
+      >
+        <img
+          src="https://www.svgrepo.com/show/475656/google-color.svg"
+          alt="Google"
+        />
+        Google
+      </button>
+          <button
+  className="social-btn"
+  type="button"
+  onClick={() =>
+    window.location.href =
+      "http://localhost:8082/oauth2/authorization/github"
+  }
+>
+  <Github size={20} />
+  GitHub
+</button>
         </div>
 
         <p

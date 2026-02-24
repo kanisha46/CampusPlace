@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
-
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     @Bean
     public JwtFilter jwtFilter() {
         return new JwtFilter(jwtService, userDetailsService);
@@ -39,34 +39,45 @@ public class SecurityConfig {
                     config.setAllowedOrigins(List.of("http://localhost:5173"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
                     return config;
                 }))
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
+
                 .authorizeHttpRequests(auth -> auth
 
-                        // PUBLIC ENDPOINTS
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/companies/**").permitAll()
+                        // Public
+                        .requestMatchers(
+                                "/auth/**",
+                                "/oauth2/**",     // ✅ correct path
+                                "/login/**",
+                                "/error"
+                        ).permitAll()
 
-                        // ADMIN ONLY FOR MODIFYING
+                        .requestMatchers("/api/companies/**").permitAll()
+                        .requestMatchers("/api/resume/**").authenticated()
+                        .requestMatchers("/api/students/**").authenticated()
+
                         .requestMatchers(HttpMethod.POST, "/api/companies/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/companies/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/companies/**").hasRole("ADMIN")
 
-                        // STUDENT PROTECTED
-                        .requestMatchers("/api/students/**").authenticated()
-                        .requestMatchers("/api/resume/**").permitAll()
-                        // EVERYTHING ELSE
                         .anyRequest().authenticated()
                 )
+
+                // 🔥 Enable OAuth2 login
+                .oauth2Login(oauth -> oauth
+                        .successHandler(oAuth2SuccessHandler)   // your custom handler
+                )
+
+                // JWT filter
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 🔥 Required for authentication
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
