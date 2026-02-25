@@ -1,8 +1,10 @@
-import org.springframework.data.jpa.repository.Query;
-import java.util.List;
+package com.campusplace.repository;
 
+import com.campusplace.entity.Company; // Resolves the 'Company' symbol
+import org.springframework.data.jpa.repository.JpaRepository; // Resolves the 'JpaRepository' symbol
+import org.springframework.stereotype.Repository;
+
+@Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-
-    @Query("SELECT c.name FROM Company c")
-    List<String> findAllCompanyNames();
+    // Your existing methods here
 }
