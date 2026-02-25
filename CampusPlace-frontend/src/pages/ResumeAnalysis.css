@@ -1,8 +1,10 @@
+/* ================= GLOBAL & LAYOUT ================= */
 .resume-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #dff3ea, #e8e4ff, #f5e1f7);
   font-family: "Poppins", sans-serif;
 }
+
 .resume-container {
   display: flex;
   gap: 60px;
@@ -14,8 +16,7 @@
   justify-content: space-between;
 }
 
-/* LEFT SECTION */
-
+/* ================= LEFT SECTION ================= */
 .resume-left {
   flex: 1;
 }
@@ -40,6 +41,7 @@
   max-width: 500px;
 }
 
+/* ================= DYNAMIC UPLOAD CARDS ================= */
 .upload-card {
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(12px);
@@ -49,14 +51,52 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   max-width: 450px;
   transition: 0.3s ease;
+  position: relative;
 }
 
 .upload-card:hover {
   transform: translateY(-5px);
 }
 
+/* New: Selection Preview Box */
+.selected-file-box {
+  border: 2px solid #10b981 !important; /* Solid green when file is picked */
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* New: Dashboard/Existing Resume Card */
+.existing-resume-card {
+  border: 1px solid rgba(90, 103, 216, 0.3) !important;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.file-info-header, .file-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.file-icon, .pdf-thumb {
+  font-size: 24px;
+  background: #f3f4f6;
+  padding: 12px;
+  border-radius: 12px;
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.file-details strong {
+  display: block;
+  color: #1f2937;
+  word-break: break-all;
+}
+
+/* ================= BUTTONS & ACTIONS ================= */
 .upload-btn {
-  margin-top: 20px;
+  margin-top: 10px;
   padding: 14px 28px;
   background: linear-gradient(135deg, #34d399, #10b981);
   border: none;
@@ -65,11 +105,53 @@
   color: white;
   cursor: pointer;
   transition: 0.3s ease;
+  width: fit-content;
 }
 
 .upload-btn:hover {
   background: linear-gradient(135deg, #10b981, #059669);
-  transform: scale(1.05);
+  transform: scale(1.03);
+}
+
+.upload-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.selection-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.primary-btn {
+  flex: 2;
+}
+
+.change-btn {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.change-btn:hover {
+  background: #f9fafb;
+}
+
+.cancel-text {
+  display: block;
+  margin-top: 15px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .privacy {
@@ -78,8 +160,7 @@
   color: #374151;
 }
 
-/* RIGHT SECTION */
-
+/* ================= RIGHT SECTION - SCORE ================= */
 .resume-right {
   flex: 1;
   display: flex;
@@ -100,42 +181,6 @@
   color: #374151;
 }
 
-.score-circle {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: conic-gradient(#10b981 92%, #e5e7eb 0%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 25px;
-  position: relative;
-}
-
-.score-circle span {
-  font-size: 32px;
-  font-weight: bold;
-  color: #1f2937;
-}
-
-.score-circle small {
-  font-size: 14px;
-  color: #6b7280;
-  margin-left: 4px;
-}
-
-.score-card ul {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-}
-
-.score-card li {
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #374151;
-}
-
 .progress-circle {
   position: relative;
   width: 160px;
@@ -148,30 +193,58 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
+  color: #1f2937;
 }
 
+.score-breakdown {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  margin-top: 25px;
+}
+
+.score-breakdown li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #4b5563;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 5px;
+}
+
+.score-breakdown li span {
+  font-weight: 600;
+  color: #10b981;
+}
+
+/* ================= HISTORY SECTION ================= */
 .history-section {
-  margin: 60px 0;
-  padding: 40px;
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 40px;
 }
 
 .history-card {
   background: white;
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: 15px 25px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
-  border-radius: 10px;
+  align-items: center;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
-/* ================= OPTIMIZATION SECTION ================= */
 
+/* ================= OPTIMIZATION SECTION ================= */
 .optimization-section {
   padding: 120px 40px;
   background: linear-gradient(135deg, #dff3ea, #e8e4ff, #f5e1f7);
   color: #1f2937;
 }
+
 .optimization-header {
   text-align: center;
   max-width: 900px;
@@ -193,6 +266,8 @@
   display: flex;
   gap: 60px;
   align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .optimization-left {
@@ -202,11 +277,6 @@
 .optimization-left h3 {
   font-size: 28px;
   margin-bottom: 20px;
-}
-
-.optimization-left p {
-  color: #4b5563;
-  font-size: 16px;
 }
 
 .optimization-cards {
@@ -231,8 +301,9 @@
 }
 
 .opt-card h4 {
-  margin-bottom: 20px;
-  font-size: 20px;
+  margin-bottom: 15px;
+  font-size: 19px;
+  color: #1f2937;
 }
 
 .opt-card ul {
@@ -243,12 +314,34 @@
 .opt-card li {
   margin-bottom: 10px;
   font-size: 14px;
-  color: #374151;
+  color: #4b5563;
+  display: flex;
+  align-items: flex-start;
 }
 
-/* Responsive */
+.opt-card li::before {
+  content: "•";
+  color: #10b981;
+  font-weight: bold;
+  margin-right: 8px;
+}
 
+/* ================= RESPONSIVE ================= */
 @media (max-width: 992px) {
+  .resume-container {
+    flex-direction: column;
+    padding-top: 100px;
+    text-align: center;
+  }
+
+  .resume-left p {
+    margin: 0 auto 30px;
+  }
+
+  .upload-card {
+    margin: 0 auto;
+  }
+
   .optimization-content {
     flex-direction: column;
   }

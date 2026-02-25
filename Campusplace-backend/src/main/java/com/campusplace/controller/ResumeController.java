@@ -3,6 +3,7 @@ package com.campusplace.controller;
 import com.campusplace.entity.ResumeAnalysis;
 import com.campusplace.service.ResumeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/resume")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
+@ConditionalOnProperty(name = "feature.resume.enabled", havingValue = "true")
 public class ResumeController {
 
     private final ResumeService resumeService;
@@ -29,11 +31,7 @@ public class ResumeController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<ResumeAnalysis>> history(
-            Principal principal
-    ){
-            System.out.println("Principal: " + principal);
-
+    public ResponseEntity<List<ResumeAnalysis>> history(Principal principal) {
         return ResponseEntity.ok(
                 resumeService.getHistory(principal.getName())
         );
