@@ -12,6 +12,15 @@ import CompanyDetails from "./pages/CompanyDetails";
 import Dashboard from "./pages/Dashboard";
 import QuestionBank from "./pages/QuestionBank";
 import OAuthSuccess from "./context/OAuthSuccess";
+import AttemptQuiz from "./pages/AttemptQuiz";
+import MockTest from "./pages/MockTest";
+import axios from "axios";
+const token = localStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] =
+    `Bearer ${token}`;
+}
+
 /* ================= PRIVATE ROUTE ================= */
 
 const PrivateRoute = ({ children }) => {
@@ -112,6 +121,24 @@ export default function App() {
             <PrivateRoute>
               <QuestionBank />
             </PrivateRoute>
+          }
+        />
+        {/* ===== MOCK TEST ===== */}
+        <Route
+          path="/mock-test"
+          element={
+            <RoleRoute allowedRole="STUDENT">
+              <MockTest />
+            </RoleRoute>
+          }
+        />
+        {/* ===== ATTEMPT QUIZ ===== */}
+        <Route
+          path="/mock-test/:quizId"
+          element={
+            <RoleRoute allowedRole="STUDENT">
+              <AttemptQuiz />
+            </RoleRoute>
           }
         />
 

@@ -54,10 +54,10 @@ const Dashboard = () => {
   const [endYear, setEndYear] = useState("");
   const [aboutError, setAboutError] = useState("");
   const [aboutText, setAboutText] = useState("");
-
+  const [successMessage, setSuccessMessage] = useState("");
   const [skills, setSkills] = useState([]);
   const [skillInput, setSkillInput] = useState("");
-
+  const [profileCompleted, setProfileCompleted] = useState(false);
   const [resumeFileName, setResumeFileName] = useState("No file chosen");
   const [resumeError, setResumeError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -154,9 +154,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem("token");
 
-        const response = await axios.get("http://localhost:8080/api/profile", {
+        const response = await axios.get("http://localhost:8082/api/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -184,7 +184,25 @@ const Dashboard = () => {
           setResumeFileName(data.resumeFileName);
           setResumeValid(true);
         }
+        // ✅ Check if profile already completed
+        if (
+          data.firstName &&
+          data.lastName &&
+          data.about &&
+          data.skills?.length > 0 &&
+          data.currentCgpa &&
+          data.linkedinLink
+        ) {
+          setProfileCompleted(true);
 
+          setCompletedSections({
+            "Basic Details": true,
+            Resume: true,
+            About: true,
+            Skills: true,
+            Education: true,
+          });
+        }
         // ✅ Education (if backend returns these)
         setCurrentCgpa(data.currentCgpa || "");
         setTwelfthPercentile(data.twelfthPercentile || "");
@@ -218,69 +236,97 @@ const Dashboard = () => {
      NOTE: Your backend must accept multipart/form-data for /api/profile.
      If your backend currently accepts JSON only, this will fail until you update it.
   */
-  const handleSave = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-
-      const profileJson = {
-        firstName,
-        lastName,
-        username,
-        mobile,
-        gender,
-        userType,
-        course,
-        specialization,
-        startYear,
-        endYear,
-        facultyDept,
-        designation,
-        experience,
-        qualification,
-        about: aboutText,
-        skills,
-
-        // ✅ education fields
-        currentCgpa,
-        twelfthPercentile,
-        hasInternship,
-        hasHackathon,
-        hackathonDetails,
-        hasBacklogs,
-        backlogCount,
-        leetcodePercentile,
-        leetcodeAccLink,
-        leetcodeRank,
-        githubLink,
-        linkedinLink,
-      };
-
-      const formData = new FormData();
-      formData.append("profile", new Blob([JSON.stringify(profileJson)], { type: "application/json" }));
-
-      // ✅ files
-      if (resumeFile) formData.append("resume", resumeFile);
-
-      semResultsFiles.forEach((f) => formData.append("semResults", f));
-
-      if (hasInternship === "Yes" && internshipCertFile) {
-        formData.append("internshipCert", internshipCertFile);
-      }
-
-      await axios.post("http://localhost:8080/api/profile", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      alert("Saved successfully!");
-    } catch (error) {
-      console.error(error);
-      alert("Error saving profile (backend must support multipart/form-data)");
+const handleSave = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Token not found in Local Storage");
+      alert("Session expired. Please log in again.");
+      return;
     }
-  };
+    const profileJson = {
+      firstName,
+      lastName,
+      username,
+      mobile,
+      gender,
+      userType,
+      course,
+      specialization,
+      startYear,
+      endYear,
+      facultyDept,
+      designation,
+      experience,
+      qualification,
+      about: aboutText,
+      skills,
+      currentCgpa,
+      twelfthPercentile,
+      hasInternship,
+      hasHackathon,
+      hackathonDetails,
+      hasBacklogs,
+      backlogCount,
+      leetcodePercentile,
+      leetcodeAccLink,
+      leetcodeRank,
+      githubLink,
+      linkedinLink,
+    };
 
+    const formData = new FormData();
+    formData.append(
+      "profile",
+      new Blob([JSON.stringify(profileJson)], {
+        type: "application/json",
+      })
+    );
+
+    if (resumeFile) formData.append("resume", resumeFile);
+    semResultsFiles.forEach((f) => formData.append("semResults", f));
+
+    if (hasInternship === "Yes" && internshipCertFile) {
+      formData.append("internshipCert", internshipCertFile);
+    }
+
+    await axios.post("http://localhost:8082/api/profile", formData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // ✅ MARK CURRENT SECTION COMPLETE
+    setCompletedSections((prev) => ({
+      ...prev,
+      [activeTab]: true,
+    }));
+
+    // ✅ SUCCESS MESSAGE
+    setSuccessMessage("Details are saved successfully");
+    setProfileCompleted(true);
+
+    // ✅ AUTO MOVE TO NEXT TAB
+    const sectionOrder = [
+      "Basic Details",
+      "Resume",
+      "About",
+      "Skills",
+      "Education",
+    ];
+
+    const currentIndex = sectionOrder.indexOf(activeTab);
+
+    if (currentIndex < sectionOrder.length - 1) {
+      setTimeout(() => {
+        setActiveTab(sectionOrder[currentIndex + 1]);
+        setSuccessMessage("");
+      }, 1500);
+    }
+
+  } catch (error) {
+    console.error("Save error:", error);
+    alert("Something went wrong while saving.");
+  }
+};
   /* ================= AUTO COMPLETION ================= */
 
   const completionPercent = useMemo(() => {
@@ -296,7 +342,7 @@ const Dashboard = () => {
       if (!firstName.trim()) return false;
       if (!lastName.trim()) return false;
       if (!email.trim()) return false;
-      if (!mobile.trim()) return false;
+      if (!/^\d{10}$/.test(mobile)) return false;
       if (!gender) return false;
       if (!userType) return false;
 
@@ -457,6 +503,11 @@ const Dashboard = () => {
             <h2>{activeTab}</h2>
           </header>
 
+          {successMessage && (
+            <div className="success-banner">
+              ✓ {successMessage}
+            </div>
+          )}
           <section className="form-body">
             {/* ================= BASIC DETAILS ================= */}
             {activeTab === "Basic Details" && (
@@ -525,12 +576,16 @@ const Dashboard = () => {
                 {/* MOBILE */}
                 <div className="form-group">
                   <label className="field-label">Mobile *</label>
-                  <input
-                    type="text"
+                 <input
+                    type="tel"
                     className="input-field"
                     value={mobile}
-                    onChange={(e) => setMobile(e.target.value)}
-                    placeholder="Enter Mobile Number"
+                    maxLength="10"
+                    placeholder="Enter 10-digit mobile number"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, ""); // remove non-digits
+                      setMobile(value);
+                    }}
                   />
                 </div>
 
@@ -1074,7 +1129,8 @@ const Dashboard = () => {
 
             {/* SAVE BUTTON */}
             <footer className="form-footer">
-              <button className="save-btn" onClick={handleSave} disabled={!isFormValid}>
+              <button className={`save-btn ${!isFormValid ? "disabled-btn" : ""}`}
+                onClick={handleSave}>
                 ✓ Save
               </button>
             </footer>

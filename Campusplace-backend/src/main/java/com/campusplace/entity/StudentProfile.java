@@ -18,41 +18,42 @@ public class StudentProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🔥 Link profile to user (very important)
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    // ✅ ADD THIS BLOCK
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // Basic Details
+    // Basic
     private String firstName;
     private String lastName;
     private String username;
     private String mobile;
     private String gender;
     private String userType;
+
     private String course;
     private String specialization;
     private String startYear;
     private String endYear;
 
-    // About
+    private String facultyDept;
+    private String designation;
+    private String experience;
+    private String qualification;
+
     @Column(length = 2000)
     private String about;
-
-    // Skills (store as comma-separated string)
-    @Column(length = 2000)
-    private String skills;
-
-    // Resume
-    private String resumeFileName;
 
     // Education
     private String currentCgpa;
     private String twelfthPercentile;
+
     private String hasInternship;
     private String internshipCertFileName;
+
     private String hasHackathon;
     private String hackathonDetails;
+
     private String hasBacklogs;
     private String backlogCount;
 
@@ -63,6 +64,10 @@ public class StudentProfile {
     private String githubLink;
     private String linkedinLink;
 
-    @Column(length = 2000)
-    private String semResultsFileNames;
+    private String resumeFileName;
+
+    private String skills;
+
+    @ElementCollection
+    private List<String> semResultsFileNames;
 }

@@ -56,7 +56,16 @@
   padding: 0 25px;
   align-items: flex-start;
 }
-
+.success-banner {
+  background: #e6f9ec;
+  color: #1e7e34;
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  border: 1px solid #b7e4c7;
+  animation: fadeIn 0.3s ease-in-out;
+}
 /* --- SIDEBAR & PROFILE IDENTITY --- */
 .sidebar {
   width: 320px;

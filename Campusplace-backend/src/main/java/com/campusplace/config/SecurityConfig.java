@@ -24,6 +24,7 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
     @Bean
     public JwtFilter jwtFilter() {
         return new JwtFilter(jwtService, userDetailsService);
@@ -43,39 +44,30 @@ public class SecurityConfig {
                     return config;
                 }))
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 .authorizeHttpRequests(auth -> auth
-
-                        // Public
                         .requestMatchers(
-                                "/auth/**",
-                                "/oauth2/**",     // ✅ correct path
+                                "/oauth2/**",
                                 "/login/**",
-                                "/error"
+                                "/error",
+                                "/auth/login",
+                                "/auth/signup"
                         ).permitAll()
-
-                        .requestMatchers("/api/companies/**").permitAll()
-                        .requestMatchers("/api/resume/**").authenticated()
-                        .requestMatchers("/api/students/**").authenticated()
-
-                        .requestMatchers(HttpMethod.POST, "/api/companies/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/companies/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/companies/**").hasRole("ADMIN")
-
+                        .requestMatchers("/api/profile/**").authenticated()
                         .anyRequest().authenticated()
                 )
-
-                // 🔥 Enable OAuth2 login
-                .oauth2Login(oauth -> oauth
-                        .successHandler(oAuth2SuccessHandler)   // your custom handler
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(401);
+                        })
                 )
-
-                // JWT filter
+                .oauth2Login(oauth -> oauth
+                        .successHandler(oAuth2SuccessHandler)
+                )
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+        return http.build();   // ✅ VERY IMPORTANT
     }
 
     @Bean

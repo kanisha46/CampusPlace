@@ -19,72 +19,49 @@ export default function LoginPage() {
   
   const navigate = useNavigate();
 const { login } = useAuth();
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setMessage("");
 
-    // Signup password validation
-    if (isSignup && password !== confirmPassword) {
-      setMessage("Passwords do not match!");
+  try {
+    setLoading(true);
+
+    if (isSignup) {
+      const res = await axios.post(
+        "http://localhost:8082/auth/signup",
+        { name, email, password, role }
+      );
+
+      setMessage("Signup successful! Please login.");
+      setIsSignup(false);
+      setLoading(false);
       return;
     }
 
-    const endpoint = isSignup ? "/auth/signup" : "/auth/login";
-const payload = isSignup
-  ? { name, email, password, role }
-  : { email, password };
+    // -------- LOGIN --------
+    const res = await axios.post(
+  "http://localhost:8082/auth/login",
+  { email, password }
+);
 
-    try {
-      setLoading(true);
+  const { token, role: userRole, name: userName } = res.data;
 
-      // 🔥 Clear old tokens before login attempt
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
+  login(token, userRole, userName);
 
-      const res = await axios.post(
-        `http://localhost:8082${endpoint}`,
-        payload
-      );
-
-      // ---------------- SIGNUP ----------------
-      if (isSignup) {
-        setMessage(res.data.message || "Signup successful!");
-        setIsSignup(false);
-        setLoading(false);
-        return;
-      }
-
-      // ---------------- LOGIN ----------------
-      if (!res.data.token) {
-        throw new Error("Invalid login response");
-      }
-
-     const { token, role: userRole, name } = res.data;
-
-login({
-  token,
-  role: userRole,
-  name
-});
-
-if (userRole === "ADMIN") {
-  navigate("/admin");
-} else if (userRole === "FACULTY") {
-  navigate("/faculty");
-} else {
-  navigate("/dashboard");
-}
-
-    }  catch (error) {
-  console.error("Login error:", error);
-
-  setMessage(
-    error.response?.data?.message || "Login failed. Please try again."
-  );
-
-  setLoading(false);
-}
-  };
+  if (userRole === "ADMIN") {
+    navigate("/admin");
+  } else if (userRole === "FACULTY") {
+    navigate("/faculty");
+  } else {
+    navigate("/dashboard");
+  }
+  } catch (error) {
+    console.error(error);
+    setMessage("Login failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="login-wrapper">

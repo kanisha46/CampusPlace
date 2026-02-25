@@ -26,14 +26,41 @@ export default function AdminPanel() {
   };
 
   const deleteUser = async (email) => {
-    await axios.delete(`http://localhost:8082/auth/delete/${email}`);
+  try {
+    const token = localStorage.getItem("token");
+
+    await axios.delete(
+      `http://localhost:8082/admin/delete/${email}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
     setUsers(users.filter(u => u.email !== email));
-  };
+
+  } catch (error) {
+    console.error("Delete error:", error);
+  }
+};
 
   const promoteUser = async (email) => {
-    await axios.put(`http://localhost:8082/auth/promote/${email}`);
+  try {
+    const token = localStorage.getItem("token");
+
+    await axios.put(
+      `http://localhost:8082/admin/promote/${email}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
     fetchData();
-  };
+
+  } catch (error) {
+    console.error("Promote error:", error);
+  }
+};
 
   const filteredUsers = users.filter(u =>
     u.name.toLowerCase().includes(search.toLowerCase())

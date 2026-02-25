@@ -1,26 +1,31 @@
 import { createContext, useContext, useEffect, useState } from "react";
-
+import axios from "axios";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const name = localStorage.getItem("userName");
-    const role = localStorage.getItem("role");
+  const token = localStorage.getItem("token");
+  const name = localStorage.getItem("userName");
+  const role = localStorage.getItem("role");
 
-    if (token) {
-      setUser({ name, role });
-    }
-  }, []);
+  if (token) {
+  setUser({ name, role });
 
-const login = (userData) => {
-  localStorage.setItem("token", userData.token);
-  localStorage.setItem("role", userData.role);
-  localStorage.setItem("userName", userData.name);
+  axios.defaults.headers.common["Authorization"] =
+    `Bearer ${token}`;
+}
+}, []);
 
-  setUser(userData);   // IMPORTANT
+const login = (token, role, name) => {
+  localStorage.setItem("token", token);
+  localStorage.setItem("role", role);
+  localStorage.setItem("userName", name);
+
+  setUser({ role, name });
+
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };
 
   const logout = () => {
