@@ -4,10 +4,15 @@ import com.campusplace.entity.Role;
 import com.campusplace.entity.User;
 import com.campusplace.repository.UserRepository;
 import com.campusplace.service.JwtService;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -34,11 +39,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String nameAttr = oAuth2User.getAttribute("name");
         String login = oAuth2User.getAttribute("login");
 
-// 🔥 GitHub fallback
+        // 🔥 GitHub fallback
         String finalEmail = emailAttr != null ? emailAttr : login + "@github.com";
         String finalName = nameAttr != null ? nameAttr : login;
 
-// 🔥 Check if user exists
+        // 🔥 Find or create user
         User user = userRepository.findByEmail(finalEmail)
                 .orElseGet(() -> {
                     User newUser = User.builder()
@@ -50,12 +55,25 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                     return userRepository.save(newUser);
                 });
 
-        // 🔥 Generate JWT
-        String token = jwtService.generateToken(user);
+        // 🔐 Generate tokens
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
-        // 🔥 Redirect to frontend
+        // 🔐 Store refresh token in HttpOnly cookie
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(false) // ⚠ set true in production (HTTPS)
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60)
+                .sameSite("Strict")
+                .build();
+
+        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        // 🔁 Redirect with access token only
         response.sendRedirect(
-                "http://localhost:5173/oauth-success?token=" + token +
+                "http://localhost:5173/oauth-success" +
+                        "?token=" + accessToken +
                         "&role=" + user.getRole() +
                         "&name=" + user.getName()
         );

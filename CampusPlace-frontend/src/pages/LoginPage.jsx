@@ -15,7 +15,6 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [role, setRole] = useState("STUDENT");
   
   const navigate = useNavigate();
 const { login } = useAuth();
@@ -28,9 +27,9 @@ const handleSubmit = async (e) => {
 
     if (isSignup) {
       const res = await axios.post(
-        "http://localhost:8082/auth/signup",
-        { name, email, password, role }
-      );
+  "http://localhost:8082/auth/signup",
+  { name, email, password }
+);
 
       setMessage("Signup successful! Please login.");
       setIsSignup(false);
@@ -144,35 +143,6 @@ const handleSubmit = async (e) => {
               </div>
             </div>
           )}
-          {isSignup && (
-  <div className="form-field">
-    <label>Select Role</label>
-
-    <div className="role-selector">
-      <div
-        className={`role-card ${role === "STUDENT" ? "active" : ""}`}
-        onClick={() => setRole("STUDENT")}
-      >
-        <span className="role-icon">🎓</span>
-        <span>Student</span>
-        <span className="ripple"></span>
-      </div>
-
-      <div
-        className={`role-card ${role === "FACULTY" ? "active" : ""}`}
-        onClick={() => setRole("FACULTY")}
-      >
-        <span className="role-icon">👩‍🏫</span>
-        <span>Faculty</span>
-        <span className="ripple"></span>
-      </div>
-    </div>
-
-    {!role && (
-      <p className="role-error">Please select a role</p>
-    )}
-  </div>
-)}
 
           <button
             type="submit"

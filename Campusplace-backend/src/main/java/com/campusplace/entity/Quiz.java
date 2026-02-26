@@ -1,11 +1,15 @@
 package com.campusplace.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
-@Setter   // 🔥 VERY IMPORTANT
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,4 +29,7 @@ public class Quiz {
     private int durationMinutes;
 
     private boolean active;
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<McqQuestion> questions;
 }

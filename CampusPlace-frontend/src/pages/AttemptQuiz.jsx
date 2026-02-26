@@ -15,8 +15,7 @@ export default function AttemptQuiz() {
 
   /* ================= LOAD QUIZ ================= */
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-
+    const token = localStorage.getItem("token");
     axios.get(`http://localhost:8082/quiz/student/${quizId}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -61,8 +60,7 @@ export default function AttemptQuiz() {
   const handleSubmit = async () => {
     if (score !== null) return; // prevent duplicate submit
 
-    const token = localStorage.getItem("accessToken");
-
+    const token = localStorage.getItem("token");
     const formattedAnswers = Object.entries(answers).map(
       ([questionId, selectedAnswer]) => ({
         questionId: parseInt(questionId),
@@ -122,7 +120,7 @@ export default function AttemptQuiz() {
       </div>
 
       <div className="questions">
-        {quiz.questions.map((q, index) => (
+        {quiz.questions?.map((q, index) => (
           <div key={q.id} className="question-card">
             <h4>Q{index + 1}. {q.question}</h4>
 

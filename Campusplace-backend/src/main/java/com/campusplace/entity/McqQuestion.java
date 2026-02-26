@@ -1,5 +1,7 @@
 package com.campusplace.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +18,8 @@ public class McqQuestion {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "quiz_id")
+    @JsonIgnoreProperties("questions")
     private Quiz quiz;
 
     private String question;

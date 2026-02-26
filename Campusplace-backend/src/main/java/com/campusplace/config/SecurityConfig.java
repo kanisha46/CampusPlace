@@ -37,10 +37,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(request -> {
                     var config = new org.springframework.web.cors.CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:5173"));
+
+                    config.setAllowedOrigins(List.of(
+                            "http://localhost:5173",
+                            "https://yourdomain.com"  // production domain
+                    ));
+
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);
+
                     return config;
                 }))
                 .sessionManagement(session ->
@@ -52,7 +58,9 @@ public class SecurityConfig {
                                 "/login/**",
                                 "/error",
                                 "/auth/login",
-                                "/auth/signup"
+                                "/auth/signup",
+                                "/auth/refresh",
+                                "/auth/logout"
                         ).permitAll()
                         .requestMatchers("/api/profile/**").authenticated()
                         .anyRequest().authenticated()

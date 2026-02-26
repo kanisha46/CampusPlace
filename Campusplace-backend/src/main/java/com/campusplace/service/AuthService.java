@@ -4,12 +4,14 @@ import com.campusplace.dto.*;
 import com.campusplace.entity.Role;
 import com.campusplace.entity.User;
 import com.campusplace.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +24,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    // ================= SIGNUP =================
     public ApiResponse signup(SignupRequest request) {
 
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -32,38 +35,47 @@ public class AuthService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
+
+        // 🔐 Always STUDENT
+        user.setRole(Role.STUDENT);
 
         userRepository.save(user);
 
         return new ApiResponse("User registered successfully");
     }
 
+    // ================= LOGIN =================
     public Map<String, Object> login(LoginRequest request) {
-
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()
-                    )
-            );
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid email or password");
-        }
-
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtService.generateToken(user);
+        // 🔐 Generate tokens
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
-        return Map.of(
-                "token", token,
-                "role", user.getRole().name(),
-                "name", user.getName()
-        );
+        Map<String, Object> response = new HashMap<>();
+        response.put("accessToken", accessToken);
+        response.put("refreshToken", refreshToken);
+        response.put("role", user.getRole().name());
+        response.put("name", user.getName());
+
+        return response;
     }
 
+    // ================= REFRESH SUPPORT =================
+    public String extractEmailFromToken(String token) {
+        return jwtService.extractUsername(token);
+    }
+
+    public boolean validateRefreshToken(String token, User user) {
+        return jwtService.isTokenValid(token, user);
+    }
+
+    public String generateNewAccessToken(User user) {
+        return jwtService.generateAccessToken(user);
+    }
+
+    // ================= ADMIN FUNCTIONS =================
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -75,6 +87,7 @@ public class AuthService {
                 ))
                 .toList();
     }
+
     public void deleteUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));

@@ -1,6 +1,8 @@
 package com.campusplace.controller;
 
 import com.campusplace.dto.CreateQuizRequest;
+import com.campusplace.dto.QuizListResponse;
+import com.campusplace.dto.SubmitQuizRequest;
 import com.campusplace.entity.Quiz;
 import com.campusplace.entity.StudentResult;
 import com.campusplace.entity.User;
@@ -22,20 +24,21 @@ public class QuizController {
     private final UserService userService;
 
     @GetMapping("/student/list")
-    public List<Quiz> getBranchQuizzes(Authentication authentication) {
+    public List<QuizListResponse> getBranchQuizzes(Authentication authentication) {
         User user = userService.getLoggedInUser(authentication);
         return quizService.getActiveQuizzesByBranch(user.getBranch());
-    }
-
-    @PostMapping("/faculty/create")
-    public String createQuiz(@RequestBody CreateQuizRequest request) {
-        quizService.createQuiz(request);
-        return "Quiz created successfully";
     }
 
     @GetMapping("/student/{quizId}")
     public Quiz getQuiz(@PathVariable Long quizId) {
         return quizService.getQuizWithQuestions(quizId);
+    }
+
+    @PostMapping("/student/submit")
+    public int submitQuiz(@RequestBody SubmitQuizRequest request,
+                          Authentication authentication) {
+
+        return quizService.evaluateQuiz(request, authentication);
     }
 
     @GetMapping("/{quizId}/leaderboard")

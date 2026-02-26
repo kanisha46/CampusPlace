@@ -12,10 +12,14 @@ export default function MockTest() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    axios.get("http://localhost:8082/quiz/student/list", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/login");
+    return;
+  }
+
+  axios.get("http://localhost:8082/quiz/student/list")
     .then(res => {
       setQuizzes(res.data);
       setLoading(false);
@@ -25,7 +29,7 @@ export default function MockTest() {
       setLoading(false);
     });
 
-  }, []);
+}, []);
 
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;

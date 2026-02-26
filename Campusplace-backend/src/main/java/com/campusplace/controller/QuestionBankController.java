@@ -8,8 +8,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/questions")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class QuestionBankController {
+
     @Autowired
     private QuestionBankService service;
 
@@ -19,7 +20,11 @@ public class QuestionBankController {
             @RequestParam(required = false) String branch,
             @RequestParam(required = false) String round,
             @RequestParam(required = false) String type,
-            @RequestParam(required = false) String difficulty) {
-        return service.getFilteredQuestions(companyId, branch, round, type, difficulty);
+            @RequestParam(required = false) String difficulty,
+            @RequestParam(required = false) String search) {
+
+        return service.getFilteredQuestions(
+                companyId, branch, round, type, difficulty, search
+        );
     }
 }

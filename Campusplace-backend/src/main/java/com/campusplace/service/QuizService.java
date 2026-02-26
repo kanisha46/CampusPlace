@@ -90,14 +90,21 @@ public class QuizService {
 
         return score;
     }
-    // ✅ GET ACTIVE QUIZZES
-    public List<Quiz> getActiveQuizzesByBranch(Branch branch) {
-        return quizRepository.findByBranchAndActiveTrue(branch);
+    public List<QuizListResponse> getActiveQuizzesByBranch(Branch branch) {
+
+        return quizRepository.findByBranchAndActiveTrue(branch)
+                .stream()
+                .map(q -> new QuizListResponse(
+                        q.getId(),
+                        q.getTitle(),
+                        q.getSubject(),
+                        q.getDurationMinutes()
+                ))
+                .toList();
     }
 
-    // ✅ GET QUIZ BY ID
     public Quiz getQuizWithQuestions(Long quizId) {
-        return quizRepository.findById(quizId)
+        return quizRepository.findQuizWithQuestions(quizId)
                 .orElseThrow();
     }
 

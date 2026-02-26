@@ -4,6 +4,7 @@ import com.campusplace.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,23 +16,33 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // 🔥 MUST be 32+ bytes (256-bit)
-    private static final String SECRET =
-            "campusplace-secret-key-256-bit-very-secure-12345";
+    @Value("${jwt.secret}")
+    private String secret;
 
     private SecretKey getSignKey() {
         return Keys.hmacShaKeyFor(
-                SECRET.getBytes(StandardCharsets.UTF_8)
+                secret.getBytes(StandardCharsets.UTF_8)
         );
     }
 
-    // ✅ Generate token
-    public String generateToken(User user) {
+    // 🔐 ACCESS TOKEN (15 minutes)
+    public String generateAccessToken(User user) {
         return Jwts.builder()
                 .subject(user.getEmail())
                 .claim("role", user.getRole().name())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
+                .signWith(getSignKey())
+                .compact();
+    }
+
+    // 🔁 REFRESH TOKEN (7 days)
+    public String generateRefreshToken(User user) {
+        return Jwts.builder()
+                .subject(user.getEmail())
+                .issuedAt(new Date())
+                .expiration(new Date(
+                        System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7))
                 .signWith(getSignKey())
                 .compact();
     }
@@ -46,8 +57,7 @@ public class JwtService {
 
     public <T> T extractClaim(String token,
                               Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
+        return claimsResolver.apply(extractAllClaims(token));
     }
 
     public boolean isTokenValid(String token,
