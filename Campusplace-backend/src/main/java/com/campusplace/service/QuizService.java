@@ -116,10 +116,10 @@ public class QuizService {
         return studentResultRepository.findByQuizOrderByScoreDesc(quiz);
     }
 
-    public StudentResult getStudentResult(Long quizId, Authentication authentication) {
+    public StudentResult getStudentResultForQuiz(Long quizId, Authentication auth) {
 
         User student = userRepository
-                .findByEmail(authentication.getName())
+                .findByEmail(auth.getName())
                 .orElseThrow();
 
         Quiz quiz = quizRepository.findById(quizId)
@@ -127,8 +127,7 @@ public class QuizService {
 
         return studentResultRepository
                 .findByStudentAndQuiz(student, quiz)
-                .orElseThrow(() ->
-                        new RuntimeException("Not attempted"));
+                .orElseThrow(() -> new RuntimeException("Not attempted"));
     }
 
 }

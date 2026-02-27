@@ -9,45 +9,65 @@ export default function AttemptQuiz() {
   const navigate = useNavigate();
 
   const [quiz, setQuiz] = useState(null);
-  const [answers, setAnswers] = useState({});
-  const [timeLeft, setTimeLeft] = useState(0);
   const [score, setScore] = useState(null);
+  const [answers, setAnswers] = useState({});
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [alreadyAttempted, setAlreadyAttempted] = useState(false);
+  const [activeQuestion, setActiveQuestion] = useState(null);
 
-  /* ================= LOAD QUIZ ================= */
-useEffect(() => {
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  // First check if already attempted
-  axios.get(
-    `http://localhost:8082/quiz/student/${quizId}/result`,
-    { headers: { Authorization: `Bearer ${token}` } }
-  )
-  .then(res => {
-    // Already attempted → show result
-    setScore(res.data.score);
-
-    // Also load quiz so we can show total question count
-    return axios.get(
-      `http://localhost:8082/quiz/student/${quizId}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-  })
-  .then(res => {
-    setQuiz(res.data);
-  })
-  .catch(() => {
-    // Not attempted → load quiz normally
+    // FIRST → Check if result exists
     axios.get(
-      `http://localhost:8082/quiz/student/${quizId}`,
+      `http://localhost:8082/quiz/student/${quizId}/result`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     .then(res => {
-      setQuiz(res.data);
-      setTimeLeft(res.data.durationMinutes * 60);
-    });
-  });
+      setScore(res.data.score);
+      setAlreadyAttempted(true);
 
-}, [quizId]);
+      // Load quiz for total questions
+      return axios.get(
+        `http://localhost:8082/quiz/student/${quizId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    })
+    .then(res => {
+      setQuiz(res.data);
+    })
+    .catch(() => {
+      // Not attempted → load quiz normally
+      axios.get(
+        `http://localhost:8082/quiz/student/${quizId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(res => {
+        setQuiz(res.data);
+        setTimeLeft(res.data.durationMinutes * 60);
+      });
+    });
+
+  }, [quizId]);
+
+  useEffect(() => {
+  const handleScroll = () => {
+    quiz.questions.forEach(q => {
+      const element = document.getElementById(`question-${q.id}`);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        if (rect.top >= 0 && rect.top <= 200) {
+          setActiveQuestion(q.id);
+        }
+      }
+    });
+  };
+
+  const container = document.querySelector(".quiz-main");
+  container?.addEventListener("scroll", handleScroll);
+
+  return () => container?.removeEventListener("scroll", handleScroll);
+}, [quiz]);
 
   /* ================= TIMER ================= */
   useEffect(() => {
@@ -58,17 +78,14 @@ useEffect(() => {
     }, 1000);
 
     return () => clearInterval(timer);
-
   }, [timeLeft, score]);
 
-  /* ================= AUTO SUBMIT ================= */
   useEffect(() => {
-    if (timeLeft === 0 && quiz && score === null) {
+    if (timeLeft !== null && timeLeft === 0 && score === null) {
       handleSubmit();
     }
   }, [timeLeft]);
 
-  /* ================= HANDLE ANSWER ================= */
   const handleOptionChange = (questionId, selectedOption) => {
     setAnswers(prev => ({
       ...prev,
@@ -76,11 +93,9 @@ useEffect(() => {
     }));
   };
 
-  /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
-    if (score !== null) return; // prevent duplicate submit
-
     const token = localStorage.getItem("token");
+
     const formattedAnswers = Object.entries(answers).map(
       ([questionId, selectedAnswer]) => ({
         questionId: parseInt(questionId),
@@ -88,6 +103,12 @@ useEffect(() => {
       })
     );
 
+      const scrollToQuestion = (id) => {
+    const element = document.getElementById(`question-${id}`);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
     try {
       const res = await axios.post(
         "http://localhost:8082/quiz/student/submit",
@@ -102,78 +123,133 @@ useEffect(() => {
 
       setScore(res.data);
 
-    }catch (error) {
-  const errorMessage = error.response?.data?.message;
-
-  if (errorMessage?.includes("already attempted")) {
-    setScore(0); // will immediately show result screen
-  } else {
-    alert(errorMessage || "Something went wrong.");
-  }
-}
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  /* ================= FORMAT TIME ================= */
-  const formatTime = () => {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
+  if (!quiz) return <div className="quiz-loading">Loading...</div>;
 
-  if (!quiz) return <div className="loading">Loading Quiz...</div>;
-
-  /* ================= SCORE SCREEN ================= */
-  if (score !== null) {
+  /* ================= RESULT SCREEN ================= */
+  if (alreadyAttempted || score !== null) {
     return (
-      <div className="result-container">
-        <h2>Test Completed 🎉</h2>
-        <h3>Your Score: {score} / {quiz.questions.length}</h3>
-        <button onClick={() => navigate("/mock-test")}>
-          Back to Tests
+      <div className="result-wrapper">
+        <div className="result-card">
+          <h2>✅ You already completed this test</h2>
+          <div className="score-big">
+            {score} / {quiz.questions.length}
+          </div>
+        <button
+          className="back-btn"
+          onClick={() => navigate("/mock-test")}
+        >
+          ← Back to Tests
         </button>
+        </div>
       </div>
     );
   }
 
-  /* ================= MAIN UI ================= */
-  return (
-    <div className="quiz-container">
+  /* ================= QUIZ UI ================= */
+return (
+  <div className="quiz-layout">
+
+    {/* ============ SIDEBAR ============ */}
+    <div className="quiz-sidebar">
+      <h3>
+        {Object.keys(answers).length} / {quiz.questions.length} Answered
+      </h3>
+
+      <div className="progress-bar">
+        <div
+          className="progress-fill"
+          style={{
+            width: `${
+              (Object.keys(answers).length / quiz.questions.length) * 100
+            }%`
+          }}
+        />
+      </div>
+
+     <div className="question-numbers">
+      {quiz.questions.map((q, index) => (
+        <div
+          key={q.id}
+          onClick={() => scrollToQuestion(q.id)}
+          className={`q-number 
+          ${answers[q.id] ? "answered" : ""} 
+          ${activeQuestion === q.id ? "active" : ""}
+        `}
+        >
+          {index + 1}
+        </div>
+      ))}
+    </div>
+    </div>
+
+    {/* ============ MAIN SECTION ============ */}
+    <div className="quiz-main">
 
       <div className="quiz-header">
         <h2>{quiz.title}</h2>
-        <div className="timer">⏳ {formatTime()}</div>
+
+        <div className="timer-circle">
+          <svg>
+            <circle cx="45" cy="45" r="45" />
+            <circle
+              cx="45"
+              cy="45"
+              r="45"
+              className="progress-ring"
+              style={{
+                strokeDashoffset:
+                  283 -
+                  (283 * timeLeft) /
+                    (quiz.durationMinutes * 60)
+              }}
+            />
+          </svg>
+          <span>
+            {Math.floor(timeLeft / 60)}:
+            {timeLeft % 60 < 10 ? "0" : ""}
+            {timeLeft % 60}
+          </span>
+        </div>
       </div>
 
-      <div className="questions">
-        {quiz.questions?.map((q, index) => (
-          <div key={q.id} className="question-card">
-            <h4>Q{index + 1}. {q.question}</h4>
+      {quiz.questions.map((q, index) => (
+        <div
+          key={q.id}
+          id={`question-${q.id}`}
+          className="question-card"
+        >
+          <h4>
+            Q{index + 1}. {q.question}
+          </h4>
 
-            {["A", "B", "C", "D"].map(option => (
-              <label key={option} className="option">
-                <input
-                  type="radio"
-                  name={`question-${q.id}`}
-                  value={option}
-                  checked={answers[q.id] === option}
-                  onChange={() => handleOptionChange(q.id, option)}
-                />
-                {q[`option${option}`]}
-              </label>
-            ))}
-
-          </div>
-        ))}
-      </div>
+          {["A", "B", "C", "D"].map(option => (
+            <label key={option} className="option">
+              <input
+                type="radio"
+                name={`question-${q.id}`}
+                checked={answers[q.id] === option}
+                onChange={() =>
+                  handleOptionChange(q.id, option)
+                }
+              />
+              {q[`option${option}`]}
+            </label>
+          ))}
+        </div>
+      ))}
 
       <button
         className="submit-btn"
         onClick={handleSubmit}
-        disabled={score !== null}
       >
         Submit Test
       </button>
-
     </div>
-  );
+  </div>
+);
 }

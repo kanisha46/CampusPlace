@@ -34,28 +34,47 @@ export default function MockTest() {
   if (loading) return <div className="loading">Loading...</div>;
   if (error) return <div className="error">{error}</div>;
 
-  return (
-    <div className="mock-container">
-      <h2 className="mock-title">Available Mock Tests</h2>
+return (
+  <div className="mock-wrapper">
 
-      {quizzes.length === 0 && <p>No quizzes available.</p>}
+    <div className="mock-header">
+      <h1>Mock Tests</h1>
+      <p>Practice and track your performance</p>
+    </div>
+
+    <div className="mock-grid">
+      {quizzes.length === 0 && (
+        <div className="empty-state">
+          No quizzes available.
+        </div>
+      )}
 
       {quizzes.map(q => (
         <div key={q.id} className="quiz-card">
-          <div className="quiz-title">{q.title}</div>
-          <div className="quiz-info">
-            Subject: {q.subject} <br />
-            Duration: {q.durationMinutes} minutes
+
+          <div className="quiz-card-header">
+            <h3>{q.title}</h3>
+            {q.attempted && (
+              <span className="badge">Completed</span>
+            )}
+          </div>
+
+          <div className="quiz-meta">
+            <div>📘 {q.subject}</div>
+            <div>⏳ {q.durationMinutes} mins</div>
           </div>
 
           <button
-            className="start-btn"
+            className={q.attempted ? "view-btn" : "start-btn"}
             onClick={() => navigate(`/mock-test/${q.id}`)}
           >
-            Start Test
+            {q.attempted ? "View Result" : "Start Test"}
           </button>
+
         </div>
       ))}
     </div>
-  );
+
+  </div>
+);
 }
