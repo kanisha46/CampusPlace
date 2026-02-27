@@ -41,6 +41,12 @@ public class QuizController {
         return quizService.evaluateQuiz(request, authentication);
     }
 
+    @GetMapping("/student/{quizId}/result")
+    public StudentResult getStudentResult(@PathVariable Long quizId,
+                                          Authentication authentication) {
+        return quizService.getStudentResult(quizId, authentication);
+    }
+
     @GetMapping("/{quizId}/leaderboard")
     public List<StudentResult> getLeaderboard(@PathVariable Long quizId) {
         return quizService.getLeaderboard(quizId);

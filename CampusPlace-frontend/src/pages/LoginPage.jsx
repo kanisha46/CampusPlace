@@ -42,10 +42,13 @@ const handleSubmit = async (e) => {
   "http://localhost:8082/auth/login",
   { email, password }
 );
+console.log("Full Backend Response:", res.data);
+  const { accessToken, role: userRole, name: userName } = res.data;
 
-  const { token, role: userRole, name: userName } = res.data;
-
-  login(token, userRole, userName);
+  if(accessToken)
+  {
+    localStorage.setItem("token", accessToken);
+    login(accessToken, userRole, userName);
 
   if (userRole === "ADMIN") {
     navigate("/admin");
@@ -54,6 +57,9 @@ const handleSubmit = async (e) => {
   } else {
     navigate("/dashboard");
   }
+}else {
+    setMessage("Login successful, but no token was received from the server.");
+  } 
   } catch (error) {
     console.error(error);
     setMessage("Login failed");

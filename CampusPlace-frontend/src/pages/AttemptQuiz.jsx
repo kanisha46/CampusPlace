@@ -14,20 +14,40 @@ export default function AttemptQuiz() {
   const [score, setScore] = useState(null);
 
   /* ================= LOAD QUIZ ================= */
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios.get(`http://localhost:8082/quiz/student/${quizId}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  // First check if already attempted
+  axios.get(
+    `http://localhost:8082/quiz/student/${quizId}/result`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  .then(res => {
+    // Already attempted → show result
+    setScore(res.data.score);
+
+    // Also load quiz so we can show total question count
+    return axios.get(
+      `http://localhost:8082/quiz/student/${quizId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  })
+  .then(res => {
+    setQuiz(res.data);
+  })
+  .catch(() => {
+    // Not attempted → load quiz normally
+    axios.get(
+      `http://localhost:8082/quiz/student/${quizId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
     .then(res => {
       setQuiz(res.data);
       setTimeLeft(res.data.durationMinutes * 60);
-    })
-    .catch(err => {
-      console.error("Error loading quiz:", err);
     });
+  });
 
-  }, [quizId]);
+}, [quizId]);
 
   /* ================= TIMER ================= */
   useEffect(() => {
@@ -82,10 +102,15 @@ export default function AttemptQuiz() {
 
       setScore(res.data);
 
-    } catch (error) {
-      console.error("Submit error:", error);
-      alert("Error submitting test");
-    }
+    }catch (error) {
+  const errorMessage = error.response?.data?.message;
+
+  if (errorMessage?.includes("already attempted")) {
+    setScore(0); // will immediately show result screen
+  } else {
+    alert(errorMessage || "Something went wrong.");
+  }
+}
   };
 
   /* ================= FORMAT TIME ================= */

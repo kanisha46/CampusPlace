@@ -18,9 +18,8 @@ public class StudentProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ ADD THIS BLOCK
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
     // Basic
@@ -70,4 +69,7 @@ public class StudentProfile {
 
     @ElementCollection
     private List<String> semResultsFileNames;
+
+    // ✅ IMPORTANT FIELD
+    private boolean profileCompleted = false;
 }

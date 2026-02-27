@@ -153,13 +153,19 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      try {
+      try{
         const token = localStorage.getItem("token");
 
-        const response = await axios.get("http://localhost:8082/api/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        if (!token || token === "undefined") {
+        console.warn("No valid token found");
+        return;
+      }
 
+       const response = await axios.get("http://localhost:8082/api/profile", {
+        headers: {
+          Authorization: `Bearer ${token}` // 👈 You must add this!
+        }
+      });
         const data = response.data;
 
         setFirstName(data.firstName || "");
@@ -185,15 +191,8 @@ const Dashboard = () => {
           setResumeValid(true);
         }
         // ✅ Check if profile already completed
-        if (
-          data.firstName &&
-          data.lastName &&
-          data.about &&
-          data.skills?.length > 0 &&
-          data.currentCgpa &&
-          data.linkedinLink
-        ) {
-          setProfileCompleted(true);
+      {
+          setProfileCompleted(data.profileCompleted || false);
 
           setCompletedSections({
             "Basic Details": true,
