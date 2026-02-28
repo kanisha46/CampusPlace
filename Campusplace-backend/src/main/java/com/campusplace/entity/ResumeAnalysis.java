@@ -18,8 +18,14 @@ public class ResumeAnalysis {
 
     private String fileName;
 
-    @Column(length = 10000)
+    @Lob
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String extractedText;
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String aiFeedback;
+
 
     private int overallScore;
 
@@ -28,9 +34,6 @@ public class ResumeAnalysis {
     private int skillsScore;
     private int formatScore;
     private int styleScore;
-
-    @Column(length = 5000)
-    private String aiFeedback;
 
     private LocalDateTime analyzedAt;
 

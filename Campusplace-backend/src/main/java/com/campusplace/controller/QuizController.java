@@ -53,4 +53,9 @@ public class QuizController {
     public List<StudentResult> getLeaderboard(@PathVariable Long quizId) {
         return quizService.getLeaderboard(quizId);
     }
+
+    @GetMapping("/student/{quizId}/attempts")
+    public long getAttemptCount(@PathVariable Long quizId, Authentication auth) {
+        return quizService.getAttemptCount(quizId, auth);
+    }
 }

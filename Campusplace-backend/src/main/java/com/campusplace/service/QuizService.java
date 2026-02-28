@@ -59,9 +59,10 @@ public class QuizService {
                 .findById(request.getQuizId())
                 .orElseThrow();
 
-        // 🔥 PREVENT MULTIPLE ATTEMPTS
-        if (studentResultRepository.findByStudentAndQuiz(student, quiz).isPresent()) {
-            throw new RuntimeException("You already attempted this quiz");
+        long attempts = studentResultRepository.countByStudentAndQuiz(student, quiz);
+
+        if (attempts >= 2) {
+            throw new RuntimeException("Maximum 2 attempts allowed");
         }
 
         int score = 0;
@@ -78,7 +79,6 @@ public class QuizService {
             }
         }
 
-        // 🔥 SAVE RESULT
         StudentResult result = StudentResult.builder()
                 .student(student)
                 .quiz(quiz)
@@ -116,6 +116,18 @@ public class QuizService {
         return studentResultRepository.findByQuizOrderByScoreDesc(quiz);
     }
 
+    public long getAttemptCount(Long quizId, Authentication auth) {
+
+        User student = userRepository
+                .findByEmail(auth.getName())
+                .orElseThrow();
+
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow();
+
+        return studentResultRepository.countByStudentAndQuiz(student, quiz);
+    }
+
     public StudentResult getStudentResultForQuiz(Long quizId, Authentication auth) {
 
         User student = userRepository
@@ -126,8 +138,9 @@ public class QuizService {
                 .orElseThrow();
 
         return studentResultRepository
-                .findByStudentAndQuiz(student, quiz)
+                .findByStudentAndQuizOrderBySubmittedAtDesc(student, quiz)
+                .stream()
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("Not attempted"));
     }
-
 }

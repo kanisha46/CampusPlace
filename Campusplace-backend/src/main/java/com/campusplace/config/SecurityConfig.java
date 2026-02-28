@@ -62,6 +62,7 @@ public class SecurityConfig {
                                 "/auth/refresh",
                                 "/auth/logout"
                         ).permitAll()
+                        .requestMatchers("/api/resume/**").authenticated()  // ✅ REQUIRE LOGIN
                         .requestMatchers("/api/profile/**").authenticated()
                         .anyRequest().authenticated()
                 )

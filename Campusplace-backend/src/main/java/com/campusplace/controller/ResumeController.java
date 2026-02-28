@@ -3,37 +3,33 @@ package com.campusplace.controller;
 import com.campusplace.entity.ResumeAnalysis;
 import com.campusplace.service.ResumeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;   // ✅ CORRECT IMPORT
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/resume")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
-@ConditionalOnProperty(name = "feature.resume.enabled", havingValue = "true")
 public class ResumeController {
 
     private final ResumeService resumeService;
 
     @PostMapping("/analyze")
-    public ResponseEntity<ResumeAnalysis> analyze(
+    public ResponseEntity<?> analyze(
             @RequestParam("file") MultipartFile file,
-            Principal principal
+            Authentication authentication
     ) {
-        return ResponseEntity.ok(
-                resumeService.analyze(file, principal.getName())
-        );
+        String email = authentication.getName();
+        return ResponseEntity.ok(resumeService.analyze(file, email));
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<ResumeAnalysis>> history(Principal principal) {
-        return ResponseEntity.ok(
-                resumeService.getHistory(principal.getName())
-        );
+    public ResponseEntity<?> getHistory(Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(resumeService.getHistory(email));
     }
 }

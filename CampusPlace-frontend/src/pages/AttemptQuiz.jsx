@@ -51,23 +51,25 @@ export default function AttemptQuiz() {
   }, [quizId]);
 
   useEffect(() => {
-  const handleScroll = () => {
-    quiz.questions.forEach(q => {
-      const element = document.getElementById(`question-${q.id}`);
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        if (rect.top >= 0 && rect.top <= 200) {
-          setActiveQuestion(q.id);
+    if (!quiz) return;
+
+    const handleScroll = () => {
+      quiz.questions.forEach(q => {
+        const element = document.getElementById(`question-${q.id}`);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top >= 0 && rect.top <= 200) {
+            setActiveQuestion(q.id);
+          }
         }
-      }
-    });
-  };
+      });
+    };
 
-  const container = document.querySelector(".quiz-main");
-  container?.addEventListener("scroll", handleScroll);
+    const container = document.querySelector(".quiz-main");
+    container?.addEventListener("scroll", handleScroll);
 
-  return () => container?.removeEventListener("scroll", handleScroll);
-}, [quiz]);
+    return () => container?.removeEventListener("scroll", handleScroll);
+  }, [quiz]);
 
   /* ================= TIMER ================= */
   useEffect(() => {
@@ -92,6 +94,12 @@ export default function AttemptQuiz() {
       [questionId]: selectedOption
     }));
   };
+  const scrollToQuestion = (id) => {
+  const element = document.getElementById(`question-${id}`);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+};
 
   const handleSubmit = async () => {
     const token = localStorage.getItem("token");
@@ -102,13 +110,6 @@ export default function AttemptQuiz() {
         selectedAnswer
       })
     );
-
-      const scrollToQuestion = (id) => {
-    const element = document.getElementById(`question-${id}`);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
     try {
       const res = await axios.post(
         "http://localhost:8082/quiz/student/submit",
@@ -131,24 +132,35 @@ export default function AttemptQuiz() {
   if (!quiz) return <div className="quiz-loading">Loading...</div>;
 
   /* ================= RESULT SCREEN ================= */
-  if (alreadyAttempted || score !== null) {
-    return (
-      <div className="result-wrapper">
-        <div className="result-card">
-          <h2>✅ You already completed this test</h2>
-          <div className="score-big">
-            {score} / {quiz.questions.length}
-          </div>
+  if ((alreadyAttempted || score !== null) && quiz) {
+  return (
+    <div className="result-wrapper">
+      <div className="result-card">
+        <h2>🎉 Test Completed</h2>
+        <div className="score-big">
+          {score} / {quiz.questions.length}
+        </div>
         <button
           className="back-btn"
           onClick={() => navigate("/mock-test")}
         >
           ← Back to Tests
         </button>
-        </div>
+
+        <button
+          className="retake-btn"
+          onClick={() => {
+            setScore(null);
+            setAlreadyAttempted(false);
+            setAnswers({});
+            setTimeLeft(quiz.durationMinutes * 60);
+          }}
+        >🔄 Retake Quiz
+      </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   /* ================= QUIZ UI ================= */
 return (
@@ -193,7 +205,8 @@ return (
       <div className="quiz-header">
         <h2>{quiz.title}</h2>
 
-        <div className="timer-circle">
+        {timeLeft !== null && (
+          <div className="timer-circle">
           <svg>
             <circle cx="45" cy="45" r="45" />
             <circle
@@ -203,9 +216,11 @@ return (
               className="progress-ring"
               style={{
                 strokeDashoffset:
-                  283 -
-                  (283 * timeLeft) /
-                    (quiz.durationMinutes * 60)
+                  timeLeft !== null
+                    ? 283 -
+                      (283 * timeLeft) /
+                        (quiz.durationMinutes * 60)
+                    : 283
               }}
             />
           </svg>
@@ -214,7 +229,7 @@ return (
             {timeLeft % 60 < 10 ? "0" : ""}
             {timeLeft % 60}
           </span>
-        </div>
+        </div>)}
       </div>
 
       {quiz.questions.map((q, index) => (
