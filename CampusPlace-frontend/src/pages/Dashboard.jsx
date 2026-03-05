@@ -171,7 +171,7 @@ const Dashboard = () => {
         setFirstName(data.firstName || "");
         setLastName(data.lastName || "");
         setUsername(data.username || "");
-        setEmail(data.email || "");
+        setEmail(data.user?.email || "");
         setMobile(data.mobile || "");
         setGender(data.gender || "");
         setUserType(data.userType || "");
@@ -238,6 +238,7 @@ const Dashboard = () => {
 const handleSave = async () => {
   try {
     const token = localStorage.getItem("token");
+    console.log("TOKEN:", token);
     if (!token) {
       console.error("Token not found in Local Storage");
       alert("Session expired. Please log in again.");
@@ -301,7 +302,9 @@ const handleSave = async () => {
 
     // ✅ SUCCESS MESSAGE
     setSuccessMessage("Details are saved successfully");
+    if (activeTab === "Education") {
     setProfileCompleted(true);
+    }
 
     // ✅ AUTO MOVE TO NEXT TAB
     const sectionOrder = [
@@ -315,11 +318,13 @@ const handleSave = async () => {
     const currentIndex = sectionOrder.indexOf(activeTab);
 
     if (currentIndex < sectionOrder.length - 1) {
-      setTimeout(() => {
-        setActiveTab(sectionOrder[currentIndex + 1]);
-        setSuccessMessage("");
-      }, 1500);
-    }
+  setTimeout(() => {
+    setActiveTab(sectionOrder[currentIndex + 1]);
+    setSuccessMessage("");
+  }, 1500);
+  } else {
+  setSuccessMessage("🎉 Profile completed successfully!");
+  }
 
   } catch (error) {
     console.error("Save error:", error);
@@ -1128,10 +1133,13 @@ const handleSave = async () => {
 
             {/* SAVE BUTTON */}
             <footer className="form-footer">
-              <button className={`save-btn ${!isFormValid ? "disabled-btn" : ""}`}
-                onClick={handleSave}>
-                ✓ Save
-              </button>
+              <button
+              className="save-btn"
+              disabled={!isFormValid}
+              onClick={handleSave}
+              >
+              ✓ Save
+          </button>
             </footer>
           </section>
         </main>

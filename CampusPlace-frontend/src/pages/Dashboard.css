@@ -202,7 +202,7 @@
   background: var(--bg-card);
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
-  padding: 50px 60px;
+  padding: 40px 50px;
   min-height: 600px;
   border: 1px solid var(--border-light);
   color: var(--text-main);
@@ -245,16 +245,19 @@
 
 /* --- FORM COMPONENTS --- */
 .form-group {
-  margin-bottom: 45px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 28px;
+  max-width: 420px;
 }
 
 .field-label {
   display: block;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 15px;
-  letter-spacing: 0.3px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
 }
 
 .name-row,
@@ -271,30 +274,65 @@
 
 .input-field {
   width: 100%;
-  padding: 14px;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
+  max-width: 420px;
+  padding: 14px 16px;
   font-size: 15px;
-  transition: all 0.2s;
-  background: var(--bg-card);
-  color: var(--text-main);
+
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #1f2937;
+
+  transition: all 0.2s ease;
 }
 
-.input-field::placeholder {
-  color: var(--text-muted);
+.input-field:hover {
+  border-color: #9ca3af;
 }
 
 .input-field:focus {
   outline: none;
-  border-color: var(--brand-gold);
-  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.12);
+  border-color: #ffcc00;
+  box-shadow: 0 0 0 3px rgba(255,204,0,0.2);
+  transform: scale(1.01);
 }
-
+.input-field::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
 .textarea-field {
   resize: none;
   line-height: 1.6;
 }
+body.dark .input-field {
+  background: #0f172a;
+  border: 2px solid #334155;
+  color: #e5e7eb;
+}
 
+body.dark .input-field:focus {
+  border-color: #ffcc00;
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.25);
+}
+.radio-group {
+  display: flex;
+  gap: 40px;
+  margin-top: 8px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.radio-group input {
+  accent-color: #ffcc00;
+  transform: scale(1.2);
+}
 /* PILLS & BUTTONS */
 .pill-group {
   display: flex;
@@ -305,21 +343,40 @@
 .pill-btn {
   padding: 10px 24px;
   border-radius: 30px;
-  border: 1.5px dashed var(--pill-border);
-  background: var(--pill-bg);
-  color: var(--text-muted);
+  border: 1.5px solid #d1d5db;
+
+  background: #f9fafb;
+  color: #374151;
+
   cursor: pointer;
   font-weight: 500;
-  transition: 0.3s;
+
+  transition: all 0.25s ease;
+}
+
+.pill-btn:hover {
+  border-color: #ffcc00;
 }
 
 .pill-btn.selected {
-  border: 2.5px solid var(--brand-gold);
-  background: var(--pill-bg);
-  color: var(--text-main);
+  background: #ffcc00;
+  border-color: #ffcc00;
+  color: #36415b;
   font-weight: 700;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+body.dark .pill-btn {
+  background: #111827;
+  border: 1.5px solid #374151;
+  color: #d1d5db;
 }
 
+body.dark .pill-btn.selected {
+  background: #ffcc00;
+  border-color: #ffcc00;
+  color: #0f172a;
+}
 .suggest-pill {
   padding: 8px 18px;
   border-radius: 20px;
@@ -374,27 +431,39 @@
 
 /* --- SAVE FOOTER --- */
 .form-footer {
-  margin-top: 50px;
+  margin-top: 40px;
   padding-top: 30px;
   border-top: 1px solid var(--divider);
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .save-btn {
-  background: var(--brand-navy);
-  color: var(--brand-gold);
-  padding: 14px 45px;
+  background: #36415b;
+  color: #ffcc00;
+
+  padding: 14px 40px;
   border-radius: 30px;
-  border: 1px solid var(--brand-gold);
-  font-weight: 700;
+
+  border: 2px solid #ffcc00;
+
+  font-weight: 600;
+  font-size: 15px;
+
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.25s;
 }
 
+.save-btn:hover {
+  background: #ffcc00;
+  color: #36415b;
+}
 .save-btn:disabled {
-  opacity: 0.5;
+  background: #9ca3af;
+  border-color: #9ca3af;
+  color: white;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .save-btn:hover:not(:disabled) {
@@ -544,4 +613,23 @@ body.dark textarea::placeholder {
 /* Fix the pale/hidden text in sidebar completion section */
 body.dark .completion-card {
   border-bottom: 1px solid #243041 !important;
+}
+/* ===== Modern SaaS Card Effect ===== */
+
+.sidebar,
+.main-content {
+  transition: all 0.25s ease;
+}
+
+.main-content:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+.profile-edit-header {
+  transition: all 0.25s ease;
+}
+
+.profile-edit-header:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
