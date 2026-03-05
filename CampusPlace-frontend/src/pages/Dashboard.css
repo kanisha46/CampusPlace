@@ -295,7 +295,7 @@
   outline: none;
   border-color: #ffcc00;
   box-shadow: 0 0 0 3px rgba(255,204,0,0.2);
-  transform: scale(1.01);
+  
 }
 .input-field::placeholder {
   color: var(--text-muted);
@@ -632,4 +632,155 @@ body.dark .completion-card {
 
 .profile-edit-header:hover {
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+/* Container Background Glow */
+.completion-bg {
+  background: radial-gradient(circle at top right, rgba(66, 133, 244, 0.05), transparent),
+              radial-gradient(circle at bottom left, rgba(52, 168, 83, 0.05), transparent);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Glassmorphism Card */
+.completion-success-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 60px 40px;
+  border-radius: 28px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  animation: cardAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cardAppear {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success-content h2 {
+  color: #1a202c;
+  font-size: 24px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.success-content p {
+  color: #718096;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Premium Edit Button */
+.edit-profile-btn {
+  margin-top: 35px;
+  padding: 14px 40px;
+  background: #4285F4;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px -5px rgba(66, 133, 244, 0.4);
+}
+
+.edit-profile-btn:hover {
+  background: #3367d6;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 25px -5px rgba(66, 133, 244, 0.5);
+}
+
+/* ================= ANIMATED CHECKMARK ================= */
+.success-checkmark {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 30px;
+}
+
+.check-icon {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  border-radius: 50%;
+  box-sizing: content-box;
+  border: 4px solid #4caf50;
+}
+
+.check-icon::before {
+  top: 3px;
+  left: -2px;
+  width: 30px;
+  transform-origin: 100% 50%;
+  border-radius: 100px 0 0 100px;
+}
+
+.check-icon::after {
+  top: 0;
+  left: 30px;
+  width: 60px;
+  transform-origin: 0 50%;
+  border-radius: 0 100px 100px 0;
+  animation: rotatePlaceholder 4.25s ease-in;
+}
+
+.icon-circle {
+  top: -4px;
+  left: -4px;
+  z-index: 10;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: absolute;
+  border: 4px solid rgba(76, 175, 80, 0.2);
+  box-sizing: content-box;
+}
+
+.icon-line {
+  height: 5px;
+  background-color: #4caf50;
+  display: block;
+  border-radius: 2px;
+  position: absolute;
+  z-index: 10;
+}
+
+.line-tip {
+  top: 46px;
+  left: 14px;
+  width: 25px;
+  transform: rotate(45deg);
+  animation: icon-line-tip 0.75s;
+}
+
+.line-long {
+  top: 38px;
+  right: 8px;
+  width: 47px;
+  transform: rotate(-45deg);
+  animation: icon-line-long 0.75s;
+}
+
+@keyframes icon-line-tip {
+  0% { width: 0; left: 1px; top: 19px; }
+  54% { width: 0; left: 1px; top: 19px; }
+  70% { width: 50px; left: -8px; top: 37px; }
+  84% { width: 17px; left: 21px; top: 48px; }
+  100% { width: 25px; left: 14px; top: 46px; }
+}
+
+@keyframes icon-line-long {
+  0% { width: 0; right: 46px; top: 54px; }
+  65% { width: 0; right: 46px; top: 54px; }
+  84% { width: 55px; right: 0px; top: 35px; }
+  100% { width: 47px; right: 8px; top: 38px; }
 }

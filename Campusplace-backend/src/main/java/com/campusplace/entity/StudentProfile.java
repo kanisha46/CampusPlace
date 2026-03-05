@@ -69,7 +69,9 @@ public class StudentProfile {
 
     private String skills;
 
-    @ElementCollection
+// StudentProfile.java
+
+    @ElementCollection(fetch = FetchType.EAGER) // 👈 Add Eager Fetch here
     private List<String> semResultsFileNames;
 
     // ✅ IMPORTANT FIELD

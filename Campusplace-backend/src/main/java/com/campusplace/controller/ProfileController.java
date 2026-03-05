@@ -5,8 +5,12 @@ import com.campusplace.entity.StudentProfile;
 import com.campusplace.entity.User;
 import com.campusplace.repository.StudentProfileRepository;
 import com.campusplace.repository.UserRepository;
+import com.campusplace.service.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,15 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class ProfileController {
+
+    @Autowired // 👈 This connects the service to the controller
+    private ProfileService profileService;
 
     private final UserRepository userRepository;
     private final StudentProfileRepository profileRepository;
     private final ObjectMapper objectMapper;
 
-    @PostMapping(consumes = {"multipart/form-data"})
+    @PostMapping(value="/profile", consumes = {"multipart/form-data"})
     public String saveProfile(
             @RequestPart("profile") String profileJson,
             @RequestPart(value = "resume", required = false) MultipartFile resume,
@@ -114,7 +121,9 @@ public class ProfileController {
             profile.setInternshipCertFileName(fileName);
         }
 
-        profile.setProfileCompleted(true);
+        if(dto.getGithubLink()!=null && dto.getLinkedinLink()!=null){
+            profile.setProfileCompleted(true);
+        }
 
         profileRepository.save(profile);
 
@@ -122,16 +131,13 @@ public class ProfileController {
     }
 
     // ================= SAFE GET =================
-    @GetMapping
-    public StudentProfile getProfile(Authentication authentication) {
-
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
-
-        return profileRepository.findByUser(user)
-                .orElse(StudentProfile.builder()
-                        .user(user)
-                        .profileCompleted(false)
-                        .build());
+    @GetMapping("/profile")
+    public ResponseEntity<?> getProfile(@RequestParam String email) {
+        try {
+            StudentProfile profile = profileService.getOrCreateProfile(email);
+            return ResponseEntity.ok(profile);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

@@ -38,17 +38,20 @@ const handleSubmit = async (e) => {
     }
 
     // -------- LOGIN --------
-    const res = await axios.post(
-  "http://localhost:8082/auth/login",
-  { email, password }
-);
+// -------- LOGIN --------
+const res = await axios.post("http://localhost:8082/auth/login", { email, password });
 console.log("Full Backend Response:", res.data);
-  const { accessToken, role: userRole, name: userName } = res.data;
 
-  if(accessToken)
-  {
-    localStorage.setItem("token", accessToken);
-    login(accessToken, userRole, userName);
+const { accessToken, role: userRole, name: userName } = res.data;
+
+if (accessToken) {
+  // 1. Store the email so the Dashboard can use it for the GET request
+  localStorage.setItem("email", email); 
+  
+  // 2. Use "accessToken" to match what the backend sends
+  localStorage.setItem("accessToken", accessToken); 
+  
+  login(accessToken, userRole, userName);
 
   if (userRole === "ADMIN") {
     navigate("/admin");
@@ -57,7 +60,8 @@ console.log("Full Backend Response:", res.data);
   } else {
     navigate("/dashboard");
   }
-}else {
+}
+else {
     setMessage("Login successful, but no token was received from the server.");
   } 
   } catch (error) {

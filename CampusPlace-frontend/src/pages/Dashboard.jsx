@@ -152,18 +152,26 @@ const Dashboard = () => {
   /* ================= FETCH PROFILE ================= */
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try{
-        const token = localStorage.getItem("token");
+  const fetchProfile = async () => {
+    try {
+      // 1. Retrieve the email we just saved
+      const storedEmail = localStorage.getItem("email");
+      
+      // 2. Retrieve the token using the correct key "accessToken"
+      const token = localStorage.getItem("accessToken");
 
-        if (!token || token === "undefined") {
+      if (!token || token === "undefined") {
         console.warn("No valid token found");
         return;
       }
 
-       const response = await axios.get("http://localhost:8082/api/profile", {
+      // 3. Add the 'params' object to the GET request
+      const response = await axios.get("http://localhost:8082/api/profile", {
         headers: {
-          Authorization: `Bearer ${token}` // 👈 You must add this!
+          Authorization: `Bearer ${token}`
+        },
+        params: {
+          email: storedEmail // 👈 This provides the required identity to the backend
         }
       });
         const data = response.data;
@@ -171,7 +179,7 @@ const Dashboard = () => {
         setFirstName(data.firstName || "");
         setLastName(data.lastName || "");
         setUsername(data.username || "");
-        setEmail(data.user?.email || "");
+        setEmail(localStorage.getItem("email") || "");
         setMobile(data.mobile || "");
         setGender(data.gender || "");
         setUserType(data.userType || "");
@@ -184,7 +192,7 @@ const Dashboard = () => {
         setExperience(data.experience || "");
         setQualification(data.qualification || "");
         setAboutText(data.about || "");
-        setSkills(data.skills || []);
+        setSkills(data.skills ? data.skills.split(",") : []);
 
         if (data.resumeFileName) {
           setResumeFileName(data.resumeFileName);
@@ -194,6 +202,7 @@ const Dashboard = () => {
       {
           setProfileCompleted(data.profileCompleted || false);
 
+          if (data.profileCompleted) {
           setCompletedSections({
             "Basic Details": true,
             Resume: true,
@@ -201,6 +210,7 @@ const Dashboard = () => {
             Skills: true,
             Education: true,
           });
+        }
         }
         // ✅ Education (if backend returns these)
         setCurrentCgpa(data.currentCgpa || "");
@@ -237,95 +247,59 @@ const Dashboard = () => {
   */
 const handleSave = async () => {
   try {
-    const token = localStorage.getItem("token");
-    console.log("TOKEN:", token);
+    const token = localStorage.getItem("accessToken");
     if (!token) {
-      console.error("Token not found in Local Storage");
       alert("Session expired. Please log in again.");
       return;
     }
+
+    // Prepare JSON payload
     const profileJson = {
-      firstName,
-      lastName,
-      username,
-      mobile,
-      gender,
-      userType,
-      course,
-      specialization,
-      startYear,
-      endYear,
-      facultyDept,
-      designation,
-      experience,
-      qualification,
+      firstName, lastName, username, mobile, gender, userType,
+      course, specialization, startYear, endYear,
+      facultyDept, designation, experience, qualification,
       about: aboutText,
       skills,
-      currentCgpa,
-      twelfthPercentile,
-      hasInternship,
-      hasHackathon,
-      hackathonDetails,
-      hasBacklogs,
-      backlogCount,
-      leetcodePercentile,
-      leetcodeAccLink,
-      leetcodeRank,
-      githubLink,
-      linkedinLink,
+      currentCgpa, twelfthPercentile,
+      hasInternship, hasHackathon, hackathonDetails,
+      hasBacklogs, backlogCount,
+      leetcodePercentile, leetcodeAccLink, leetcodeRank,
+      githubLink, linkedinLink,
     };
 
     const formData = new FormData();
-    formData.append(
-      "profile",
-      new Blob([JSON.stringify(profileJson)], {
-        type: "application/json",
-      })
-    );
-
+    formData.append("profile", JSON.stringify(profileJson));
     if (resumeFile) formData.append("resume", resumeFile);
     semResultsFiles.forEach((f) => formData.append("semResults", f));
-
     if (hasInternship === "Yes" && internshipCertFile) {
       formData.append("internshipCert", internshipCertFile);
     }
 
+    // API Call
     await axios.post("http://localhost:8082/api/profile", formData, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` }
     });
 
-    // ✅ MARK CURRENT SECTION COMPLETE
-    setCompletedSections((prev) => ({
-      ...prev,
-      [activeTab]: true,
-    }));
+    // Mark section as complete
+    setCompletedSections((prev) => ({ ...prev, [activeTab]: true }));
 
-    // ✅ SUCCESS MESSAGE
-    setSuccessMessage("Details are saved successfully");
+    // Success Logic
     if (activeTab === "Education") {
-    setProfileCompleted(true);
+      setProfileCompleted(true);
+      setSuccessMessage("🎉 Details are saved successfully!");
+      // Optional: Trigger a confetti effect or keep the message visible
+    } else {
+      setSuccessMessage("Section saved!");
+      
+      // Auto-advance to next tab
+      const sectionOrder = ["Basic Details", "Resume", "About", "Skills", "Education"];
+      const currentIndex = sectionOrder.indexOf(activeTab);
+      
+      setTimeout(() => {
+        setActiveTab(sectionOrder[currentIndex + 1]);
+        setSuccessMessage("");
+      }, 1500);
     }
-
-    // ✅ AUTO MOVE TO NEXT TAB
-    const sectionOrder = [
-      "Basic Details",
-      "Resume",
-      "About",
-      "Skills",
-      "Education",
-    ];
-
-    const currentIndex = sectionOrder.indexOf(activeTab);
-
-    if (currentIndex < sectionOrder.length - 1) {
-  setTimeout(() => {
-    setActiveTab(sectionOrder[currentIndex + 1]);
-    setSuccessMessage("");
-  }, 1500);
-  } else {
-  setSuccessMessage("🎉 Profile completed successfully!");
-  }
-
   } catch (error) {
     console.error("Save error:", error);
     alert("Something went wrong while saving.");
@@ -459,6 +433,37 @@ const handleSave = async () => {
 
   /* ================= JSX ================= */
 
+if (profileCompleted) {
+  return (
+    <div className="dashboard-wrapper completion-bg">
+      <div className="completion-success-card fade-in">
+        {/* Animated Checkmark Wrapper */}
+        <div className="success-checkmark">
+          <div className="check-icon">
+            <span className="icon-line line-tip"></span>
+            <span className="icon-line line-long"></span>
+            <div className="icon-circle"></div>
+            <div className="icon-fix"></div>
+          </div>
+        </div>
+
+        <div className="success-content">
+          <h2>All details are saved successfully!</h2>
+          <p>Your profile is now <b>100% complete</b> and visible to recruiters.</p>
+          
+          <div className="success-actions">
+            <button 
+              className="edit-profile-btn" 
+              onClick={() => setProfileCompleted(false)}
+            >
+              <span className="btn-icon">✏️</span> Edit Profile
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
   return (
     <div className="dashboard-wrapper">
       <div className="dashboard-container">
@@ -1133,13 +1138,14 @@ const handleSave = async () => {
 
             {/* SAVE BUTTON */}
             <footer className="form-footer">
-              <button
-              className="save-btn"
+              {/* Change the button label at line 663 */}
+            <button
+              className={`save-btn ${activeTab === "Education" ? "final-save" : ""}`}
               disabled={!isFormValid}
               onClick={handleSave}
-              >
-              ✓ Save
-          </button>
+            >
+              {activeTab === "Education" ? "🚀 Save All Details" : "✓ Save & Next"}
+            </button>
             </footer>
           </section>
         </main>
