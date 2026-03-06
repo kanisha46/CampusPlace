@@ -20,25 +20,22 @@ const CompanyDetails = () => {
 useEffect(() => {
   const fetchData = async () => {
     try {
+      const token = localStorage.getItem("accessToken"); // Use accessToken to match login
+      const email = localStorage.getItem("email"); // Get email for profile lookup
 
-      const token = localStorage.getItem("token");
-
-const compRes = await axios.get(
-  `http://localhost:8082/api/companies/${id}`
-);
-
-      const studentRes = await axios.get(
-        `http://localhost:8082/api/students/1`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
+      // 1. Fetch Company Details
+      const compRes = await axios.get(`http://localhost:8082/api/companies/${id}`);
       setCompany(compRes.data);
-      setStudent(studentRes.data);
       setEditedCompany(compRes.data);
+
+      // 2. Fetch Student Profile (This contains the correct CGPA)
+      const profileRes = await axios.get(`http://localhost:8082/api/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { email: email } // Pass email as query param as required by your backend
+      });
+
+      // profileRes.data contains fields like currentCgpa, hasBacklogs, and specialization
+      setStudent(profileRes.data);
 
     } catch (err) {
       console.error("Fetch error:", err);
@@ -59,25 +56,25 @@ const checkEligibility = () => {
   const criteria = company.criteria;
   const steps = [];
 
+  // Use student.currentCgpa instead of student.cgpa
   steps.push({
     label: "Minimum CGPA Requirement",
-    passed: student.cgpa >= criteria.minCgpa
+    passed: parseFloat(student.currentCgpa) >= criteria.minCgpa
   });
 
+  // Use student.hasBacklogs (which is "Yes" or "No") instead of numeric count
   steps.push({
     label: "Backlog Requirement",
-    passed: criteria.noActiveBacklogs ? student.backlogs === 0 : true
+    passed: criteria.noActiveBacklogs ? student.hasBacklogs === "No" : true
   });
 
-  const branches =
-    criteria.allowedBranches?.split(",").map(b => b.trim()) || [];
+  const branches = criteria.allowedBranches?.split(",").map(b => b.trim()) || [];
 
+  // Use student.specialization instead of student.branch
   steps.push({
     label: "Branch Eligibility",
-    passed:
-      branches.length === 0 || branches.includes(student.branch)
+    passed: branches.length === 0 || branches.includes(student.specialization)
   });
-
   steps.forEach((step, index) => {
     setTimeout(() => {
       setCheckSteps(prev => [...prev, step]);
@@ -182,6 +179,7 @@ const checkEligibility = () => {
           </div>
 
           {/* RIGHT SIDE: Action Engine */}
+          
           <div className="right-section">
             <div className="action-card">
               <h3>Application Portal</h3>
@@ -210,7 +208,7 @@ const checkEligibility = () => {
           <>
             <h3>🎉 You Are Eligible!</h3>
             <button className="apply-now-btn" onClick={handleApply}>
-              Confirm Application
+              Apply Now
             </button>
           </>
         ) : (

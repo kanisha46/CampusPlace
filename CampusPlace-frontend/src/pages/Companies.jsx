@@ -14,6 +14,7 @@ const Companies = () => {
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false); 
   const [showModal, setShowModal] = useState(false);
+  const [showUpcoming, setShowUpcoming] = useState(false);
   const [newCompany, setNewCompany] = useState({
   name: "",
   industry: "",
@@ -97,6 +98,15 @@ const Companies = () => {
       }
     };
 
+    const upcomingCompanies = useMemo(() => {
+  const today = new Date();
+
+  return companies.filter((c) => {
+    if (!c.driveDate) return false;
+    return new Date(c.driveDate) > today;
+  });
+}, [companies]);
+
   /* ================= DELETE COMPANY ================= */
 
   const handleDelete = async (id) => {
@@ -150,6 +160,16 @@ const Companies = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <div style={{textAlign:"center", marginTop:"20px"}}>
+
+          <button
+            className="upcoming-btn"
+            onClick={() => setShowUpcoming(!showUpcoming)}
+          >
+            {showUpcoming ? "Show All Companies" : "See Upcoming Companies"}
+          </button>
+
+          </div>
 
           <select
             value={branch}
@@ -166,6 +186,42 @@ const Companies = () => {
           </select>
         </div>
       </div>
+      {/* ===== UPCOMING DRIVES ===== */}
+
+{showUpcoming && upcomingCompanies.length > 0 && (
+  <div className="upcoming-section">
+
+    <h2>🚀 Upcoming Placement Drives</h2>
+
+    <div className="upcoming-grid">
+
+      {upcomingCompanies.map((company) => (
+        <div key={company.id} className="upcoming-card">
+
+          <h3>{company.name}</h3>
+
+          <p>📍 {company.location}</p>
+
+          <p>
+            📅 Drive Date:
+            <strong>
+              {new Date(company.driveDate).toLocaleDateString()}
+            </strong>
+          </p>
+
+          <button
+            onClick={() => navigate(`/companies/${company.id}`)}
+          >
+            View Details
+          </button>
+
+        </div>
+      ))}
+
+    </div>
+
+  </div>
+)}
       {/* ===== ADMIN ACTIONS ===== */}
       {user?.role === "ADMIN" && (
         <div className="admin-actions">
@@ -178,51 +234,52 @@ const Companies = () => {
         </div>
       )}
       {/* ===== GRID ===== */}
-      <div className="companies-grid">
-        {loading && <p>Loading companies...</p>}
+  {!showUpcoming && (
+  <div className="companies-grid">
+  {loading && <p>Loading companies...</p>}
 
-        {!loading && filteredCompanies.length === 0 && (
-          <p>No companies found.</p>
-        )}
+  {!loading && (showUpcoming ? upcomingCompanies : filteredCompanies).length === 0 && (
+    <p>No companies found.</p>
+  )}
 
-        {filteredCompanies.map((company) => (
-          <div
-            key={company.id}
-            className="company-card"
-            onClick={() => navigate(`/companies/${company.id}`)}
+  {!loading &&
+    (showUpcoming ? upcomingCompanies : filteredCompanies).map((company) => (
+      <div
+        key={company.id}
+        className="company-card"
+        onClick={() => navigate(`/companies/${company.id}`)}
+      >
+        <h3>{company.name}</h3>
+        <p>{company.location}</p>
+        <p className="industry">{company.industry}</p>
+
+        <span>
+          {company.totalOpenings ?? 0} Open Positions
+        </span>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(company.website, "_blank");
+          }}
+        >
+          Visit Website
+        </button>
+
+        {user?.role === "ADMIN" && (
+          <button
+            className="admin-btn remove-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(company.id);
+            }}
           >
-            <h3>{company.name}</h3>
-            <p>{company.location}</p>
-            <p className="industry">{company.industry}</p>
-
-            <span>
-              {company.totalOpenings ?? 0} Open Positions
-            </span>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open(company.website, "_blank");
-              }}
-            >
-              Visit Website
-            </button>
-
-            {/* ===== ADMIN DELETE BUTTON ===== */}
-            {user?.role === "ADMIN" && (
-              <button
-                className="admin-btn remove-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(company.id);
-                }}
-              >
-                Remove
-              </button>
-            )}
-          </div>
-        ))}
+            Remove
+          </button>
+        )}
       </div>
+    ))}
+</div>)}
 
       {/* ===== MODAL ===== */}
       {showModal && (
