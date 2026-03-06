@@ -16,61 +16,49 @@ export default function AttemptQuiz() {
   const [activeQuestion, setActiveQuestion] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const savedAnswers = localStorage.getItem(`quiz-${quizId}-answers`);
 
-    // FIRST → Check if result exists
-    axios.get(
-      `http://localhost:8082/quiz/student/${quizId}/result`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    .then(res => {
-      setScore(res.data.score);
-      setAlreadyAttempted(true);
+    if (savedAnswers) {
+      setAnswers(JSON.parse(savedAnswers));
+    }
+  }, [quizId]);   
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
 
-      // Load quiz for total questions
-      return axios.get(
+  const fetchData = async () => {
+    try {
+      // 1. First, try to fetch the quiz structure
+      const quizRes = await axios.get(
         `http://localhost:8082/quiz/student/${quizId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-    })
-    .then(res => {
-      setQuiz(res.data);
-    })
-    .catch(() => {
-      // Not attempted → load quiz normally
-      axios.get(
-        `http://localhost:8082/quiz/student/${quizId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      .then(res => {
-        setQuiz(res.data);
-        setTimeLeft(res.data.durationMinutes * 60);
-      });
-    });
+      setQuiz(quizRes.data);
 
-  }, [quizId]);
-
-  useEffect(() => {
-    if (!quiz) return;
-
-    const handleScroll = () => {
-      quiz.questions.forEach(q => {
-        const element = document.getElementById(`question-${q.id}`);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top >= 0 && rect.top <= 200) {
-            setActiveQuestion(q.id);
-          }
+      // 2. Then, try to fetch the result
+      try {
+        const resultRes = await axios.get(
+          `http://localhost:8082/quiz/student/${quizId}/result`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        if (resultRes.data) {
+          setScore(resultRes.data.score); // Set the score from the backend
+          setAlreadyAttempted(true);
         }
-      });
-    };
+      } catch (err) {
+        // If this fails (400 Bad Request), it just means no previous attempt exists.
+        console.log("No previous result found, starting fresh.");
+        setAlreadyAttempted(false);
+        setTimeLeft(quizRes.data.durationMinutes * 60);
+      }
+    } catch (err) {
+      console.error("Critical error fetching quiz:", err);
+    }
+  };
 
-    const container = document.querySelector(".quiz-main");
-    container?.addEventListener("scroll", handleScroll);
-
-    return () => container?.removeEventListener("scroll", handleScroll);
-  }, [quiz]);
-
+  fetchData();
+}, [quizId]);
   /* ================= TIMER ================= */
   useEffect(() => {
     if (timeLeft <= 0 || score !== null) return;
@@ -89,11 +77,19 @@ export default function AttemptQuiz() {
   }, [timeLeft]);
 
   const handleOptionChange = (questionId, selectedOption) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: selectedOption
-    }));
+
+  const updatedAnswers = {
+    ...answers,
+    [questionId]: selectedOption
   };
+
+  setAnswers(updatedAnswers);
+
+  localStorage.setItem(
+    `quiz-${quizId}-answers`,
+    JSON.stringify(updatedAnswers)
+  );
+};
   const scrollToQuestion = (id) => {
   const element = document.getElementById(`question-${id}`);
   if (element) {
@@ -101,33 +97,37 @@ export default function AttemptQuiz() {
   }
 };
 
-  const handleSubmit = async () => {
-    const token = localStorage.getItem("token");
+const handleSubmit = async () => {
 
-    const formattedAnswers = Object.entries(answers).map(
-      ([questionId, selectedAnswer]) => ({
-        questionId: parseInt(questionId),
-        selectedAnswer
-      })
-    );
-    try {
-      const res = await axios.post(
-        "http://localhost:8082/quiz/student/submit",
-        {
-          quizId: parseInt(quizId),
-          answers: formattedAnswers
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+  const token = localStorage.getItem("token");
 
-      setScore(res.data);
+  const formattedAnswers = Object.keys(answers).map(id => ({
+    questionId: parseInt(id),
+    selectedAnswer: answers[id]
+  }));
 
-    } catch (err) {
-      console.error(err);
-    }
+  const payload = {
+    quizId: parseInt(quizId),
+    answers: formattedAnswers
   };
+
+  console.log("Submitting:", payload);
+
+  try {
+    const res = await axios.post(
+      "http://localhost:8082/quiz/student/submit",
+      payload,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const finalScore = typeof res.data === 'object' ? res.data.score : res.data;
+    
+    setScore(finalScore);
+    setAlreadyAttempted(true); // This forces the "Result Screen" to show
+    localStorage.removeItem(`quiz-${quizId}-answers`);
+  } catch (error) {
+    console.error("Submit error:", error.response?.data);
+  }
+};
 
   if (!quiz) return <div className="quiz-loading">Loading...</div>;
 
@@ -149,12 +149,16 @@ export default function AttemptQuiz() {
 
         <button
           className="retake-btn"
-          onClick={() => {
-            setScore(null);
-            setAlreadyAttempted(false);
-            setAnswers({});
-            setTimeLeft(quiz.durationMinutes * 60);
-          }}
+         onClick={() => {
+
+  localStorage.removeItem(`quiz-${quizId}-answers`);
+
+  setScore(null);
+  setAlreadyAttempted(false);
+  setAnswers({});
+  setTimeLeft(quiz.durationMinutes * 60);
+
+}}
         >🔄 Retake Quiz
       </button>
       </div>
@@ -166,7 +170,7 @@ export default function AttemptQuiz() {
 return (
   <div className="quiz-layout">
 
-    {/* ============ SIDEBAR ============ */}
+    {/* SIDEBAR */}
     <div className="quiz-sidebar">
       <h3>
         {Object.keys(answers).length} / {quiz.questions.length} Answered
@@ -183,87 +187,78 @@ return (
         />
       </div>
 
-     <div className="question-numbers">
-      {quiz.questions.map((q, index) => (
-        <div
-          key={q.id}
-          onClick={() => scrollToQuestion(q.id)}
-          className={`q-number 
-          ${answers[q.id] ? "answered" : ""} 
-          ${activeQuestion === q.id ? "active" : ""}
-        `}
-        >
-          {index + 1}
-        </div>
-      ))}
-    </div>
+      <div className="legend">
+        <span className="legend-box answered"></span> Answered
+        <span className="legend-box active"></span> Current
+      </div>
+
+      <div className="question-numbers">
+        {quiz.questions.map((q, index) => (
+          <div
+            key={q.id}
+            onClick={() => scrollToQuestion(q.id)}
+            className={`q-number 
+              ${answers[q.id] ? "answered" : ""} 
+              ${activeQuestion === q.id ? "active" : ""}`}
+          >
+            {index + 1}
+          </div>
+        ))}
+      </div>
     </div>
 
-    {/* ============ MAIN SECTION ============ */}
+    {/* MAIN AREA */}
     <div className="quiz-main">
 
+      {/* STICKY HEADER */}
       <div className="quiz-header">
         <h2>{quiz.title}</h2>
 
         {timeLeft !== null && (
-          <div className="timer-circle">
-          <svg>
-            <circle cx="45" cy="45" r="45" />
-            <circle
-              cx="45"
-              cy="45"
-              r="45"
-              className="progress-ring"
-              style={{
-                strokeDashoffset:
-                  timeLeft !== null
-                    ? 283 -
-                      (283 * timeLeft) /
-                        (quiz.durationMinutes * 60)
-                    : 283
-              }}
-            />
-          </svg>
-          <span>
-            {Math.floor(timeLeft / 60)}:
+          <div className="timer">
+            ⏱ {Math.floor(timeLeft / 60)}:
             {timeLeft % 60 < 10 ? "0" : ""}
             {timeLeft % 60}
-          </span>
-        </div>)}
+          </div>
+        )}
+
+        <button className="submit-btn" onClick={handleSubmit}>
+          Submit Test
+        </button>
       </div>
 
-      {quiz.questions.map((q, index) => (
-        <div
-          key={q.id}
-          id={`question-${q.id}`}
-          className="question-card"
-        >
-          <h4>
-            Q{index + 1}. {q.question}
-          </h4>
+      {/* SCROLLABLE QUESTION AREA */}
+      <div className="questions-wrapper">
 
-          {["A", "B", "C", "D"].map(option => (
-            <label key={option} className="option">
-              <input
-                type="radio"
-                name={`question-${q.id}`}
-                checked={answers[q.id] === option}
-                onChange={() =>
-                  handleOptionChange(q.id, option)
-                }
-              />
-              {q[`option${option}`]}
-            </label>
-          ))}
-        </div>
-      ))}
+        {quiz.questions.map((q, index) => (
+          <div
+            key={q.id}
+            id={`question-${q.id}`}
+            className="question-card"
+          >
+            <h4>
+              Q{index + 1}. {q.question}
+            </h4>
 
-      <button
-        className="submit-btn"
-        onClick={handleSubmit}
-      >
-        Submit Test
-      </button>
+            {["A", "B", "C", "D"].map(option => (
+              <label key={option} className="option">
+                <input
+                  type="radio"
+                  name={`question-${q.id}`}
+                  checked={answers[q.id] === option}
+                  onChange={() => handleOptionChange(q.id, option)}
+                />
+                {q[`option${option}`]}
+              </label>
+            ))}
+          </div>
+        ))}
+
+        <button className="submit-btn" onClick={handleSubmit}>
+          Submit Test
+        </button>
+
+      </div>
     </div>
   </div>
 );

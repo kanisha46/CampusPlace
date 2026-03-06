@@ -31,7 +31,8 @@ const DIFFICULTY = ["EASY", "MEDIUM", "HARD"];
 export default function QuestionBank() {
   const role = useMemo(() => getRole(), []);
   const canManage = role === "FACULTY" || role === "ADMIN";
-
+const [aiAnswers, setAiAnswers] = useState({});
+const [loadingAI, setLoadingAI] = useState(null);
   const [companies, setCompanies] = useState([]);
   const [loadingQuestions, setLoadingQuestions] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -76,6 +77,31 @@ export default function QuestionBank() {
       .catch((e) => console.error("Questions load error:", e))
       .finally(() => setLoadingQuestions(false));
   };
+
+  const generateAIAnswer = async (question) => {
+  try {
+    setLoadingAI(question.id);
+
+    const res = await axios.post(
+      `${API_BASE}/api/ai/generate-answer`,
+      {
+        question: question.questionText
+      },
+      { headers: authHeaders() }
+    );
+
+    setAiAnswers(prev => ({
+      ...prev,
+      [question.id]: res.data.answer
+    }));
+
+  } catch (err) {
+    console.error(err);
+    alert("AI generation failed.");
+  } finally {
+    setLoadingAI(null);
+  }
+};
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -166,25 +192,39 @@ export default function QuestionBank() {
         ) : (
           questions.map((q, idx) => (   
             <div className="qb-question-card" key={q.id} style={{ animationDelay: `${idx * 0.05}s` }}>
-              <div className="qb-card-top">
-                <div className="qb-company">
-                <img src={`https://logo.clearbit.com/${q.companyName?.toLowerCase()}.com`} />
-                <span>{q.companyName || "N/A"}</span>
-              </div>
-                <span className={`qb-diff-badge qb-diff-${String(q.difficulty).toLowerCase()}`}>
-                  {q.difficulty}
-                </span>
-              </div>
+             <div className="qb-card-top">
+            <div className="qb-company">
+              <span>{q.companyName || "N/A"}</span>
+            </div>
+
+            <span className={`qb-diff-badge qb-diff-${String(q.difficulty).toLowerCase()}`}>
+              {q.difficulty}
+            </span>
+          </div>
               
               <div className="qb-card-body">
-                <p>"{q.questionText}"</p>
+            <p>"{q.questionText}"</p>
+
+            {aiAnswers[q.id] && (
+              <div className="qb-ai-answer">
+                <strong>AI Generated Answer:</strong>
+                <p>{aiAnswers[q.id]}</p>
               </div>
+            )}
+          </div>
 
               <div className="qb-card-footer">
-                <span className="qb-tag">{q.branch}</span>
-                <span className="qb-tag">{String(q.roundName).replace("_", " ")}</span>
-                <span className="qb-tag">{q.questionType}</span>
-              </div>
+              <span className="qb-tag">{q.branch}</span>
+              <span className="qb-tag">{String(q.roundName).replace("_", " ")}</span>
+              <span className="qb-tag">{q.questionType}</span>
+
+              <button
+                className="qb-ai-btn"
+                onClick={() => generateAIAnswer(q)}
+              >
+                {loadingAI === q.id ? "Generating..." : "Generate with AI"}
+              </button>
+            </div>
             </div>
           ))
         )}

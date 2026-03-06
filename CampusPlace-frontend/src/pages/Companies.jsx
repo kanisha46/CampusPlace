@@ -153,38 +153,37 @@ const Companies = () => {
       <div className="companies-header">
         <h1>Explore Top Companies</h1>
 
-        <div className="filter-bar">
-          <input
-            type="text"
-            placeholder="Search companies..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <div style={{textAlign:"center", marginTop:"20px"}}>
+<div className="filter-bar">
 
-          <button
-            className="upcoming-btn"
-            onClick={() => setShowUpcoming(!showUpcoming)}
-          >
-            {showUpcoming ? "Show All Companies" : "See Upcoming Companies"}
-          </button>
+  <input
+    type="text"
+    placeholder="Search companies..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+  />
 
-          </div>
+  <select
+    value={branch}
+    onChange={(e) => setBranch(e.target.value)}
+  >
+    <option value="ALL">All Branches</option>
+    <option value="IT">IT</option>
+    <option value="CE">CE</option>
+    <option value="EC">EC</option>
+    <option value="IC">IC</option>
+    <option value="CHEMICAL">CHEMICAL</option>
+    <option value="MECHANICAL">MECHANICAL</option>
+    <option value="CIVIL">CIVIL</option>
+  </select>
 
-          <select
-            value={branch}
-            onChange={(e) => setBranch(e.target.value)}
-          >
-            <option value="ALL">All Branches</option>
-            <option value="IT">IT</option>
-            <option value="CE">CE</option>
-            <option value="EC">EC</option>
-            <option value="IC">IC</option>
-            <option value="CHEMICAL">CHEMICAL</option>
-            <option value="MECHANICAL">MECHANICAL</option>
-            <option value="CIVIL">CIVIL</option>
-          </select>
-        </div>
+  <button
+    className="upcoming-btn"
+    onClick={() => setShowUpcoming(!showUpcoming)}
+  >
+    {showUpcoming ? "Show All Companies" : "Upcoming Drives"}
+  </button>
+
+</div>
       </div>
       {/* ===== UPCOMING DRIVES ===== */}
 
@@ -210,10 +209,11 @@ const Companies = () => {
           </p>
 
           <button
-            onClick={() => navigate(`/companies/${company.id}`)}
-          >
-            View Details
-          </button>
+          className="view-details-btn"
+          onClick={() => navigate(`/companies/${company.id}`)}
+        >
+          View Details →
+        </button>
 
         </div>
       ))}

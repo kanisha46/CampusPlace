@@ -21,7 +21,7 @@ public class QuizService {
     private final McqQuestionRepository questionRepository;
     private final StudentResultRepository studentResultRepository;
     private final UserRepository userRepository;
-
+    private final UserService userService;
     // ✅ CREATE QUIZ
     public void createQuiz(CreateQuizRequest request) {
 
@@ -90,7 +90,9 @@ public class QuizService {
 
         return score;
     }
-    public List<QuizListResponse> getActiveQuizzesByBranch(Branch branch) {
+    public List<QuizListResponse> getActiveQuizzesByBranch(String specialization) {
+
+        Branch branch = Branch.valueOf(specialization.toUpperCase());
 
         return quizRepository.findByBranchAndActiveTrue(branch)
                 .stream()
@@ -130,17 +132,13 @@ public class QuizService {
 
     public StudentResult getStudentResultForQuiz(Long quizId, Authentication auth) {
 
-        User student = userRepository
-                .findByEmail(auth.getName())
-                .orElseThrow();
+        User user = userService.getLoggedInUser(auth);
 
         Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         return studentResultRepository
-                .findByStudentAndQuizOrderBySubmittedAtDesc(student, quiz)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Not attempted"));
+                .findByStudentAndQuiz(user, quiz)
+                .orElse(null);   // IMPORTANT
     }
 }

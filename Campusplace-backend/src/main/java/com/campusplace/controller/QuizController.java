@@ -4,12 +4,16 @@ import com.campusplace.dto.CreateQuizRequest;
 import com.campusplace.dto.QuizListResponse;
 import com.campusplace.dto.SubmitQuizRequest;
 import com.campusplace.entity.Quiz;
+import com.campusplace.entity.StudentProfile;
 import com.campusplace.entity.StudentResult;
 import com.campusplace.entity.User;
+import com.campusplace.repository.StudentProfileRepository;
 import com.campusplace.service.QuizService;
 import com.campusplace.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,11 +26,17 @@ public class QuizController {
 
     private final QuizService quizService;
     private final UserService userService;
-
+    private final StudentProfileRepository studentProfileRepository;
     @GetMapping("/student/list")
     public List<QuizListResponse> getBranchQuizzes(Authentication authentication) {
+
         User user = userService.getLoggedInUser(authentication);
-        return quizService.getActiveQuizzesByBranch(user.getBranch());
+
+        StudentProfile profile = studentProfileRepository
+                .findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Student profile not found"));
+
+        return quizService.getActiveQuizzesByBranch(profile.getSpecialization());
     }
 
     @GetMapping("/student/{quizId}")
@@ -42,11 +52,17 @@ public class QuizController {
     }
 
     @GetMapping("/student/{quizId}/result")
-    public StudentResult getStudentResult(
+    public ResponseEntity<?> getStudentResult(
             @PathVariable Long quizId,
             Authentication authentication
     ) {
-        return quizService.getStudentResultForQuiz(quizId, authentication);
+        StudentResult result = quizService.getStudentResultForQuiz(quizId, authentication);
+
+        if (result == null) {
+            return ResponseEntity.ok(null);
+        }
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/{quizId}/leaderboard")

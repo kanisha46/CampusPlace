@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     List<Quiz> findByBranchAndActiveTrue(Branch branch);
+
     @Query("SELECT q FROM Quiz q LEFT JOIN FETCH q.questions WHERE q.id = :id")
     Optional<Quiz> findQuizWithQuestions(@Param("id") Long id);
+
 }

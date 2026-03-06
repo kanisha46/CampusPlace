@@ -194,7 +194,35 @@
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+.qb-ai-btn{
+  margin-left:auto;
+  background:#0ea5e9;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  font-size:12px;
+  cursor:pointer;
+}
 
+.qb-ai-btn:hover{
+  background:#0284c7;
+}
+
+.qb-ai-answer{
+  margin-top:12px;
+  padding:12px;
+  background:#ecfeff;
+  border-left:4px solid #06b6d4;
+  border-radius:8px;
+  font-size:14px;
+}
+.qb-company span{
+  font-weight:700;
+  font-size:15px;
+  color:#1e2a45;
+  text-transform:uppercase;
+}
 /* ================= DARK MODE ================= */
 body.dark .qb-glass-filter, 
 body.dark .qb-question-card,
