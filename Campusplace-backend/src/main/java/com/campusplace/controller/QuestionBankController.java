@@ -4,6 +4,7 @@ import com.campusplace.entity.Question;
 import com.campusplace.service.QuestionBankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -18,13 +19,19 @@ public class QuestionBankController {
     public List<Question> filter(
             @RequestParam(required = false) Long companyId,
             @RequestParam(required = false) String branch,
-            @RequestParam(required = false) String round,
-            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String roundName,
+            @RequestParam(required = false) String questionType,
             @RequestParam(required = false) String difficulty,
-            @RequestParam(required = false) String search) {
+            @RequestParam(required = false) String search
+    ) {
 
         return service.getFilteredQuestions(
-                companyId, branch, round, type, difficulty, search
+                companyId,
+                branch,
+                roundName,
+                questionType,
+                difficulty,
+                search
         );
     }
 }

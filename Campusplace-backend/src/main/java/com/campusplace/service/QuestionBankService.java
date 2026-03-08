@@ -17,8 +17,8 @@ public class QuestionBankService {
     public List<Question> getFilteredQuestions(
             Long companyId,
             String branch,
-            String round,
-            String type,
+            String roundName,
+            String questionType,
             String difficulty,
             String search) {
 
@@ -29,21 +29,19 @@ public class QuestionBankService {
             root.fetch("company", jakarta.persistence.criteria.JoinType.LEFT);
 
             if (companyId != null) {
-                predicates.add(
-                        cb.equal(root.get("company").get("id"), companyId)
-                );
+                predicates.add(cb.equal(root.get("company").get("id"), companyId));
             }
 
             if (branch != null && !branch.isEmpty()) {
                 predicates.add(cb.equal(root.get("branch"), branch));
             }
 
-            if (round != null && !round.isEmpty()) {
-                predicates.add(cb.equal(root.get("roundName"), round));
+            if (roundName != null && !roundName.isEmpty()) {
+                predicates.add(cb.equal(root.get("roundName"), roundName));
             }
 
-            if (type != null && !type.isEmpty()) {
-                predicates.add(cb.equal(root.get("questionType"), type));
+            if (questionType != null && !questionType.isEmpty()) {
+                predicates.add(cb.equal(root.get("questionType"), questionType));
             }
 
             if (difficulty != null && !difficulty.isEmpty()) {

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import ReactMarkdown from "react-markdown";
 import "./QuestionBank.css";
 
 const API_BASE = "http://localhost:8082";
@@ -24,294 +25,518 @@ function authHeaders() {
 }
 
 const BRANCHES = ["IT", "CE", "CHEMICAL", "CIVIL", "EC", "IC", "MECHANICAL"];
-const ROUNDS = ["ROUND_1", "ROUND_2", "ROUND_3", "ROUND_4", "TECHNICAL", "APTITUDE", "HR"];
-const TYPES = ["MCQ", "CODING", "TECHNICAL", "APTITUDE", "HR"];
-const DIFFICULTY = ["EASY", "MEDIUM", "HARD"];
+const ROUNDS = ["ROUND_1","ROUND_2","ROUND_3","ROUND_4","TECHNICAL","APTITUDE","HR"];
+const TYPES = ["MCQ","CODING","TECHNICAL","APTITUDE","HR"];
+const DIFFICULTY = ["EASY","MEDIUM","HARD"];
 
 export default function QuestionBank() {
+
   const role = useMemo(() => getRole(), []);
   const canManage = role === "FACULTY" || role === "ADMIN";
-const [aiAnswers, setAiAnswers] = useState({});
-const [loadingAI, setLoadingAI] = useState(null);
-  const [companies, setCompanies] = useState([]);
-  const [loadingQuestions, setLoadingQuestions] = useState(false);
-  const [questions, setQuestions] = useState([]);
 
-  const [filters, setFilters] = useState({
-    companyId: "",
-    branch: "",
-    roundName: "",
-    questionType: "",
-    difficulty: "",
-    search: "",
+  const [companies,setCompanies] = useState([]);
+  const [questions,setQuestions] = useState([]);
+  const [selectedQuestion,setSelectedQuestion] = useState(null);
+
+  const [loadingQuestions,setLoadingQuestions] = useState(false);
+  const [loadingAI,setLoadingAI] = useState(null);
+
+  const [aiAnswers,setAiAnswers] = useState({});
+  const [solved,setSolved] = useState({});
+
+  const [filters,setFilters] = useState({
+    companyId:"",
+    branch:"",
+    roundName:"",
+    questionType:"",
+    difficulty:"",
+    search:"",
   });
 
-  const [form, setForm] = useState({
-    companyId: "",
-    branch: "IT",
-    roundName: "ROUND_1",
-    questionType: "MCQ",
-    difficulty: "MEDIUM",
-    questionText: "",
-    answerText: "",
+  const [form,setForm] = useState({
+    companyId:"",
+    branch:"IT",
+    roundName:"ROUND_1",
+    questionType:"MCQ",
+    difficulty:"MEDIUM",
+    questionText:"",
+    answerText:"",
   });
 
-  useEffect(() => {
+  useEffect(()=>{
+
     axios
-      .get(`${API_BASE}/api/companies`, { headers: authHeaders() })
-      .then((res) => setCompanies(res.data || []))
-      .catch((e) => console.error("Companies load error:", e));
+      .get(`${API_BASE}/api/companies`,{headers:authHeaders()})
+      .then(res=>setCompanies(res.data||[]))
+      .catch(err=>console.error(err));
+
     fetchQuestions();
-  }, []);
+
+  },[]);
+
 
   const fetchQuestions = () => {
+
     setLoadingQuestions(true);
+
     const params = {};
-    Object.entries(filters).forEach(([k, v]) => {
-      if (v !== "" && v != null) params[k] = v;
+
+    Object.entries(filters).forEach(([k,v])=>{
+      if(v!=="" && v!=null) params[k]=v;
     });
 
     axios
-      .get(`${API_BASE}/api/questions/filter`, { params, headers: authHeaders() })
-      .then((res) => setQuestions(res.data || []))
-      .catch((e) => console.error("Questions load error:", e))
-      .finally(() => setLoadingQuestions(false));
+      .get(`${API_BASE}/api/questions/filter`,{
+        params,
+        headers:authHeaders()
+      })
+      .then(res=>{
+        const data=res.data||[];
+
+        setQuestions(data);
+
+        if(data.length>0){
+          setSelectedQuestion(data[0]);
+        }else{
+          setSelectedQuestion(null);
+        }
+      })
+      .catch(err=>console.error(err))
+      .finally(()=>setLoadingQuestions(false));
   };
 
-  const generateAIAnswer = async (question) => {
-  try {
-    setLoadingAI(question.id);
 
-    const res = await axios.post(
-      `${API_BASE}/api/ai/generate-answer`,
-      {
-        question: question.questionText
-      },
-      { headers: authHeaders() }
-    );
+  const groupedQuestions = useMemo(()=>{
 
-    setAiAnswers(prev => ({
+    const groups={};
+
+    questions.forEach(q=>{
+      const company=q.companyName || "Other";
+
+      if(!groups[company]){
+        groups[company]=[];
+      }
+
+      groups[company].push(q);
+    });
+
+    return groups;
+
+  },[questions]);
+
+
+  const difficultyStats = useMemo(()=>{
+
+    const stats={EASY:0,MEDIUM:0,HARD:0};
+
+    questions.forEach(q=>{
+      const d=String(q.difficulty).toUpperCase();
+      if(stats[d]!==undefined){
+        stats[d]++;
+      }
+    });
+
+    return stats;
+
+  },[questions]);
+
+
+  const generateAIAnswer = async(question)=>{
+
+    try{
+
+      setLoadingAI(question.id);
+
+      const res=await axios.post(
+        `${API_BASE}/api/ai/generate-answer`,
+        {question:question.questionText},
+        {headers:authHeaders()}
+      );
+
+      setAiAnswers(prev=>({
+        ...prev,
+        [question.id]:res.data.answer
+      }));
+
+    }catch(err){
+      console.error(err);
+      alert("AI generation failed");
+    }finally{
+      setLoadingAI(null);
+    }
+
+  };
+
+
+  const toggleSolved=(id)=>{
+
+    setSolved(prev=>({
       ...prev,
-      [question.id]: res.data.answer
+      [id]:!prev[id]
     }));
 
-  } catch (err) {
-    console.error(err);
-    alert("AI generation failed.");
-  } finally {
-    setLoadingAI(null);
-  }
-};
-
-  const handleAdd = async (e) => {
-    e.preventDefault();
-    const rawUser = localStorage.getItem("user");
-    let userId = 13; 
-    if (rawUser) {
-      try {
-        const u = JSON.parse(rawUser);
-        if (u?.id) userId = u.id;
-      } catch {}
-    }
-
-    const payload = { ...form, createdBy: userId };
-
-    try {
-      await axios.post(`${API_BASE}/api/questions/add`, payload, { headers: authHeaders() });
-      setForm((p) => ({ ...p, questionText: "", answerText: "" }));
-      fetchQuestions();
-      alert("Question added to bank ✅");
-    } catch (err) {
-      alert("Failed to add question.");
-    }
   };
 
-  const updateFilters = (k, v) => setFilters((p) => ({ ...p, [k]: v }));
-  const updateForm = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+
+  const handleAdd = async(e)=>{
+
+    e.preventDefault();
+
+    const rawUser=localStorage.getItem("user");
+    let userId=13;
+
+    if(rawUser){
+      try{
+        const u=JSON.parse(rawUser);
+        if(u?.id) userId=u.id;
+      }catch{}
+    }
+
+    const payload={...form,createdBy:userId};
+
+    try{
+
+      await axios.post(
+        `${API_BASE}/api/questions/add`,
+        payload,
+        {headers:authHeaders()}
+      );
+
+      setForm(p=>({...p,questionText:"",answerText:""}));
+
+      fetchQuestions();
+
+      alert("Question added successfully");
+
+    }catch{
+      alert("Failed to add question");
+    }
+
+  };
+
+
+  const updateFilters=(k,v)=>{
+    setFilters(p=>({...p,[k]:v}));
+  };
+
+  const updateForm=(k,v)=>{
+    setForm(p=>({...p,[k]:v}));
+  };
+
 
   return (
-    <div className="qb-page">
-      <div className="qb-header-section">
-        <h1>Question Bank</h1>
-        <p>Browse through actual interview questions shared by students.</p>
-      </div>
 
-      {/* MODERN FILTER BAR */}
-      <div className="qb-glass-filter">
-        <div className="qb-filter-grid">
-          <div className="qb-input-group">
-            <label>Company</label>
-            <select value={filters.companyId} onChange={(e) => updateFilters("companyId", e.target.value)}>
-              <option value="">All Companies</option>
-              {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-          </div>
+  <div className="qb-page">
 
-          <div className="qb-input-group">
-            <label>Branch</label>
-            <select value={filters.branch} onChange={(e) => updateFilters("branch", e.target.value)}>
-              <option value="">All Branches</option>
-              {BRANCHES.map((b) => <option key={b} value={b}>{b}</option>)}
-            </select>
-          </div>
+    <div className="qb-header-section">
+      <h1>Question Bank</h1>
+      <p>Browse through actual interview questions shared by students.</p>
+    </div>
 
-          <div className="qb-input-group">
-            <label>Round</label>
-            <select value={filters.roundName} onChange={(e) => updateFilters("roundName", e.target.value)}>
-              <option value="">All Rounds</option>
-              {ROUNDS.map((r) => <option key={r} value={r}>{r.replace("_", " ")}</option>)}
-            </select>
-          </div>
 
-          <div className="qb-input-group">
-            <label>Search</label>
-            <input 
-              type="text"
-              value={filters.search} 
-              onChange={(e) => updateFilters("search", e.target.value)} 
-              placeholder="Search keyword..." 
-            />
-          </div>
+    {/* FILTERS */}
+
+    <div className="qb-glass-filter">
+
+      <div className="qb-filter-grid">
+
+        <div className="qb-input-group">
+          <label>Company</label>
+          <select
+            value={filters.companyId}
+            onChange={(e)=>updateFilters("companyId",e.target.value)}
+          >
+            <option value="">All Companies</option>
+            {companies.map(c=>(
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
         </div>
 
-        <div className="qb-filter-buttons">
-          <button className="qb-prime-btn" onClick={fetchQuestions}>Apply Filters</button>
-          <button className="qb-sec-btn" onClick={() => {
-              setFilters({ companyId: "", branch: "", roundName: "", questionType: "", difficulty: "", search: "" });
-              setTimeout(fetchQuestions, 0);
-          }}>Reset</button>
+        <div className="qb-input-group">
+          <label>Branch</label>
+          <select
+            value={filters.branch}
+            onChange={(e)=>updateFilters("branch",e.target.value)}
+          >
+            <option value="">All Branches</option>
+            {BRANCHES.map(b=>(
+              <option key={b} value={b}>{b}</option>
+            ))}
+          </select>
         </div>
-      </div>
 
-      {/* QUESTION CARDS GRID */}
-      <div className="qb-results-grid">
-        {loadingQuestions ? (
-          <div className="qb-loading">Updating Results...</div>
-        ) : questions.length === 0 ? (
-          <div className="qb-empty">No questions found matching your criteria.</div>
-        ) : (
-          questions.map((q, idx) => (   
-            <div className="qb-question-card" key={q.id} style={{ animationDelay: `${idx * 0.05}s` }}>
-             <div className="qb-card-top">
-            <div className="qb-company">
-              <span>{q.companyName || "N/A"}</span>
-            </div>
-
-            <span className={`qb-diff-badge qb-diff-${String(q.difficulty).toLowerCase()}`}>
-              {q.difficulty}
-            </span>
-          </div>
-              
-              <div className="qb-card-body">
-            <p>"{q.questionText}"</p>
-
-            {aiAnswers[q.id] && (
-              <div className="qb-ai-answer">
-                <strong>AI Generated Answer:</strong>
-                <p>{aiAnswers[q.id]}</p>
-              </div>
-            )}
-          </div>
-
-              <div className="qb-card-footer">
-              <span className="qb-tag">{q.branch}</span>
-              <span className="qb-tag">{String(q.roundName).replace("_", " ")}</span>
-              <span className="qb-tag">{q.questionType}</span>
-
-              <button
-                className="qb-ai-btn"
-                onClick={() => generateAIAnswer(q)}
-              >
-                {loadingAI === q.id ? "Generating..." : "Generate with AI"}
-              </button>
-            </div>
-            </div>
-          ))
-        )}
-      </div>
-
-      {/* ADMIN SECTION */}
-      {canManage && (
-        <div className="qb-admin-container">
-          <div className="qb-header-section">
-            <h2>Add New Question</h2>
-          </div>
-          <form className="qb-admin-form" onSubmit={handleAdd}>
-             <div className="qb-filter-grid">
-                <div className="qb-input-group">
-                   <label>Company</label>
-                   <select value={form.companyId} onChange={(e) => updateForm("companyId", e.target.value)} required>
-                      <option value="">Select Company</option>
-                      {companies.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                   </select>
-                </div>
-                <div className="qb-input-group">
-                   <label>Difficulty</label>
-                   <select value={form.difficulty} onChange={(e) => updateForm("difficulty", e.target.value)}>
-                      {DIFFICULTY.map((d) => <option key={d} value={d}>{d}</option>)}
-                   </select>
-                </div>
-                <div className="qb-input-group">
-            <label>Branch</label>
+        <div className="qb-input-group">
+          <label>Round</label>
+          <select
+            value={filters.roundName}
+            onChange={(e)=>updateFilters("roundName",e.target.value)}
+          >
+            <option value="">All Rounds</option>
+            {ROUNDS.map(r=>(
+              <option key={r} value={r}>{r.replace("_"," ")}</option>
+            ))}
+          </select>
+        </div>
+            <div className="qb-input-group">
+            <label>Question Type</label>
             <select
-              value={form.branch}
-              onChange={(e) => updateForm("branch", e.target.value)}
+              value={filters.questionType}
+              onChange={(e) => updateFilters("questionType", e.target.value)}
             >
-              {BRANCHES.map((b) => (
-                <option key={b} value={b}>{b}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="qb-input-group">
-            <label>Round</label>
-            <select
-              value={form.roundName}
-              onChange={(e) => updateForm("roundName", e.target.value)}
-            >
-              {ROUNDS.map((r) => (
-                <option key={r} value={r}>
-                  {r.replace("_", " ")}
+              <option value="">All Types</option>
+              {TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
                 </option>
               ))}
             </select>
           </div>
 
           <div className="qb-input-group">
-            <label>Question Type</label>
-            <select
-              value={form.questionType}
-              onChange={(e) => updateForm("questionType", e.target.value)}
-            >
-              {TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
+          <label>Difficulty</label>
+          <select
+            value={filters.difficulty}
+            onChange={(e) => updateFilters("difficulty", e.target.value)}
+          >
+            <option value="">All Difficulty</option>
+            {DIFFICULTY.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+
+      <div className="qb-filter-buttons">
+
+        <button className="qb-prime-btn" onClick={fetchQuestions}>
+          Apply Filters
+        </button>
+
+        <button
+          className="qb-sec-btn"
+          onClick={()=>{
+
+            const reset={
+              companyId:"",
+              branch:"",
+              roundName:"",
+              questionType:"",
+              difficulty:"",
+              search:""
+            };
+
+            setFilters(reset);
+
+            setTimeout(fetchQuestions,0);
+
+          }}
+        >
+          Reset
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+    {/* MAIN LAYOUT */}
+
+    <div className="qb-two-col-layout">
+
+
+      {/* LEFT PANEL */}
+
+      <div className="qb-question-list">
+
+
+        {/* DIFFICULTY PROGRESS */}
+
+        <div className="qb-progress-box">
+
+          <div className="qb-progress-row">
+            <span>Easy</span>
+            <div className="qb-progress-bar">
+            <div
+              className="qb-progress-fill qb-progress-easy"
+              style={{
+                width: `${(difficultyStats.EASY / questions.length) * 100 || 0}%`
+              }}
+            />
           </div>
-             </div>
-             <div className="qb-input-group full-width">
-                <label>Question</label>
-                <textarea 
-                  rows="3" 
-                  value={form.questionText} 
-                  onChange={(e) => updateForm("questionText", e.target.value)} 
-                  placeholder="Enter the question text here..."
-                  required 
-                />
-             </div>
-             <div className="qb-input-group full-width">
-              <label>Answer</label>
-              <textarea
-                rows="2"
-                value={form.answerText}
-                onChange={(e) => updateForm("answerText", e.target.value)}
-                placeholder="Enter the answer or explanation"
+          </div>
+          <div className="qb-progress-row">
+            <span>Medium</span>
+            <div className="qb-progress-bar">
+              <div
+                className="qb-progress-fill qb-progress-medium"
+                style={{
+                  width: `${(difficultyStats.MEDIUM / questions.length) * 100 || 0}%`
+                }}
               />
             </div>
-             <button type="submit" className="qb-prime-btn">Add to Database</button>
-          </form>
+          </div>
+
+          <div className="qb-progress-row">
+            <span>Hard</span>
+            <div className="qb-progress-bar">
+              <div
+                className="qb-progress-fill qb-progress-hard"
+                style={{
+                  width: `${(difficultyStats.HARD / questions.length) * 100 || 0}%`
+                }}
+              />
+            </div>
+          </div>
+
         </div>
-      )}
+
+
+
+        {Object.entries(groupedQuestions).map(([company,companyQuestions])=>(
+
+          <div key={company}>
+
+            <div className="qb-company-group">
+              {company}
+            </div>
+
+            {companyQuestions.map(q=>(
+
+              <div
+                key={q.id}
+                className={`qb-question-item 
+                ${selectedQuestion?.id===q.id?"active":""}
+                ${solved[q.id]?"solved":""}`}
+                onClick={()=>setSelectedQuestion(q)}
+              >
+
+                <div className="qb-question-text">
+                  {q.questionText}
+                </div>
+
+                <div className="qb-question-tags">
+                <span>{q.branch}</span>
+                <span>{String(q.roundName).replace("_"," ")}</span>
+                <span>{q.questionType}</span>
+
+                <span className={`qb-difficulty ${q.difficulty?.toLowerCase()}`}>
+                  {q.difficulty}
+                </span>
+              </div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        ))}
+
+      </div>
+
+
+
+      {/* RIGHT PANEL */}
+
+      <div className="qb-answer-panel">
+
+        {!selectedQuestion ? (
+
+          <div className="qb-placeholder">
+            Select a question
+          </div>
+
+        ) : (
+
+          <>
+
+            <h2>{selectedQuestion.questionText}</h2>
+
+<div className="qb-action-buttons">
+
+  <button
+    className="qb-ai-btn"
+    onClick={()=>generateAIAnswer(selectedQuestion)}
+  >
+    {loadingAI===selectedQuestion.id
+      ? "Generating..."
+      : "Generate AI Answer"}
+  </button>
+
+  <button
+    className={`qb-solved-btn ${solved[selectedQuestion.id]?"done":""}`}
+    onClick={()=>toggleSolved(selectedQuestion.id)}
+  >
+    {solved[selectedQuestion.id]
+      ? "Solved ✓"
+      : "Mark as Solved"}
+  </button>
+
+</div>
+
+
+            {aiAnswers[selectedQuestion.id] && (
+
+              <div className="qb-ai-answer-full">
+                <ReactMarkdown>
+                  {aiAnswers[selectedQuestion.id]}
+                </ReactMarkdown>
+              </div>
+
+            )}
+
+          </>
+
+        )}
+
+      </div>
+
     </div>
+
+
+
+    {/* ADMIN PANEL */}
+
+    {canManage && (
+
+      <div className="qb-admin-container">
+
+        <h2>Add Question</h2>
+
+        <form onSubmit={handleAdd}>
+
+          <textarea
+            rows="3"
+            placeholder="Question"
+            value={form.questionText}
+            onChange={(e)=>updateForm("questionText",e.target.value)}
+            required
+          />
+
+          <textarea
+            rows="2"
+            placeholder="Answer"
+            value={form.answerText}
+            onChange={(e)=>updateForm("answerText",e.target.value)}
+          />
+
+          <button type="submit" className="qb-prime-btn">
+            Add Question
+          </button>
+
+        </form>
+
+      </div>
+
+    )}
+
+  </div>
+
   );
+
 }
