@@ -98,14 +98,31 @@ const Companies = () => {
       }
     };
 
-    const upcomingCompanies = useMemo(() => {
-  const today = new Date();
+/* 1. First, define the general filter (Search + Branch) */
+  const filteredCompanies = useMemo(() => {
+    return companies.filter((company) => {
+      const matchesSearch = company.name
+        ?.toLowerCase()
+        .includes(search.toLowerCase());
 
-  return companies.filter((c) => {
-    if (!c.driveDate) return false;
-    return new Date(c.driveDate) > today;
-  });
-}, [companies]);
+      const matchesBranch =
+        branch === "ALL" || company.branch === branch;
+
+      return matchesSearch && matchesBranch;
+    });
+  }, [companies, search, branch]);
+
+  /* 2. Second, define upcoming drives based on the filter above */
+  const upcomingCompanies = useMemo(() => {
+    const today = new Date();
+
+    return filteredCompanies // This must exist above this line!
+      .filter((c) => {
+        if (!c.driveDate) return false;
+        return new Date(c.driveDate) > today;
+      })
+      .sort((a, b) => new Date(a.driveDate) - new Date(b.driveDate));
+  }, [filteredCompanies]);
 
   /* ================= DELETE COMPANY ================= */
 
@@ -127,19 +144,6 @@ const Companies = () => {
 //   Current Role: {user?.role}
 // </p>
   /* ================= FILTER ================= */
-
-  const filteredCompanies = useMemo(() => {
-    return companies.filter((company) => {
-      const matchesSearch = company.name
-        ?.toLowerCase()
-        .includes(search.toLowerCase());
-
-      const matchesBranch =
-        branch === "ALL" || company.branch === branch;
-
-      return matchesSearch && matchesBranch;
-    });
-  }, [companies, search, branch]);
 
   /* ================= RENDER ================= */
 
