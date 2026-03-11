@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,6 +44,12 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Branch branch;
 
+    private int failedAttempts;
+
+    private boolean accountLocked;
+
+    private LocalDateTime lockTime;
+    private boolean emailVerified = false;
     // ===================== SPRING SECURITY METHODS =====================
 
     @JsonIgnore
