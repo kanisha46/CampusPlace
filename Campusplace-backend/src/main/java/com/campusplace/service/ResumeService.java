@@ -4,8 +4,10 @@ import com.campusplace.entity.ResumeAnalysis;
 import com.campusplace.entity.Student;
 import com.campusplace.repository.ResumeAnalysisRepository;
 import com.campusplace.repository.StudentRepository;
+import com.campusplace.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import com.campusplace.entity.User;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
@@ -18,24 +20,23 @@ import java.util.List;
 public class ResumeService {
     private final OpenAIService openAIService;
     private final ResumeAnalysisRepository repository;
-    private final StudentRepository studentRepository;
+    private final UserRepository userRepository;
+    // 🗑️ Removed StudentRepository
 
     public ResumeAnalysis analyze(MultipartFile file, String email) {
-        // Use try-with-resources to ensure the PDF is ALWAYS closed
         try (PDDocument doc = PDDocument.load(file.getBytes())) {
-            // 1. Extract Text
             String text = new PDFTextStripper().getText(doc);
 
-            // 2. Identify Student
-            Student student = studentRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User record not found for: " + email));
+            // 1️⃣ Find user (This exists in your DB!)
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found: " + email));
 
-            // 3. AI Analysis via Groq
+            // 2️⃣ AI analysis
             JsonNode ai = openAIService.analyzeResume(text);
 
-            // 4. Build and Save
+            // 3️⃣ Build with User instead of Student
             ResumeAnalysis analysis = ResumeAnalysis.builder()
-                    .student(student)
+                    .user(user) // ⬅️ Changed from .student(student)
                     .fileName(file.getOriginalFilename())
                     .extractedText(text)
                     .overallScore(ai.path("overallScore").asInt(0))
@@ -45,16 +46,10 @@ public class ResumeService {
                     .build();
 
             return repository.save(analysis);
+
         } catch (Exception e) {
-            // Log for debugging loop failures
-            System.err.println("Analysis Loop Error: " + e.getMessage());
+            System.err.println("Analysis Error: " + e.getMessage());
             throw new RuntimeException("Service Error: " + e.getMessage());
         }
-    }
-
-    public List<ResumeAnalysis> getHistory(String email) {
-        Student student = studentRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-        return repository.findByStudentIdOrderByAnalyzedAtDesc(student.getId());
     }
 }

@@ -14,6 +14,8 @@ import QuestionBank from "./pages/QuestionBank";
 import OAuthSuccess from "./context/OAuthSuccess";
 import AttemptQuiz from "./pages/AttemptQuiz";
 import MockTest from "./pages/MockTest";
+import ProgressTracking from "./pages/ProgressTracking";
+
 import axios from "axios";
 const token = localStorage.getItem("token");
 if (token) {
@@ -75,6 +77,7 @@ export default function App() {
         {/* ===== LOGIN ===== */}
         <Route path="/login" element={<LoginPage />} />
 
+        <Route path="/progress" element={<ProgressTracking />} />
         {/* ===== STUDENT DASHBOARD ===== */}
         <Route
           path="/dashboard"

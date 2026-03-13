@@ -38,6 +38,6 @@ public class ResumeAnalysis {
     private LocalDateTime analyzedAt;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
+    @JoinColumn(name = "user_id")
+    private User user;
 }

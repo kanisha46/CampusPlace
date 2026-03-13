@@ -27,9 +27,4 @@ public class ResumeController {
         return ResponseEntity.ok(resumeService.analyze(file, email));
     }
 
-    @GetMapping("/history")
-    public ResponseEntity<?> getHistory(Authentication authentication) {
-        String email = authentication.getName();
-        return ResponseEntity.ok(resumeService.getHistory(email));
-    }
 }

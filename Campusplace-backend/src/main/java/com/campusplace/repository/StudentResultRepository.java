@@ -17,4 +17,6 @@ public interface StudentResultRepository extends JpaRepository<StudentResult, Lo
     List<StudentResult> findByQuizOrderByScoreDesc(Quiz quiz);
 
     Optional<StudentResult> findByStudentAndQuiz(User student, Quiz quiz);
+
+    List<StudentResult> findByStudentOrderBySubmittedAtDesc(User student);
 }
