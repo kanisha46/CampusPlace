@@ -214,9 +214,11 @@ body::after {
 .bottom { transform: rotateX(-90deg) translateZ(75px); }
 
 /* ================= DASHBOARD GRID NEON ================= */
+/* ================= DASHBOARD GRID FIX (3x3) ================= */
+
 .dashboard-grid-neon {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* FIXED 3 columns */
   gap: 30px;
   padding: 60px 5%;
   max-width: 1400px;
@@ -361,4 +363,17 @@ body::after {
 .reveal.active {
   opacity: 1;
   transform: translateY(0);
+}
+/* Tablet */
+@media (max-width: 1024px) {
+  .dashboard-grid-neon {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .dashboard-grid-neon {
+    grid-template-columns: 1fr;
+  }
 }

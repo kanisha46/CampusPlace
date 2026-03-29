@@ -50,10 +50,11 @@ export default function Header() {
   };
   // Load theme from localStorage on start
   useEffect(() => {
-    const saved = localStorage.getItem("theme");
+    const saved = localStorage.getItem("theme") || "dark"; // Default to dark
     const shouldDark = saved === "dark";
     setIsDarkMode(shouldDark);
     document.body.classList.toggle("dark", shouldDark);
+    localStorage.setItem("theme", saved);
   }, []);
 
   // Check login

@@ -314,3 +314,61 @@
   .sidebar { width: 100%; position: relative; top: 0; }
   .main-content { padding: 40px 30px; }
 }
+/* ================= EDIT PROFILE BUTTON (PREMIUM) ================= */
+
+.edit-profile-btn-premium {
+  position: relative;
+  padding: 14px 32px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  overflow: hidden;
+
+  transition: all 0.35s ease;
+}
+
+/* ✨ Animated Neon Border */
+.edit-profile-btn-premium::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 30px;
+
+  background: linear-gradient(120deg, #8b5cf6, #06b6d4, #ec4899);
+  background-size: 200% 200%;
+
+  animation: btnGlow 4s linear infinite;
+
+  opacity: 0;
+  z-index: -1;
+  transition: 0.3s;
+}
+
+/* ✨ Hover Effects */
+.edit-profile-btn-premium:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+}
+
+.edit-profile-btn-premium:hover::before {
+  opacity: 1;
+}
+
+/* ✨ Active Click */
+.edit-profile-btn-premium:active {
+  transform: scale(0.96);
+}
+
+/* ✨ Animation */
+@keyframes btnGlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}

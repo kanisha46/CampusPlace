@@ -211,11 +211,11 @@ const handleDelete = async (id) => {
   </select>
 
   <button
-    className="upcoming-btn"
-    onClick={() => setShowUpcoming(!showUpcoming)}
-  >
-    {showUpcoming ? "Show All Companies" : "Upcoming Drives"}
-  </button>
+  className={`upcoming-btn ${showUpcoming ? "active" : ""}`}
+  onClick={() => setShowUpcoming(!showUpcoming)}
+>
+  {showUpcoming ? "← Show All Companies" : "🚀 Upcoming Drives"}
+</button>
 
 </div>
       </div>

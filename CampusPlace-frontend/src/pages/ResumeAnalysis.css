@@ -1,436 +1,153 @@
-/* ================= GLOBAL & LAYOUT ================= */
+/* ================= RESUME ANALYSIS NEON THEME ================= */
+
 .resume-page {
+  padding: 120px 5% 80px;
   min-height: 100vh;
-  background: radial-gradient(circle at 20% 30%, #dbeafe, transparent 40%),
-              radial-gradient(circle at 80% 70%, #ede9fe, transparent 40%),
-              linear-gradient(135deg, #f8fafc, #eef2ff);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .resume-container {
-  display: flex;
-  gap: 60px;
-  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 50px;
+  max-width: 1300px;
   width: 100%;
-  margin: 0 auto;
-  padding: 120px 40px 80px;
-  align-items: center;
-  justify-content: space-between;
-}
-.bar-fill {
-  height: 8px;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #6366f1, #10b981);
-  transition: width 0.8s ease-in-out;
+  animation: slideUpFade 0.6s ease;
 }
 
-.bar-bg {
-  background: #e5e7eb;
-  height: 8px;
-  border-radius: 10px;
-  flex: 1;
-  margin: 0 12px;
-}
-/* ================= LEFT SECTION ================= */
+/* ── LEFT SIDE ── */
 .resume-left {
-  flex: 1;
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(40px) !important;
+  border: 1px solid var(--border-neon) !important;
+  border-radius: 30px !important;
+  padding: 60px;
+  box-shadow: var(--shadow-3d) !important;
+  position: relative;
+  overflow: hidden;
 }
 
 .resume-badge {
-  color: #5a67d8;
-  font-weight: 600;
-  letter-spacing: 1px;
+  display: inline-block;
+  padding: 6px 14px;
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--accent-primary);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  margin-bottom: 25px;
 }
 
 .resume-left h1 {
-  font-size: 56px;
-  font-weight: 700;
-  background: linear-gradient(90deg, #1e293b, #6366f1);
+  font-size: 52px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin-bottom: 15px;
+  line-height: 1.1;
 }
 
 .resume-left p {
-  color: #4b5563;
+  color: var(--text-muted);
   font-size: 18px;
-  margin-bottom: 30px;
-  max-width: 500px;
+  line-height: 1.6;
+  margin-bottom: 40px;
 }
 
-/* ================= DYNAMIC UPLOAD CARDS ================= */
+/* ── UPLOAD CARD ── */
 .upload-card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(18px);
-  padding: 35px;
-  border-radius: 25px;
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
-  max-width: 480px;
-  transition: 0.4s ease;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px dashed rgba(139, 92, 246, 0.3);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  transition: all 0.3s ease;
+  margin-bottom: 40px;
+  cursor: pointer;
 }
 
-.upload-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
-}
+.upload-card:hover { border-color: var(--accent-secondary); background: rgba(6, 182, 212, 0.03); }
 
-/* New: Selection Preview Box */
-.selected-file-box {
-  border: 2px solid #10b981 !important; /* Solid green when file is picked */
-  background: rgba(255, 255, 255, 0.9);
+.upload-btn { background: #8b5cf6 !important; color: #fff !important; width: 100%; padding: 16px; border-radius: 14px; border: none; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s ease; }
+.upload-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4); }
+
+.privacy { margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+/* ── CAREER PATH MATCHING ── */
+.insight-group { margin-top: 50px; }
+.insight-group h3 { font-size: 22px; font-weight: 800; margin-bottom: 25px; color: #fff; }
+
+.role-match-row {
+  margin-bottom: 20px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 20px;
 }
 
-/* New: Dashboard/Existing Resume Card */
-.existing-resume-card {
-  border: 1px solid rgba(90, 103, 216, 0.3) !important;
-  background: rgba(255, 255, 255, 0.8);
+.role-name-text { font-weight: 700; width: 160px; font-size: 14px; }
+.bar-bg { flex: 1; height: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, #8b5cf6, #06b6d4); border-radius: 10px; }
+.match-val { font-weight: 800; color: var(--accent-secondary); font-size: 14px; width: 40px; text-align: right; }
+
+/* ── STUDY FOCUS ── */
+.focus-highlight {
+  background: rgba(139, 92, 246, 0.05);
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(139, 92, 246, 0.1);
 }
 
-.file-info-header, .file-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+.study-text { font-size: 15px; color: #cbd5e1; line-height: 1.7; }
+.missing-skills-tag { padding: 15px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; color: #f87171; font-weight: 600; border: 1px solid rgba(239, 68, 68, 0.1); }
 
-.file-icon, .pdf-thumb {
-  font-size: 24px;
-  background: #f3f4f6;
-  padding: 12px;
-  border-radius: 12px;
-  color: #ef4444;
-  font-weight: bold;
-}
-
-.file-details strong {
-  display: block;
-  color: #1f2937;
-  word-break: break-all;
-}
-
-/* ================= BUTTONS & ACTIONS ================= */
-.upload-btn {
-  margin-top: 10px;
-  padding: 14px 28px;
-  background: linear-gradient(135deg, #34d399, #10b981);
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s ease;
-  width: fit-content;
-}
-
-.upload-btn:hover {
-  background: linear-gradient(135deg, #10b981, #059669);
-  transform: scale(1.03);
-}
-
-.upload-btn:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
-}
-
-.selection-actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.primary-btn {
-  flex: 2;
-}
-
-.change-btn {
-  flex: 1;
-  background: #fff;
-  border: 1px solid #d1d5db;
-  padding: 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s;
-}
-
-.change-btn:hover {
-  background: #f9fafb;
-}
-
-.cancel-text {
-  display: block;
-  margin-top: 15px;
-  background: none;
-  border: none;
-  color: #6b7280;
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.privacy {
-  margin-top: 15px;
-  font-size: 14px;
-  color: #374151;
-}
-
-/* ================= RIGHT SECTION - SCORE ================= */
-/* ================= RIGHT SECTION - PREMIUM SCORE ================= */
+/* ── SCORE CARD RIGHT ── */
 .resume-right {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: sticky;
+  top: 130px;
 }
 
 .score-card-white {
-  background: #ffffff;
-  padding: 50px 40px;
-  border-radius: 24px;
-  width: 340px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(40px) !important;
+  border: 1px solid var(--border-neon) !important;
+  border-radius: 30px !important;
+  padding: 50px;
+  box-shadow: var(--shadow-3d) !important;
   text-align: center;
-  border: 1px solid #f1f5f9;
 }
 
-.score-card-white h3 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 30px;
-  color: #1f2937;
-}
+.score-card-white h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
 
-.progress-circle {
-  position: relative;
-  width: 180px;
-  height: 180px;
-  margin: 0 auto;
-}
-.progress-circle svg {
-  transition: 0.4s ease;
-}
+.progress-circle { position: relative; width: 180px; height: 180px; margin: 0 auto; }
 
-.progress-circle svg circle {
-  filter: drop-shadow(0 0 15px currentColor);
-}
-.score-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 28px;
-  font-weight: bold;
-  color: #1f2937;
-}
-
-.score-breakdown {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-  margin-top: 25px;
-}
-
-.score-breakdown li {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 15px;
-  color: #4b5563;
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 5px;
-}
-
-.score-breakdown li span {
-  font-weight: 600;
-  color: #10b981;
-}
-
-/* ================= HISTORY SECTION ================= */
-.history-section {
-  max-width: 1200px;
-  margin: 60px auto;
-  padding: 0 40px;
-}
-
-.history-card {
-  background: white;
-  padding: 15px 25px;
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-}
-
-/* ================= OPTIMIZATION SECTION ================= */
-.optimization-section {
-  padding: 120px 40px;
-  background: linear-gradient(135deg, #dff3ea, #e8e4ff, #f5e1f7);
-  color: #1f2937;
-}
-
-.optimization-header {
-  text-align: center;
-  max-width: 900px;
-  margin: 0 auto 80px;
-}
-
-.optimization-header h2 {
-  font-size: 42px;
-  margin-bottom: 20px;
-  line-height: 1.3;
-}
-
-.optimization-header p {
-  font-size: 18px;
-  color: #4b5563;
-}
-
-.optimization-content {
-  display: flex;
-  gap: 60px;
-  align-items: flex-start;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.optimization-left {
-  flex: 1;
-}
-
-.optimization-left h3 {
-  font-size: 28px;
-  margin-bottom: 20px;
-}
-
-.optimization-cards {
-  flex: 2;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-}
-
-.opt-card {
-  background: white;
-  padding: 30px;
-  border-radius: 20px;
-  transition: 0.3s ease;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.opt-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-.opt-card h4 {
-  margin-bottom: 15px;
-  font-size: 19px;
-  color: #1f2937;
-}
-
-.opt-card ul {
-  list-style: none;
-  padding: 0;
-}
-
-.opt-card li {
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #4b5563;
-  display: flex;
-  align-items: flex-start;
-}
-
-.opt-card li::before {
-  content: "•";
-  color: #10b981;
-  font-weight: bold;
-  margin-right: 8px;
-}
 .score-text-overlay {
   position: absolute;
-  top: 48%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 34px;
-  font-weight: 700;
-  color: #111827;
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  text-align: center;
 }
 
-.total-possible {
-  font-size: 16px;
-  color: #9ca3af;
-}
-.score-badge {
-  margin-top: 15px;
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-  background: #eef2ff;
-  color: #4f46e5;
+.current-score { display: block; font-size: 52px; font-weight: 900; line-height: 1; color: #fff; }
+.total-possible { color: var(--text-muted); font-size: 18px; font-weight: 700; }
+
+.score-classification { margin-top: 30px; font-weight: 900; font-size: 18px; text-transform: uppercase; letter-spacing: 2px; }
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.score-classification {
-  position: absolute;
-  top: 70%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: 0.3s ease;
-}
-/* ================= RESPONSIVE ================= */
-@media (max-width: 992px) {
-  .resume-container {
-    flex-direction: column;
-    padding-top: 100px;
-    text-align: center;
-  }
-
-  .resume-left p {
-    margin: 0 auto 30px;
-  }
-
-  .upload-card {
-    margin: 0 auto;
-  }
-
-  .optimization-content {
-    flex-direction: column;
-  }
-
-  .optimization-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .optimization-header h2 {
-    font-size: 28px;
-  }
-}
-.ai-insights-container {
-  margin-top: 40px;
-  animation: fadeInUp 0.8s ease forwards;
-  opacity: 0;
-}
-
-@keyframes fadeInUp {
-  from {
-    transform: translateY(15px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+@media (max-width: 1000px) {
+  .resume-container { grid-template-columns: 1fr; }
+  .resume-right { position: static; }
 }

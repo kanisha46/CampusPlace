@@ -453,11 +453,11 @@ if (profileCompleted) {
           
           <div className="success-actions">
             <button 
-              className="edit-profile-btn" 
-              onClick={() => setProfileCompleted(false)}
-            >
-              <span className="btn-icon">✏️</span> Edit Profile
-            </button>
+          className="edit-profile-btn-premium" 
+          onClick={() => setProfileCompleted(false)}
+        >
+          ✏️ Edit Profile
+        </button>
           </div>
         </div>
       </div>
