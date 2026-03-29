@@ -30,73 +30,97 @@ const Companies = () => {
     minCgpa: 0,
     noActiveBacklogs: false,
     allowedBranches: ""
-  }
-});
-
+  },
+  skillsRequired: [],   // 🔥 NEW
+  tempSkill: "",
+  tempScore: ""
+  });
   /* ================= FETCH COMPANIES ================= */
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8082/api/companies")
-      .then((res) => {
+    const fetchCompanies = async () => {
+      try {
+        const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
+        
+        const res = await axios.get(
+          "http://localhost:8082/api/companies",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
         const data = Array.isArray(res.data)
           ? res.data
           : res.data?.content || [];
 
         setCompanies(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+
+      } catch (err) {
         console.error("Error fetching companies:", err);
+        if (err.response) {
+          console.error("Backend Error Data:", err.response.data);
+        }
+      } finally {
         setLoading(false);
-      });
-  }, []);
-
-  /* ================= ADD COMPANY ================= */
-
-    const addCompany = async () => {
-      try {
-        const res = await axios.post(
-          "http://localhost:8082/api/companies",
-          newCompany,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-          }
-        );
-
-        setCompanies([...companies, res.data]);
-
-        // 🎉 Trigger success animation
-        setSuccess(true);
-
-        setTimeout(() => {
-          setShowModal(false);
-          setSuccess(false);
-          setNewCompany({
-  name: "",
-  industry: "",
-  location: "",
-  branch: "",
-  website: "",
-  salaryPackage: "",
-  driveDate: "",
-  roles: "",
-  description: "",
-  totalOpenings: 0,
-  criteria: {
-    minCgpa: 0,
-    noActiveBacklogs: false,
-    allowedBranches: ""
-  }
-});
-        }, 1500);
-
-      } catch (error) {
-        alert("Failed to add company");
       }
     };
+
+    fetchCompanies();
+  }, []);
+  /* ================= ADD COMPANY ================= */
+
+const addCompany = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+
+    const res = await axios.post(
+      "http://localhost:8082/api/companies",
+      newCompany,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    setCompanies([...companies, res.data]);
+
+    setSuccess(true);
+
+    setTimeout(() => {
+      setShowModal(false);
+      setSuccess(false);
+
+      setNewCompany({
+        name: "",
+        industry: "",
+        location: "",
+        branch: "",
+        website: "",
+        salaryPackage: "",
+        driveDate: "",
+        roles: "",
+        description: "",
+        totalOpenings: 0,
+        criteria: {
+          minCgpa: 0,
+          noActiveBacklogs: false,
+          allowedBranches: ""
+        },
+        skillsRequired: [],   // 🔥 IMPORTANT
+        tempSkill: "",
+        tempScore: ""
+      });
+
+    }, 1500);
+
+  } catch (error) {
+    console.error("Add company error:", error);
+    alert("Failed to add company");
+  }
+};
 
 /* 1. First, define the general filter (Search + Branch) */
   const filteredCompanies = useMemo(() => {
@@ -126,19 +150,25 @@ const Companies = () => {
 
   /* ================= DELETE COMPANY ================= */
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8082/api/companies/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      });
+const handleDelete = async (id) => {
+  try {
+    const token = localStorage.getItem("accessToken");
 
-      setCompanies(companies.filter((c) => c.id !== id));
-    } catch (err) {
-      console.error("Delete failed", err);
-    }
-  };
+    await axios.delete(
+      `http://localhost:8082/api/companies/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    setCompanies(companies.filter((c) => c.id !== id));
+
+  } catch (err) {
+    console.error("Delete failed", err);
+  }
+};
 
 //   <p style={{ color: "red" }}>
 //   Current Role: {user?.role}
@@ -437,7 +467,65 @@ const Companies = () => {
   />
 
 </div>
+<h4>Skill Requirements</h4>
 
+<div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+  <input
+    type="text"
+    placeholder="Skill (Java, DSA)"
+    value={newCompany.tempSkill}
+    onChange={(e) =>
+      setNewCompany({ ...newCompany, tempSkill: e.target.value })
+    }
+  />
+
+  <input
+    type="number"
+    placeholder="Min Score (/10)"
+    value={newCompany.tempScore}
+    onChange={(e) =>
+      setNewCompany({ ...newCompany, tempScore: e.target.value })
+    }
+  />
+
+  <button
+    onClick={() => {
+      if (!newCompany.tempSkill || !newCompany.tempScore) return;
+
+      setNewCompany({
+        ...newCompany,
+        skillsRequired: [
+          ...newCompany.skillsRequired,
+          {
+            name: newCompany.tempSkill,
+            minScore: parseFloat(newCompany.tempScore)
+          }
+        ],
+        tempSkill: "",
+        tempScore: ""
+      });
+    }}
+  >
+    Add
+  </button>
+</div>
+<ul>
+  {newCompany.skillsRequired.map((s, i) => (
+    <li key={i}>
+      {s.name} ({s.minScore}/10)
+      <button
+        onClick={() =>
+          setNewCompany({
+            ...newCompany,
+            skillsRequired: newCompany.skillsRequired.filter((_, index) => index !== i)
+          })
+        }
+      >
+        ❌
+      </button>
+    </li>
+  ))}
+</ul>
                 <div className="modal-actions">
                   <button className="save-btn" onClick={addCompany}>
                     Save
@@ -464,6 +552,8 @@ const Companies = () => {
       )}
 
     </div>
+
+    
   );
 };
 

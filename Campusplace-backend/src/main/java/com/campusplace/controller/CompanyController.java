@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/companies")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class CompanyController {
 
     private final CompanyRepository companyRepository;
@@ -65,7 +65,7 @@ public class CompanyController {
                 criteria.setCompany(existing);
                 existing.setCriteria(criteria);
             }
-
+            existing.setSkillsRequired(updated.getSkillsRequired());
             existing.getCriteria().setMinCgpa(updated.getCriteria().getMinCgpa());
             existing.getCriteria().setNoActiveBacklogs(updated.getCriteria().isNoActiveBacklogs());
             existing.getCriteria().setAllowedBranches(updated.getCriteria().getAllowedBranches());

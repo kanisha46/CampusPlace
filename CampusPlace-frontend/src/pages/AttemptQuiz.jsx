@@ -248,7 +248,7 @@ return (
                   checked={answers[q.id] === option}
                   onChange={() => handleOptionChange(q.id, option)}
                 />
-                {q[`option${option}`]}
+                <span>{q[`option${option}`]}</span>
               </label>
             ))}
           </div>

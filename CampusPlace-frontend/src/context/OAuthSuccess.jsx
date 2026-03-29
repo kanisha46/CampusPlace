@@ -11,9 +11,10 @@ export default function OAuthSuccess() {
     const token = params.get("token");
     const role = params.get("role");
     const name = params.get("name");
+    const email = params.get("email");
 
     if (token) {
-      login({ token, role, name });
+      login(token, role, name, email);
 
       if (role === "ADMIN") navigate("/admin");
       else navigate("/dashboard");

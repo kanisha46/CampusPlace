@@ -19,12 +19,13 @@ export const AuthProvider = ({ children }) => {
 }
 }, []);
 
-const login = (token, role, name) => {
+const login = (token, role, name, email) => {
   localStorage.setItem("token", token);
   localStorage.setItem("role", role);
   localStorage.setItem("userName", name);
+  if (email) localStorage.setItem("email", email);
 
-  setUser({ role, name });
+  setUser({ role, name, email });
 
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };

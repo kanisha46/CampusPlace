@@ -18,7 +18,7 @@
 }
 
 .mock-header p {
-  color: #6b7280;
+  color: var(--muted);
   font-size: 15px;
 }
 
@@ -33,12 +33,12 @@
 
 /* ===== CARD ===== */
 .quiz-card {
-  background: white;
+  background: var(--card) !important;
   padding: 32px;
   border-radius: 18px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .quiz-card:hover {
@@ -51,7 +51,7 @@
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 18px;
-  color: #111827;
+  color: var(--text);
 }
 
 /* ===== META ===== */
@@ -72,7 +72,7 @@
   font-size: 15px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition);
 }
 
 .start-btn {
@@ -82,12 +82,12 @@
 
 .start-btn:hover {
   background: #162a52;
-  box-shadow: 0 10px 25px rgba(15,31,61,0.4);
+  box-shadow: var(--shadow);
 }
 
 .view-btn {
   background: #f3f4f6;
-  color: #111827;
+  color: var(--text);
 }
 
 .view-btn:hover {

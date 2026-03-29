@@ -19,7 +19,7 @@
 .qb-header-section h1{
   font-size:40px;
   font-weight:700;
-  color:#1e293b;
+  color: var(--text) !important;
 }
 
 .qb-header-section p{
@@ -31,16 +31,14 @@
 /* ================= FILTER BAR ================= */
 
 .qb-glass-filter{
-  background:white;
+  background: var(--card) !important;
   padding:30px;
   border-radius:18px;
   margin-bottom:45px;
 
-  border:1px solid #e2e8f0;
+  border:1px solid var(--text);
 
-  box-shadow:
-    0 10px 25px rgba(0,0,0,0.04),
-    0 3px 6px rgba(0,0,0,0.03);
+  box-shadow: var(--shadow);
 }
 
 .qb-filter-grid{
@@ -62,13 +60,13 @@
   margin-top:6px;
   padding:10px 12px;
   border-radius:10px;
-  border:1px solid #e2e8f0;
+  border:1px solid var(--text);
 
-  background:#f8fafc;
+  background: var(--card) !important;
 
   font-size:14px;
 
-  transition:all .2s;
+  transition: var(--transition);
 }
 
 .qb-input-group select:focus,
@@ -88,7 +86,7 @@
 }
 
 .qb-prime-btn{
-  background:#0f172a;
+  background:var(--card);
   color:white;
 
   padding:10px 22px;
@@ -99,7 +97,7 @@
   font-weight:600;
   cursor:pointer;
 
-  transition:.25s;
+  transition: var(--transition);
 }
 
 .qb-prime-btn:hover{
@@ -127,17 +125,17 @@
 /* ================= LEFT QUESTION LIST ================= */
 
 .qb-question-list{
-  background:white;
+  background: var(--card) !important;
   border-radius:16px;
 
-  border:1px solid #e2e8f0;
+  border:1px solid var(--text);
 
   padding:15px;
 
   height:650px;
   overflow-y:auto;
 
-  box-shadow:0 10px 25px rgba(0,0,0,0.03);
+  box-shadow: var(--shadow);
 }
 
 .qb-difficulty{
@@ -193,9 +191,9 @@
 .qb-company-group{
   font-size:13px;
   font-weight:700;
-  color:#334155;
+  color: var(--text) !important;
 
-  background:#f8fafc;
+  background: var(--card) !important;
   padding:6px 10px;
 
   border-radius:8px;
@@ -209,14 +207,14 @@
 }
 
 .qb-ai-answer-full code{
-  background:#0f172a;
+  background:var(--card);
   color:#22c55e;
   padding:3px 6px;
   border-radius:5px;
 }
 
 .qb-ai-answer-full pre{
-  background:#0f172a;
+  background:var(--card);
   color:#22c55e;
   padding:12px;
   border-radius:8px;
@@ -235,12 +233,12 @@
 
   cursor:pointer;
 
-  transition:.2s;
+  transition: var(--transition);
 }
 
 .qb-question-item:hover{
-  background:#f8fafc;
-  border-color:#e2e8f0;
+  background: var(--card) !important;
+  border-color:var(--text);
 }
 
 .qb-question-item.active{
@@ -253,7 +251,7 @@
 
 .qb-question-text{
   font-size:14px;
-  color:#334155;
+  color: var(--text) !important;
   line-height:1.5;
 }
 
@@ -269,7 +267,7 @@
 .qb-question-tags span{
   font-size:11px;
   background:#f1f5f9;
-  color:#475569;
+  color: var(--text) !important;
 
   padding:3px 8px;
   border-radius:6px;
@@ -279,30 +277,30 @@
 /* ================= RIGHT ANSWER PANEL ================= */
 
 .qb-answer-panel{
-  background:white;
+  background: var(--card) !important;
 
   border-radius:16px;
 
   padding:32px;
 
-  border:1px solid #e2e8f0;
+  border:1px solid var(--text);
 
   min-height:650px;
 
-  box-shadow:0 10px 25px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow);
 }
 
 .qb-answer-panel h2{
   font-size:24px;
   font-weight:700;
 
-  color:#0f172a;
+  color:var(--card);
 
   margin-bottom:15px;
 }
 
 .qb-placeholder{
-  color:#94a3b8;
+  color:var(--muted);
 }
 
 
@@ -320,14 +318,14 @@
 
   cursor:pointer;
 
-  transition:all .25s ease;
+  transition: var(--transition);
 
   box-shadow:0 6px 15px rgba(59,130,246,.35);
 }
 
 .qb-ai-btn:hover{
   transform:translateY(-2px);
-  box-shadow:0 10px 25px rgba(59,130,246,.45);
+  box-shadow: var(--shadow);
 }
 
 /* ================= AI ANSWER ================= */
@@ -335,13 +333,13 @@
 .qb-ai-answer-full{
   margin-top:22px;
 
-  background:#f8fafc;
+  background: var(--card) !important;
 
   padding:22px;
 
   border-radius:14px;
 
-  border:1px solid #e2e8f0;
+  border:1px solid var(--text);
 
   box-shadow:0 4px 12px rgba(0,0,0,0.04);
 
@@ -360,16 +358,16 @@
 }
 
 .qb-question-list::-webkit-scrollbar-thumb:hover{
-  background:#94a3b8;
+  background:var(--muted);
 }
 
 /* ===== Difficulty Progress ===== */
 
 .qb-progress-box{
-  background:white;
+  background: var(--card) !important;
   padding:16px;
   border-radius:14px;
-  border:1px solid #e2e8f0;
+  border:1px solid var(--text);
   margin-bottom:20px;
 }
 
@@ -403,7 +401,7 @@
 }
 
 .qb-progress-medium{
-  background:linear-gradient(90deg,#facc15,#eab308);
+  background:linear-gradient(90deg,var(--primary),#eab308);
 }
 
 .qb-progress-hard{
@@ -417,12 +415,12 @@
 .qb-question-item{
   padding:14px;
   border-radius:14px;
-  border:1px solid #e2e8f0;
+  border:1px solid var(--text);
   margin-bottom:14px;
 
   cursor:pointer;
 
-  transition:all .25s ease;
+  transition: var(--transition);
 }
 
 .qb-question-item:hover{
@@ -442,7 +440,7 @@ body.dark .qb-question-list,
 body.dark .qb-glass-filter{
 
   background:#1e293b;
-  border-color:#334155;
+  border-color: var(--text) !important;
 }
 
 body.dark .qb-question-text{

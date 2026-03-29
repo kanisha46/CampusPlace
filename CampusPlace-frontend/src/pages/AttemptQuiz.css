@@ -5,12 +5,16 @@
   min-height: calc(100vh - 80px);
   background: #f4f6fb;
 }
+.legend {
+  color: #1e293b;
+}
+
 /* ================= SIDEBAR ================= */
 
 .quiz-sidebar {
   width: 280px;
-  background: #0f172a;
-  color: white;
+  background: var(--card);
+  color: #1e293b;
   padding: 25px 20px;
   position: fixed;
   left: 0;
@@ -28,7 +32,7 @@
 
 .progress-bar {
   height: 8px;
-  background: rgba(255,255,255,0.15);
+  background: #e2e8f0;
   border-radius: 10px;
   overflow: hidden;
   margin-bottom: 25px;
@@ -57,7 +61,7 @@
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: var(--transition);
 }
 
 .q-number:hover {
@@ -85,7 +89,7 @@
 .quiz-header{
   position: sticky;
   top: 80px;
-  background: white;
+  background: var(--card) !important;
   z-index: 20;
 
   padding: 20px 30px;
@@ -110,7 +114,7 @@
 .timer {
   font-weight: 600;
   font-size: 14px;
-  background: #111827;
+  background: var(--text);
   color: white;
   padding: 10px 18px;
   border-radius: 10px;
@@ -120,7 +124,7 @@
 /* ================= QUESTION CARD ================= */
 
 .question-card {
-  background: white;
+  background: var(--card) !important;
   padding: 28px;
   border-radius: 12px;
   margin-bottom: 24px;
@@ -148,6 +152,7 @@
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 12px;
   margin-bottom: 18px;
+  color: #1e293b;
 }
 .quiz-layout + footer {
   display: none;
@@ -155,19 +160,22 @@
 /* ================= OPTIONS ================= */
 
 .option {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1e293b;
   border: 1px solid #e5e7eb;
   padding: 14px 16px;
   border-radius: 10px;
   margin-bottom: 12px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: var(--transition);
   font-size: 14px;
 }
 
 .option:hover {
   border-color: #cbd5e1;
-  background: #f9fafb;
+  background: var(--card) !important;
 }
 .option input {
   margin-right: 10px;
@@ -188,10 +196,11 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
-  background: #0f172a;
+  background: var(--card);
   color: white;
-  transition: 0.2s;
+  transition: var(--transition);
   width: auto;
+  background: #1e293b;
 }
 
 .submit-btn:hover {
@@ -229,11 +238,11 @@
 }
 
 .result-card {
-  background: white;
+  background: var(--card) !important;
   padding: 60px;
   border-radius: 16px;
   text-align: center;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow);
 }
 
 .result-card h2 {
@@ -257,7 +266,7 @@
 }
 
 .back-btn {
-  background: #0f172a;
+  background: var(--card);
   color: white;
 }
 

@@ -6,235 +6,314 @@ import "./CompanyDetails.css";
 
 const CompanyDetails = () => {
   const { id } = useParams();
-  const [company, setCompany] = useState(null);
-  const [student, setStudent] = useState(null);
-  const [checkSteps, setCheckSteps] = useState([]);
-  const [eligibilityChecked, setEligibilityChecked] = useState(false);
-  const [isEligible, setIsEligible] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [editMode, setEditMode] = useState(false);
-  const [editedCompany, setEditedCompany] = useState(null);
   const { user } = useAuth();
   const isAdmin = user?.role === "ADMIN";
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("accessToken"); // Use accessToken to match login
-      const email = localStorage.getItem("email"); // Get email for profile lookup
+  const [company, setCompany] = useState(null);
+  const [student, setStudent] = useState(null);
+  const [studentSkills, setStudentSkills] = useState({});
 
-      // 1. Fetch Company Details
-      const compRes = await axios.get(`http://localhost:8082/api/companies/${id}`);
-      setCompany(compRes.data);
-      setEditedCompany(compRes.data);
+  const [checkSteps, setCheckSteps] = useState([]);
+  const [eligibilityChecked, setEligibilityChecked] = useState(false);
+  const [isEligible, setIsEligible] = useState(false);
 
-      // 2. Fetch Student Profile (This contains the correct CGPA)
-      const profileRes = await axios.get(`http://localhost:8082/api/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { email: email } // Pass email as query param as required by your backend
+  const [editMode, setEditMode] = useState(false);
+  const [editedCompany, setEditedCompany] = useState(null);
+  const [error, setError] = useState(null);
+
+  /* ================= FETCH ================= */
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token =
+          localStorage.getItem("token") ||
+          localStorage.getItem("accessToken");
+
+        const email = localStorage.getItem("email");
+
+        if (!token) {
+          setError("Session expired. Please login.");
+          return;
+        }
+
+        // Skills
+        const skillRes = await axios.get(
+          "http://localhost:8082/api/student/skills",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setStudentSkills(skillRes.data || {});
+
+        // Company
+        const compRes = await axios.get(
+          `http://localhost:8082/api/companies/${id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        setCompany(compRes.data);
+        setEditedCompany(compRes.data);
+
+        // Profile
+        const profileRes = await axios.get(
+          "http://localhost:8082/api/profile",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: email ? { email } : {}
+          }
+        );
+
+        setStudent(profileRes.data);
+
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load data. Complete profile first.");
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  /* ================= ELIGIBILITY ================= */
+  const checkEligibility = () => {
+    if (!company || !student || !company.criteria) return;
+
+    setEligibilityChecked(true);
+    setCheckSteps([]);
+    setIsEligible(false);
+
+    const steps = [];
+
+    // CGPA
+    steps.push({
+      label: `CGPA ≥ ${company.criteria.minCgpa}`,
+      passed:
+        parseFloat(student.currentCgpa || 0) >=
+        (company.criteria.minCgpa || 0)
+    });
+
+    // Backlogs
+    steps.push({
+      label: "No Active Backlogs",
+      passed: company.criteria.noActiveBacklogs
+        ? student.hasBacklogs === "No"
+        : true
+    });
+
+    // Branch
+    const branches =
+      company.criteria.allowedBranches?.split(",").map(b => b.trim()) || [];
+
+    steps.push({
+      label: "Branch Match",
+      passed:
+        branches.length === 0 ||
+        branches.includes(student.specialization)
+    });
+
+    // Skills
+    if (company.skillsRequired?.length > 0) {
+      company.skillsRequired.forEach(skill => {
+        const score =
+          studentSkills[skill.name] ||
+          studentSkills[skill.name.toLowerCase()] ||
+          studentSkills[skill.name.toUpperCase()] ||
+          0;
+
+        steps.push({
+          label: `${skill.name} (Required: ${skill.minScore})`,
+          passed: score >= skill.minScore
+        });
       });
+    }
 
-      // profileRes.data contains fields like currentCgpa, hasBacklogs, and specialization
-      setStudent(profileRes.data);
+    // Animate
+    steps.forEach((step, index) => {
+      setTimeout(() => {
+        setCheckSteps(prev => [...prev, step]);
+      }, index * 500);
+    });
 
+    setTimeout(() => {
+      setIsEligible(steps.every(s => s.passed));
+    }, steps.length * 500);
+  };
+
+  /* ================= APPLY ================= */
+  const handleApply = () => {
+    alert(`Applied to ${company.name}`);
+  };
+
+  /* ================= UPDATE ================= */
+  const handleUpdate = async () => {
+    try {
+      const token =
+        localStorage.getItem("token") ||
+        localStorage.getItem("accessToken");
+
+      await axios.put(
+        `http://localhost:8082/api/companies/${company.id}`,
+        editedCompany,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setCompany(editedCompany);
+      setEditMode(false);
+      alert("Updated successfully!");
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error(err);
     }
   };
 
-  fetchData();
-}, [id]);
+  if (error)
+    return <div className="loading error-msg">{error}</div>;
 
-const checkEligibility = () => {
-  if (!company || !student || !company.criteria) return;
+  if (!company || !student)
+    return <div className="loading">Loading...</div>;
 
-  setEligibilityChecked(true);
-  setIsEligible(false);
-  setCheckSteps([]);
-  setProgress(0);
-
-  const criteria = company.criteria;
-  const steps = [];
-
-  // Use student.currentCgpa instead of student.cgpa
-  steps.push({
-    label: "Minimum CGPA Requirement",
-    passed: parseFloat(student.currentCgpa) >= criteria.minCgpa
-  });
-
-  // Use student.hasBacklogs (which is "Yes" or "No") instead of numeric count
-  steps.push({
-    label: "Backlog Requirement",
-    passed: criteria.noActiveBacklogs ? student.hasBacklogs === "No" : true
-  });
-
-  const branches = criteria.allowedBranches?.split(",").map(b => b.trim()) || [];
-
-  // Use student.specialization instead of student.branch
-  steps.push({
-    label: "Branch Eligibility",
-    passed: branches.length === 0 || branches.includes(student.specialization)
-  });
-  steps.forEach((step, index) => {
-    setTimeout(() => {
-      setCheckSteps(prev => [...prev, step]);
-      setProgress(((index + 1) / steps.length) * 100);
-    }, index * 1000);
-  });
-
-  setTimeout(() => {
-    const allPassed = steps.every(step => step.passed);
-    setIsEligible(allPassed);
-  }, steps.length * 1000);
-};
-  const handleApply = () => {
-    alert(`Application submitted for ${company.name}!`);
-  };
-
-  if (!company || !student) return <div className="loading">Gathering details...</div>;
-
-  const handleUpdate = async () => {
-  try {
-    await axios.put(
-      `http://localhost:8082/api/companies/${company.id}`,
-      editedCompany,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-      }
-    );
-
-    setCompany(editedCompany);
-    setEditMode(false);
-    alert("Company Updated Successfully!");
-
-  } catch (err) {
-    console.error("Update failed", err);
-  }
-};
+  const totalSteps = 3 + (company.skillsRequired?.length || 0);
 
   return (
     <div className="company-details-page">
       <div className="details-card">
         <div className="content-layout">
-          
-          {/* LEFT SIDE: Info */}
-          <div className="left-section">
-            <div className="header-area">
-              <span className="industry-badge">{company.industry}</span>
-              {editMode ? (
+
+          {/* LEFT */}
+          <div>
+            <span className="industry-badge">
+              {company.industry}
+            </span>
+
+            {editMode ? (
               <input
                 className="edit-input"
                 value={editedCompany.name}
                 onChange={(e) =>
-                  setEditedCompany({ ...editedCompany, name: e.target.value })
+                  setEditedCompany({
+                    ...editedCompany,
+                    name: e.target.value
+                  })
                 }
               />
             ) : (
               <h1>{company.name}</h1>
             )}
-              <p className="location-text">📍 {company.location}</p>
-            </div>
+
+            <p className="location-text">📍 {company.location}</p>
 
             {isAdmin && (
-            <button
-              className="edit-company-btn"
-              onClick={() => setEditMode(!editMode)}
-            >
-              {editMode ? "Cancel Edit" : "Edit Company"}
-            </button>
-          )}
-            <div className="highlight-container">
-            <div className="highlight-item">
-            <span>Annual Package</span>
-            <p>{company.salaryPackage || "Not Disclosed"}</p>
+              <button
+                className="edit-company-btn"
+                onClick={() => setEditMode(!editMode)}
+              >
+                {editMode ? "Cancel" : "Edit"}
+              </button>
+            )}
+
+            {/* ELIGIBILITY */}
+            <div className="info-group">
+              <h3>Eligibility</h3>
+              <ul>
+                <li>CGPA: {company.criteria?.minCgpa || "-"}</li>
+                <li>
+                  Backlogs:{" "}
+                  {company.criteria?.noActiveBacklogs
+                    ? "No"
+                    : "Allowed"}
+                </li>
+                <li>
+                  Branches:{" "}
+                  {company.criteria?.allowedBranches || "All"}
+                </li>
+              </ul>
             </div>
-            </div>
 
-            <div className="info-grid">
-              <div className="info-group">
-                <h3>Roles Offered</h3>
-                <p className="roles-text">{company.rolesOffered || "Software Engineer, Analyst"}</p>
-              </div>
-              <div className="info-group">
-                <h3>Eligibility Requirements</h3>
-                <ul className="criteria-list">
-                <li>
-                  <strong>Min CGPA:</strong> {company.criteria?.minCgpa ?? "N/A"}
-                </li>
+            {/* SKILLS */}
+            <div className="info-group">
+              <h3>Skill Requirements</h3>
 
-                <li>
-                  <strong>Backlogs allowed:</strong>{" "}
-                  {company.criteria?.noActiveBacklogs ? "No Active Backlogs" : "Allowed"}
-                </li>
+              {company.skillsRequired?.length === 0 ? (
+                <p>No skills required</p>
+              ) : (
+                <ul>
+                  {company.skillsRequired.map((skill, i) => {
+                    const score =
+                      studentSkills[skill.name] || 0;
 
-                <li>
-                  <strong>Branches:</strong>{" "}
-                  {company.criteria?.allowedBranches ?? "All Branches Eligible"}
-                </li>
+                    return (
+                      <li key={i}>
+                      <span>{skill.name}</span>
+                      <span>{skill.minScore}</span>
+                    </li>
+                    );
+                  })}
                 </ul>
-              </div>
+              )}
             </div>
           </div>
 
-          {/* RIGHT SIDE: Action Engine */}
-          
+          {/* RIGHT */}
           <div className="right-section">
             <div className="action-card">
-              <h3>Application Portal</h3>
-              <p className="action-subtext">Check your profile against company requirements</p>
-              
+
               {!eligibilityChecked ? (
-  <button className="check-btn" onClick={checkEligibility}>
-    Verify My Eligibility
-  </button>
-) : (
-  <div className="result-container">
+                <>
+                  <h3>Check your eligibility</h3>
+                  <button
+                    className="check-btn"
+                    onClick={checkEligibility}
+                  >
+                    Check Eligibility
+                  </button>
+                </>
+              ) : (
+                <>
+                  <ul className="criteria-check-list">
+                    {checkSteps.map((step, i) => (
+                      <li
+                        key={i}
+                        className={step.passed ? "pass" : "fail"}
+                      >
+                        {step.passed ? "✔" : "✖"} {step.label}
+                      </li>
+                    ))}
+                  </ul>
 
-    <h4>Checking Eligibility...</h4>
-
-    <ul className="criteria-check-list">
-      {checkSteps.map((step, index) => (
-        <li key={index} className={step.passed ? "pass" : "fail"}>
-          {step.passed ? "✔" : "✖"} {step.label}
-        </li>
-      ))}
-    </ul>
-
-    {checkSteps.length === 3 && (
-      <div className={`final-status ${isEligible ? "eligible" : "not-eligible"}`}>
-        {isEligible ? (
-          <>
-            <h3>🎉 You Are Eligible!</h3>
-            <button className="apply-now-btn" onClick={handleApply}>
-              Apply Now
-            </button>
-          </>
-        ) : (
-          <>
-            <h3>❌ You Are Not Eligible</h3>
-            <button
-              className="check-btn secondary"
-              onClick={() => {
-                setEligibilityChecked(false);
-                setCheckSteps([]);
-              }}
-            >
-              Re-check
-            </button>
-          </>
-        )}
-      </div>
-    )}
-  </div>
-)}
+                  {checkSteps.length === totalSteps && (
+                    <>
+                      {isEligible ? (
+                        <div className="final-status eligible">
+                          ✅ Eligible
+                          <button
+                            className="apply-now-btn"
+                            onClick={handleApply}
+                          >
+                            Apply Now
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="final-status not-eligible">
+                          ❌ Not Eligible
+                          <button
+                            className="check-btn"
+                            onClick={() => {
+                              setEligibilityChecked(false);
+                              setCheckSteps([]);
+                            }}
+                          >
+                            Retry
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
 
         </div>
       </div>
     </div>
-  ); 
+  );
 };
+
 export default CompanyDetails;

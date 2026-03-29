@@ -51,7 +51,7 @@ if (accessToken) {
   // 2. Use "accessToken" to match what the backend sends
   localStorage.setItem("accessToken", accessToken); 
   
-  login(accessToken, userRole, userName);
+  login(accessToken, userRole, userName, email);
 
   if (userRole === "ADMIN") {
     navigate("/admin");

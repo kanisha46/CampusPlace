@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "companies")
 @Getter
@@ -12,7 +14,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class Company {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,4 +45,7 @@ public class Company {
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL)
     @JsonManagedReference
     private CompanyCriteria criteria;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<SkillRequirement> skillsRequired;
 }
