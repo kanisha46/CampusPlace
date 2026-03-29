@@ -1,0 +1,29 @@
+
+.hero-title {
+  font-size: 4.5rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  color: #ffffff;
+}
+
+/* Premium gradient like your 2nd image */
+.gradient-text {
+  background: linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes gradientMove {
+  0% { background-position: 0% }
+  100% { background-position: 300% }
+}
+.cursor {
+  display: inline-block;
+  margin-left: 5px;
+  color: #06b6d4;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}

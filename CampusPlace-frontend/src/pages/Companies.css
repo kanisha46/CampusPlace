@@ -1,544 +1,178 @@
-/* ================= PAGE SETUP ================= */
+/* ================= COMPANIES PAGE - NEON THEME ================= */
+
 .companies-page {
-  padding: 130px 8% 80px; /* Matched dashboard-wrapper padding-top */
+  padding: 120px 5% 80px;
   min-height: 100vh;
-  font-family: 'Poppins', sans-serif;
-  background-color: var(--bg-page); /* Using your root variable */
+  background: var(--bg-gradient);
+  background-attachment: fixed;
   color: var(--text-main);
+  font-family: 'Outfit', sans-serif;
 }
 
-/* ================= HEADER SECTION ================= */
 .companies-header {
   text-align: center;
   margin-bottom: 50px;
-  max-width: 800px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
-}
-.upcoming-btn{
-  padding:12px 22px;
-  border-radius:10px;
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-  background:#1e293b;
-  color:#facc15;
-  transition:0.25s ease;
+  animation: slideUpFade 0.8s ease forwards;
 }
 
-.upcoming-btn:hover{
-  background:#0f172a;
-  transform:translateY(-1px);
-}
 .companies-header h1 {
-  font-size: 38px;
-  font-weight: 700;
-  color: #1e2a45;
+  font-size: 42px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 15px;
 }
 
-.admin-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
-
-.admin-btn {
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.add-btn {
-  background: #10b981;
-  color: white;
-}
-
-.remove-btn {
-  background: #ef4444;
-  color: white;
-  margin-top: 10px;
-}
-.admin-add-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-.admin-btn {
-  padding: 10px 20px;
-  border-radius: 25px;
-  border: 2px solid #1e293b;
-  background: #1e293b;
-  color: #facc15;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.admin-btn:hover {
-  background: #0f172a;
-  transform: translateY(-2px);
-}
-.view-details-btn{
-  margin-top:12px;
-  padding:8px 16px;
-  border-radius:8px;
-  border:none;
-  background:#1e293b;
-  color:#facc15;
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-  transition:all 0.25s ease;
-}
-
-.view-details-btn:hover{
-  background:#0f172a;
-  transform:translateY(-1px);
-  box-shadow:0 6px 14px rgba(0,0,0,0.15);
-}
 /* ================= FILTER BAR ================= */
-.filter-bar{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:16px;
-  flex-wrap:wrap;
-  background:white;
-  padding:18px 22px;
-  border-radius:16px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.06);
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  padding: 24px 30px;
+  border-radius: 20px;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: var(--shadow-3d) !important;
+  margin-bottom: 40px;
 }
+
 .filter-bar input,
 .filter-bar select {
   padding: 12px 20px;
-  border-radius: 8px;
-  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
   font-size: 15px;
-  min-width: 260px;
-  background: white;
+  min-width: 280px;
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .filter-bar input:focus,
 .filter-bar select:focus {
-  border-color: var(--brand-gold);
-  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.1);
+  border-color: var(--accent-secondary) !important;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2) !important;
 }
 
 /* ================= COMPANIES GRID ================= */
 .companies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 30px;
   margin-top: 40px;
 }
 
 /* ================= COMPANY CARD ================= */
 .company-card {
-  background: var(--bg-card);
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(30px) !important;
   padding: 40px 30px;
-  border-radius: 12px;
+  border-radius: 20px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid transparent;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: var(--shadow-3d) !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
+  overflow: hidden;
 }
 
 .company-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-  border-color: var(--brand-gold);
+  transform: translateY(-10px) scale(1.02);
+  border-color: var(--accent-secondary) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.2) !important;
 }
 
 .company-card h3 {
-  font-size: 24px;
-  color: var(--brand-navy);
-  margin-bottom: 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
 }
 
 .company-card p {
   font-size: 15px;
   color: var(--text-muted);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
 .company-card .industry {
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #94a3b8;
-  letter-spacing: 1px;
+  color: var(--accent-primary);
+  letter-spacing: 1.5px;
   margin-bottom: 20px;
 }
 
 .company-card span {
   font-size: 14px;
   font-weight: 600;
-  color: var(--brand-navy);
-  background: #fff9e6; /* Very light gold tint */
-  padding: 6px 15px;
+  color: #000 !important;
+  background: var(--accent-secondary) !important;
+  padding: 6px 18px;
   border-radius: 20px;
   margin-bottom: 25px;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
 }
 
 /* ================= VISIT BUTTON ================= */
 .company-card button {
   margin-top: auto;
-  background: var(--brand-navy);
-  color: var(--brand-gold);
+  background: linear-gradient(135deg, var(--accent-primary), #6d28d9) !important;
+  color: white !important;
   padding: 12px 35px;
-  border-radius: 30px;
-  border: 1px solid var(--brand-gold);
-  font-weight: 700;
+  border-radius: 12px !important;
+  border: none !important;
+  font-weight: 700 !important;
   cursor: pointer;
   transition: 0.3s;
-  width: 100%; /* Full width looks better on cards */
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .company-card button:hover {
-  background: var(--brand-gold);
-  color: var(--brand-navy);
-  box-shadow: 0 4px 12px rgba(255, 204, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(109, 40, 217, 0.4);
 }
 
-/* ============================= */
-/* MODAL OVERLAY */
-/* ============================= */
-
+/* Modals */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(6px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  animation: fadeIn 0.3s ease;
+  background: rgba(5, 5, 10, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
 }
-
-/* ============================= */
-/* MODAL CARD */
-/* ============================= */
 
 .modal-card {
-  width: 420px;
-  background: white;
-  padding: 35px 30px;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  animation: slideUp 0.3s ease;
-}
-
-.modal-card h2 {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1e2a45;
-  margin-bottom: 25px;
-}
-
-/* ============================= */
-/* FORM */
-/* ============================= */
-
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.modal-form input {
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  font-size: 14px;
-  outline: none;
-  transition: 0.2s ease;
-}
-
-.modal-form input:focus {
-  border-color: #ffcc00;
-  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.15);
-}
-
-/* ============================= */
-/* ACTION BUTTONS */
-/* ============================= */
-
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 25px;
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-neon) !important;
+  box-shadow: var(--shadow-3d) !important;
+  border-radius: 20px !important;
+  color: #fff !important;
 }
 
 .save-btn {
-  flex: 1;
-  margin-right: 10px;
-  background: #1e2a45;
-  color: #ffcc00;
-  padding: 10px;
-  border-radius: 30px;
-  border: 1px solid #ffcc00;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.3s ease;
+  background: var(--accent-primary) !important;
+  border-radius: 12px !important;
+  border: none !important;
+  color: #fff !important;
 }
 
-.save-btn:hover {
-  background: #ffcc00;
-  color: #1e2a45;
-}
+/* Success Animation Colors */
+.checkmark-circle { background: var(--accent-secondary) !important; }
 
-.cancel-btn {
-  flex: 1;
-  background: #ef4444;
-  color: white;
-  padding: 10px;
-  border-radius: 30px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.cancel-btn:hover {
-  background: #dc2626;
-}
-.modal-form textarea {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  resize: none;
-}
-.upcoming-section{
-margin:50px 0;
-}
-
-.upcoming-section h2{
-margin-bottom:20px;
-color:#1e3a8a;
-}
-
-.upcoming-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-}
-
-.upcoming-card{
-  background:white;
-  padding:22px;
-  border-radius:12px;
-  box-shadow:0 8px 22px rgba(0,0,0,0.08);
-  transition:0.25s ease;
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-.salary{
-font-weight:600;
-color:#16a34a;
-margin-top:5px;
-}
-.upcoming-card:hover{
-  transform:translateY(-4px);
-}
-.modal-form h4 {
-  margin-top: 15px;
-  color: #333;
-}
-/* ============================= */
-/* ANIMATIONS */
-/* ============================= */
-/* ================= SUCCESS ANIMATION ================= */
-
-.success-container {
-  text-align: center;
-  padding: 30px 10px;
-}
-
-.success-container h3 {
-  margin-top: 20px;
-  font-size: 18px;
-  color: #10b981;
-  font-weight: 600;
-}
-
-/* Checkmark circle */
-.checkmark-circle {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #10b981;
-  margin: 0 auto;
-  position: relative;
-  animation: popIn 0.4s ease;
-}
-
-/* Checkmark */
-.checkmark {
-  position: absolute;
-  left: 22px;
-  top: 40px;
-  width: 25px;
-  height: 5px;
-  background: white;
-  transform: rotate(45deg);
-}
-
-.checkmark::after {
-  content: "";
-  position: absolute;
-  left: 12px;
-  top: -14px;
-  width: 5px;
-  height: 25px;
-  background: white;
-  transform: rotate(-90deg);
-}
-
-/* Animation */
-@keyframes popIn {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  80% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-/* ================= RESPONSIVE ================= */
-@media (max-width: 768px) {
-  .companies-page { padding-top: 100px; }
-  .filter-bar input, .filter-bar select { min-width: 100%; }
-  .companies-grid { grid-template-columns: 1fr; }
-}
-
-/* ================================
-   COMPANIES PAGE - DARK MODE FIX
-   ================================ */
-body.dark .companies-page,
-body.dark .companies-container,
-body.dark .companies-wrapper {
-  background: transparent !important;
-  color: var(--text) !important;
-}
-
-/* Heading */
-body.dark .companies-title,
-body.dark h1,
-body.dark h2 {
-  color: var(--text) !important;
-}
-
-/* Cards */
-body.dark .company-card,
-body.dark .company-card * {
-  color: var(--text) !important;
-}
-
-body.dark .company-card {
-  background: var(--card) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: var(--shadow) !important;
-}
-
-/* Muted lines like location/category */
-body.dark .company-location,
-body.dark .company-domain,
-body.dark .company-subtitle {
-  color: var(--muted) !important;
-}
-
-/* Search + dropdown */
-body.dark input[type="text"],
-body.dark input[type="search"],
-body.dark select {
-  background: var(--input-bg) !important;
-  color: var(--input-text) !important;
-  border: 1px solid var(--border) !important;
-}
-
-body.dark input::placeholder {
-  color: var(--muted) !important;
-}
-
-/* Buttons */
-body.dark .visit-btn,
-body.dark .company-btn {
-  background: transparent !important;
-  color: var(--primary) !important;
-  border: 1px solid var(--primary) !important;
-}
-
-body.dark .visit-btn:hover,
-body.dark .company-btn:hover {
-  background: rgba(255, 204, 0, 0.12) !important;
-}
-
-/* ================================
-   OPEN POSITIONS BADGE – DARK MODE
-   ================================ */
-
-body.dark .open-positions,
-body.dark .positions-badge,
-body.dark .open-position,
-body.dark .company-positions {
-  background: rgba(255, 204, 0, 0.15) !important; /* soft gold */
-  color: #ffcc00 !important;                     /* brand gold */
-  border: 1px solid #ffcc00 !important;
-  font-weight: 600;
-}
-
-/* If badge is a button or span */
-body.dark .open-positions span,
-body.dark .company-card .open-positions {
-  color: #ffcc00 !important;
-}
-
-/* =====================================
-   OPEN POSITIONS BADGE – FINAL FIX
-   ===================================== */
-
-/* Light mode */
-.company-card span {
-  background: #fff2cc;        /* soft light gold */
-  color: #1e2a45;             /* navy text */
-  border: 1px solid #ffcc00;
-  font-weight: 700;
-}
-
-/* Dark mode */
-body.dark .company-card span {
-  background: #020617;        /* deep dark navy */
-  color: #ffcc00;             /* bright gold text */
-  border: 1px solid #ffcc00;
-  box-shadow: 0 0 10px rgba(255, 204, 0, 0.35);
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }

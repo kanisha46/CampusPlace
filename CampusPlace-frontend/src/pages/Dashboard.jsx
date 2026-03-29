@@ -500,7 +500,7 @@ if (profileCompleted) {
                   {completedSections[item.id] ? "✓" : ""}
                 </span>
                 <span className="nav-text">{item.id}</span>
-                {item.required && <span className="required-label">Required</span>}
+                {item.required && <span className="required-star-sidebar">*</span>}
               </div>
             ))}
           </nav>
@@ -541,7 +541,7 @@ if (profileCompleted) {
                         className="input-field"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        placeholder="Enter First Name"
+                        placeholder="e.g. John"
                       />
                     </div>
 
@@ -552,7 +552,7 @@ if (profileCompleted) {
                         className="input-field"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        placeholder="Enter Last Name"
+                        placeholder="e.g. Doe"
                       />
                     </div>
                   </div>

@@ -1,93 +1,142 @@
 /* =====================================================
-   THEME.CSS (GLOBAL LIGHT + DARK VARIABLES)
+   GLOBAL MODERN SAAS THEME (MIDNIGHT + NEON ACCENTS)
    ===================================================== */
 
-   
-/* LIGHT MODE DEFAULT */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 :root {
-  --bg: #ffffff;
-  --text: #111827;
+  /* New Color Palette */
+  --bg-gradient: radial-gradient(circle at top right, #1f103b 0%, #05050a 50%, #030712 100%);
+  --bg-solid: #05050a;
+  
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  
+  --card-bg: rgba(20, 22, 35, 0.65);
+  --card-border: rgba(139, 92, 246, 0.15); /* Soft purple border */
+  
+  --accent-primary: #8b5cf6; /* Electric Purple */
+  --accent-secondary: #06b6d4; /* Neon Cyan */
+  --accent-glow: #ec4899; /* Hot Pink */
 
-  --card: #ffffff;
-  --border: #e5e7eb;
-  --muted: #6b7280;
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-border: rgba(139, 92, 246, 0.2);
 
-  --input-bg: #ffffff;
-  --input-text: #111827;
-
-  --primary: #ffcc00;
-
-  --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-}
-
-/* DARK MODE (enabled when body has class="dark") */
-body.dark {
-  --bg: #0b1220;
-  --text: #e5e7eb;
-
-  --card: #0f172a;
-  --border: #243041;
-  --muted: #9ca3af;
-
-  --input-bg: #0b1220;
-  --input-text: #e5e7eb;
-
-  --primary: #ffcc00;
-
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-}
-
-/* FORCE THEME COLORS ON WHOLE APP */
-html, body, #root {
-  min-height: 100%;
-  background: var(--bg);
-  color: var(--text);
+  --shadow-3d: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  --shadow-glow: 0 0 25px rgba(139, 92, 246, 0.3);
 }
 
 /* BASIC GLOBAL RESET */
-* {
+html, body, #root {
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-main);
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* OPTIONAL: SMOOTH FEEL */
 body {
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.4s ease, color 0.4s ease;
+  overflow-x: hidden;
 }
 
-/* ✅ FINAL FORCE DARK MODE (PUT AT END) */
-body.dark,
-body.dark #root,
-body.dark #root * {
-  color-scheme: dark;
+/* GLOBALLY ENFORCE BEAUTIFUL SAAS CARDS */
+.card, .container, .box, section, 
+[class*='card'], [class*='container'], [class*='box'] {
+  border-radius: 20px;
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(30px) !important;
+  -webkit-backdrop-filter: blur(30px) !important;
+  border: 1px solid var(--card-border) !important;
+  box-shadow: var(--shadow-3d) !important;
+  color: var(--text-main) !important;
+  position: relative;
+  overflow: hidden;
 }
 
-body.dark,
-body.dark #root {
-  background: #0b1220 !important;
-  color: #e5e7eb !important;
+/* Exclude main structures */
+#root, body, main, .app, .App {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-/* Force common wrappers to dark even if they have white background */
-body.dark div,
-body.dark section,
-body.dark main,
-body.dark header,
-body.dark footer,
-body.dark nav,
-body.dark article,
-body.dark aside {
+/* Typography Overrides */
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+p, span, div {
+  color: var(--text-muted);
+}
+h1 span, h2 span, h3 span, p, label {
+  color: inherit;
+}
+
+/* Input Fields */
+input, textarea, select {
+  background: var(--input-bg) !important;
+  border: 1px solid var(--input-border) !important;
+  border-radius: 12px !important;
+  color: var(--text-main) !important;
+  padding: 14px 18px !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-size: 1rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2), inset 0 2px 5px rgba(0,0,0,0.3) !important;
+  outline: none !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Buttons */
+button.primary, .btn-primary, [type="submit"], [class*='submit'], [class*='btn'] {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #6d28d9 100%) !important;
+  color: white !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  font-family: 'Outfit', sans-serif !important;
+  letter-spacing: 0.5px !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.3) !important;
+  text-transform: uppercase !important;
+  font-size: 0.9rem !important;
+}
+
+button.primary:hover, .btn-primary:hover, [type="submit"]:hover, [class*='submit']:hover, [class*='btn']:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 25px rgba(109, 40, 217, 0.5), 0 0 15px rgba(6, 182, 212, 0.4) !important;
+  border-color: var(--accent-secondary) !important;
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%) !important;
+}
+
+/* Exclude specific non-primary buttons */
+[class*='social'], .icon-button, [class*='close'], .nav-links button {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+  text-transform: none !important;
+}
+
+[class*='social']:hover, .icon-button:hover, [class*='close']:hover, .nav-links button:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-2px) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Clean up old white backgrounds */
+[style*="background"], [style*="color"] {
   background-color: transparent;
 }
-
-/* If any component sets white background, override it */
-body.dark [style*="background: white"],
-body.dark [style*="background-color: white"],
-body.dark [style*="background:#fff"],
-body.dark [style*="background-color:#fff"],
-body.dark [style*="background: #fff"],
-body.dark [style*="background-color: #fff"] {
-  background: #0f172a !important;
-}
-

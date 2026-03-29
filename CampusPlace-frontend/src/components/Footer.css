@@ -1,19 +1,12 @@
 /* ================= FOOTER ================= */
 
 .main-footer-light {
-  background:
-    linear-gradient(
-      rgba(15, 23, 42, 0.92),
-      rgba(15, 23, 42, 0.95)
-    ),
-    url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1920');
+background: radial-gradient(circle at top, #020617, #000000);
   background-size: cover;
   background-position: center;
 
-  /* 🔽 Reduced height */
-  padding: 40px 6% 15px;
-
-  color: var(--text);
+  padding: 50px 6% 20px;
+  color: white;
   position: relative;
 }
 
@@ -44,16 +37,24 @@
 
 /* ================= BRAND ================= */
 
-.footer-logo {
+/* .footer-logo {
   font-family: 'Poppins', sans-serif;
 
-  /* 🔽 Slightly smaller */
   font-size: 1.8rem;
 
   font-weight: 800;
   color: #fbbf24;
   margin-bottom: 8px;
   letter-spacing: 0.5px;
+} */
+
+.footer-logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+
+  background: linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .footer-brand p {
@@ -80,41 +81,34 @@
   display: flex;
   align-items: center;
   gap: 12px;
-
-  /* 🔽 Reduced spacing */
   margin-bottom: 12px;
-  padding: 10px 16px;
+  padding: 12px 16px;
 
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
 
-  border-radius: 10px;
-  transition: var(--transition);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+
+  border-radius: 12px;
+  transition: 0.3s ease;
 }
 
 .contact-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateX(4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transform: translateX(6px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
 }
 
 .contact-icon {
-  color: #fbbf24;
+  color: #8b5cf6;
   font-size: 1rem;
 }
 
 /* ================= COPYRIGHT ================= */
 
 .footer-copyright {
-  text-align: center;
-
-  /* 🔽 Reduced spacing */
   margin-top: 30px;
   padding-top: 12px;
-
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--muted);
-  font-size: 0.8rem;
-  letter-spacing: 0.4px;
+  border-top: 1px solid rgba(139, 92, 246, 0.2);
+  color: #94a3b8;
+  font-size: 0.85rem;
 }

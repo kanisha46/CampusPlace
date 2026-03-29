@@ -15,62 +15,62 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
+
   const navigate = useNavigate();
-const { login } = useAuth();
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setMessage("");
+  const { login } = useAuth();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    if (isSignup) {
-      const res = await axios.post(
-  "http://localhost:8082/auth/signup",
-  { name, email, password }
-);
+      if (isSignup) {
+        const res = await axios.post(
+          "http://localhost:8082/auth/signup",
+          { name, email, password }
+        );
 
-      setMessage("Signup successful! Please login.");
-      setIsSignup(false);
+        setMessage("Signup successful! Please login.");
+        setIsSignup(false);
+        setLoading(false);
+        return;
+      }
+
+      // -------- LOGIN --------
+      // -------- LOGIN --------
+      const res = await axios.post("http://localhost:8082/auth/login", { email, password });
+      console.log("Full Backend Response:", res.data);
+
+      const { accessToken, role: userRole, name: userName } = res.data;
+
+      if (accessToken) {
+        // 1. Store the email so the Dashboard can use it for the GET request
+        localStorage.setItem("email", email);
+
+        // 2. Use "accessToken" to match what the backend sends
+        localStorage.setItem("accessToken", accessToken);
+
+        login(accessToken, userRole, userName, email);
+
+        if (userRole === "ADMIN") {
+          navigate("/admin");
+        } else if (userRole === "FACULTY") {
+          navigate("/faculty");
+        } else {
+          navigate("/dashboard");
+        }
+      }
+      else {
+        setMessage("Login successful, but no token was received from the server.");
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("Login failed");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // -------- LOGIN --------
-// -------- LOGIN --------
-const res = await axios.post("http://localhost:8082/auth/login", { email, password });
-console.log("Full Backend Response:", res.data);
-
-const { accessToken, role: userRole, name: userName } = res.data;
-
-if (accessToken) {
-  // 1. Store the email so the Dashboard can use it for the GET request
-  localStorage.setItem("email", email); 
-  
-  // 2. Use "accessToken" to match what the backend sends
-  localStorage.setItem("accessToken", accessToken); 
-  
-  login(accessToken, userRole, userName, email);
-
-  if (userRole === "ADMIN") {
-    navigate("/admin");
-  } else if (userRole === "FACULTY") {
-    navigate("/faculty");
-  } else {
-    navigate("/dashboard");
-  }
-}
-else {
-    setMessage("Login successful, but no token was received from the server.");
-  } 
-  } catch (error) {
-    console.error(error);
-    setMessage("Login failed");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="login-wrapper">
@@ -162,8 +162,8 @@ else {
             {loading
               ? "Processing..."
               : isSignup
-              ? "Create Account"
-              : "Login"}
+                ? "Create Account"
+                : "Login"}
           </button>
         </form>
 
@@ -172,31 +172,31 @@ else {
         </div>
 
         <div className="social-grid">
-                <button
-        className="social-btn"
-        type="button"
-        onClick={() =>
-          window.location.href =
-            "http://localhost:8082/oauth2/authorization/google"
-        }
-      >
-        <img
-          src="https://www.svgrepo.com/show/475656/google-color.svg"
-          alt="Google"
-        />
-        Google
-      </button>
           <button
-  className="social-btn"
-  type="button"
-  onClick={() =>
-    window.location.href =
-      "http://localhost:8082/oauth2/authorization/github"
-  }
->
-  <Github size={20} />
-  GitHub
-</button>
+            className="social-btn"
+            type="button"
+            onClick={() =>
+              window.location.href =
+              "http://localhost:8082/oauth2/authorization/google"
+            }
+          >
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+            />
+            Google
+          </button>
+          <button
+            className="social-btn"
+            type="button"
+            onClick={() =>
+              window.location.href =
+              "http://localhost:8082/oauth2/authorization/github"
+            }
+          >
+            <Github size={20} />
+            GitHub
+          </button>
         </div>
 
         <p
