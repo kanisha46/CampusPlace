@@ -121,9 +121,9 @@ public class AuthService {
         }
 
         // 🔐 Check Verification
-        if (!user.isEmailVerified()) {
-            throw new RuntimeException("Please verify your email before logging in.");
-        }
+        // if (!user.isEmailVerified()) {
+        //     throw new RuntimeException("Please verify your email before logging in.");
+        // }
 
         // 🔐 Generate tokens
         String accessToken = jwtService.generateAccessToken(user);

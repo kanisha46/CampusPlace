@@ -111,6 +111,7 @@
 
 .nav-links a.active::after,
 .nav-links a:hover::after,
+.nav-links button.active::after,
 .nav-links button:hover::after {
   width: 60%;
 }

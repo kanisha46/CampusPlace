@@ -17,6 +17,12 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const getDashboardRoute = () => {
+    if (user?.role === "ADMIN") return "/admin";
+    if (user?.role === "FACULTY") return "/faculty";
+    return "/dashboard";
+  };
+
   // ✅ Retrieve actual logged-in user's name
   const userName = localStorage.getItem("userName") || "";
 
@@ -85,7 +91,7 @@ export default function Header() {
 
   // Route-aware highlight
   useEffect(() => {
-    if (location.pathname === "/dashboard")
+    if (location.pathname === getDashboardRoute())
       setActiveSection("dashboard");
     else if (location.pathname === "/companies")
       setActiveSection("companies");
@@ -240,7 +246,7 @@ export default function Header() {
           </button>
 
           <NavLink
-            to="/dashboard"
+            to={getDashboardRoute()}
             className={({ isActive }) =>
               isActive ? "active" : ""
             }
@@ -337,7 +343,7 @@ export default function Header() {
 
                   <button
                     onClick={() => {
-                      navigate("/dashboard");
+                      navigate(getDashboardRoute());
                       setShowDropdown(false);
                     }}
                     type="button"

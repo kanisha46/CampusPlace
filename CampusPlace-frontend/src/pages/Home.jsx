@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AboutUs from "./AboutUs";
+import { useAuth } from "../context/AuthContext";
 import "./Home.css";
 
 const dashboardItems = [
@@ -14,6 +15,7 @@ const dashboardItems = [
 
 export default function Home({ setAboutVisible }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Handle scroll reveal animation
   useEffect(() => {
@@ -81,23 +83,25 @@ export default function Home({ setAboutVisible }) {
       </div>
 
       {/* DASHBOARD BLOCKS */}
-      <div id="explore-section" className="dashboard-grid-neon">
-        {dashboardItems.map((item, index) => (
-          <div
-            className="feature-card-neon"
-            key={item.id}
-            style={{ animationDelay: `${index * 0.1}s` }}
-            onClick={() => item.path && navigate(item.path)}
-          >
-            <div className="card-border-gradient"></div>
-            <div className="card-content">
-              <div className="icon-neon-box">{item.icon}</div>
-              <h3>{item.title}</h3>
-              <p>{item.desc}</p>
+      {user?.role !== "ADMIN" && (
+        <div id="explore-section" className="dashboard-grid-neon">
+          {dashboardItems.map((item, index) => (
+            <div
+              className="feature-card-neon"
+              key={item.id}
+              style={{ animationDelay: `${index * 0.1}s` }}
+              onClick={() => item.path && navigate(item.path)}
+            >
+              <div className="card-border-gradient"></div>
+              <div className="card-content">
+                <div className="icon-neon-box">{item.icon}</div>
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* ABOUT US */}
       <AboutUs onVisible={setAboutVisible} />
