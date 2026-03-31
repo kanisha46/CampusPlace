@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 import "./MockTest.css";
 
 export default function MockTest() {
@@ -10,6 +11,7 @@ export default function MockTest() {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
   const token = localStorage.getItem("token");
@@ -43,6 +45,13 @@ return (
     </div>
 
     <div className="mock-grid">
+      {user?.role === "FACULTY" && (
+        <div className="quiz-card add-quiz-card" onClick={() => navigate("/faculty/add-quiz")}>
+          <div className="add-icon">+</div>
+          <h3>Create New Quiz</h3>
+          <p>Add a new mock test for students</p>
+        </div>
+      )}
       {quizzes.length === 0 && (
         <div className="empty-state">
           No quizzes available.

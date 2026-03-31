@@ -17,6 +17,8 @@ import MockTest from "./pages/MockTest";
 import ProgressTracking from "./pages/ProgressTracking";
 import VerifyEmail from "./pages/VerifyEmail";
 import ResetPassword from "./pages/ResetPassword";
+import FacultyDashboard from "./pages/FacultyDashboard";
+import AddQuiz from "./pages/AddQuiz";
 
 import axios from "axios";
 const token = localStorage.getItem("token");
@@ -35,17 +37,21 @@ const PrivateRoute = ({ children }) => {
 
 /* ================= ROLE BASED ROUTE ================= */
 
-const RoleRoute = ({ allowedRole, children }) => {
+const RoleRoute = ({ allowedRoles, children }) => {
   const { user } = useAuth();
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.role !== allowedRole) {
+  const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+
+  if (!roles.includes(user.role)) {
     // If wrong role, redirect properly
     if (user.role === "ADMIN") {
       return <Navigate to="/admin" replace />;
+    } else if (user.role === "FACULTY") {
+      return <Navigate to="/faculty" replace />;
     } else {
       return <Navigate to="/" replace />;
     }
@@ -84,7 +90,7 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <RoleRoute allowedRole="STUDENT">
+            <RoleRoute allowedRoles={["STUDENT"]}>
               <Dashboard />
             </RoleRoute>
           }
@@ -94,8 +100,28 @@ export default function App() {
         <Route
           path="/admin"
           element={
-            <RoleRoute allowedRole="ADMIN">
+            <RoleRoute allowedRoles={["ADMIN"]}>
               <AdminPanel />
+            </RoleRoute>
+          }
+        />
+
+        {/* ===== FACULTY DASHBOARD ===== */}
+        <Route
+          path="/faculty"
+          element={
+            <RoleRoute allowedRoles={["FACULTY"]}>
+              <FacultyDashboard />
+            </RoleRoute>
+          }
+        />
+
+        {/* ===== FACULTY ADD QUIZ ===== */}
+        <Route
+          path="/faculty/add-quiz"
+          element={
+            <RoleRoute allowedRoles={["FACULTY", "ADMIN"]}>
+              <AddQuiz />
             </RoleRoute>
           }
         />
@@ -132,7 +158,7 @@ export default function App() {
         <Route
           path="/mock-test"
           element={
-            <RoleRoute allowedRole="STUDENT">
+            <RoleRoute allowedRoles={["STUDENT", "FACULTY"]}>
               <MockTest />
             </RoleRoute>
           }
@@ -141,7 +167,7 @@ export default function App() {
         <Route
           path="/mock-test/:quizId"
           element={
-            <RoleRoute allowedRole="STUDENT">
+            <RoleRoute allowedRoles={["STUDENT"]}>
               <AttemptQuiz />
             </RoleRoute>
           }

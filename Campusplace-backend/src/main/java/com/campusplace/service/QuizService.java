@@ -105,6 +105,19 @@ public class QuizService {
                 .toList();
     }
 
+    public List<QuizListResponse> getAllActiveQuizzes() {
+        return quizRepository.findAll()
+                .stream()
+                .filter(Quiz::isActive)
+                .map(q -> new QuizListResponse(
+                        q.getId(),
+                        q.getTitle(),
+                        q.getSubject(),
+                        q.getDurationMinutes()
+                ))
+                .toList();
+    }
+
     public Quiz getQuizWithQuestions(Long quizId) {
         return quizRepository.findQuizWithQuestions(quizId)
                 .orElseThrow();
