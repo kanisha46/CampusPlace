@@ -260,60 +260,67 @@ const handleDelete = async (id) => {
       {user?.role === "ADMIN" && (
         <div className="admin-actions">
           <button
-            className="admin-btn add-btn"
+            className="add-btn"
             onClick={() => setShowModal(true)}
           >
-            + Add Company
+            <span>+</span> Add New Company
           </button>
         </div>
       )}
+
       {/* ===== GRID ===== */}
-  {!showUpcoming && (
-  <div className="companies-grid">
-  {loading && <p>Loading companies...</p>}
+      {!showUpcoming && (
+        <div className="companies-grid">
+          {loading && <p className="loading-state">Loading companies...</p>}
 
-  {!loading && (showUpcoming ? upcomingCompanies : filteredCompanies).length === 0 && (
-    <p>No companies found.</p>
-  )}
+          {!loading && (showUpcoming ? upcomingCompanies : filteredCompanies).length === 0 && (
+            <div className="empty-state">
+              <p>No companies found matching your criteria.</p>
+            </div>
+          )}
 
-  {!loading &&
-    (showUpcoming ? upcomingCompanies : filteredCompanies).map((company) => (
-      <div
-        key={company.id}
-        className="company-card"
-        onClick={() => navigate(`/companies/${company.id}`)}
-      >
-        <h3>{company.name}</h3>
-        <p>{company.location}</p>
-        <p className="industry">{company.industry}</p>
+          {!loading &&
+            (showUpcoming ? upcomingCompanies : filteredCompanies).map((company) => (
+              <div
+                key={company.id}
+                className="company-card"
+                onClick={() => navigate(`/companies/${company.id}`)}
+              >
+                <h3>{company.name}</h3>
+                <p>📍 {company.location}</p>
+                <p className="industry">{company.industry}</p>
 
-        <span>
-          {company.totalOpenings ?? 0} Open Positions
-        </span>
+                <span>{company.totalOpenings ?? 0} Open Positions</span>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            window.open(company.website, "_blank");
-          }}
-        >
-          Visit Website
-        </button>
+                <div className="card-actions">
+                  <button
+                    className="visit-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(company.website, "_blank");
+                    }}
+                  >
+                    Visit Website
+                  </button>
 
-        {user?.role === "ADMIN" && (
-          <button
-            className="admin-btn remove-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDelete(company.id);
-            }}
-          >
-            Remove
-          </button>
-        )}
-      </div>
-    ))}
-</div>)}
+                  {user?.role === "ADMIN" && (
+                    <button
+                      className="remove-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (window.confirm(`Are you sure you want to remove ${company.name}?`)) {
+                          handleDelete(company.id);
+                        }
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+        </div>
+      )}
 
       {/* ===== MODAL ===== */}
       {showModal && (

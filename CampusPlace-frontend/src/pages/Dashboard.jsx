@@ -18,8 +18,9 @@ const getAvatarStyle = (name) => {
     color: "white",
     fontWeight: "bold",
     textTransform: "uppercase",
-    width: "100%",
-    height: "100%",
+    width: "80px",   // ✅ FIXED SIZE
+    height: "80px",  // ✅ FIXED SIZE
+    fontSize: "2rem",
     fontFamily: "'Segoe UI', Roboto, sans-serif",
   };
 };
@@ -523,15 +524,6 @@ if (profileCompleted) {
               <div className="fade-in">
                 {/* PROFILE HEADER */}
                 <div className="profile-edit-header">
-                  <div className="large-avatar">
-                    {firstName ? (
-                      <div style={{ ...getAvatarStyle(firstName), fontSize: "2.5rem" }}>
-                        {firstName.charAt(0)}
-                      </div>
-                    ) : (
-                      <img src={userlogo} alt="Default User Logo" />
-                    )}
-                  </div>
 
                   <div className="name-row">
                     <div className="form-group flex-1">
@@ -817,11 +809,11 @@ if (profileCompleted) {
                           }}
                         />
 
-                        <label htmlFor="resume-file" className="custom-file-label">
-                          Choose File
-                        </label>
+                        <label htmlFor="resume-file" className="premium-upload-btn">
+                    📎 Upload Resume
+                  </label>
 
-                        <span className="file-status">{resumeFileName}</span>
+                        <p className="file-name-display">{resumeFileName}</p>
                       </>
                     )}
                   </div>
@@ -876,7 +868,7 @@ if (profileCompleted) {
                       <button
                         key={index}
                         type="button"
-                        className="suggest-pill"
+                       className={`suggest-pill ${skills.includes(skill) ? "active" : ""}`}
                         onClick={() => addSkill(skill)}
                       >
                         {skill}
@@ -1140,12 +1132,14 @@ if (profileCompleted) {
             <footer className="form-footer">
               {/* Change the button label at line 663 */}
             <button
-              className={`save-btn ${activeTab === "Education" ? "final-save" : ""}`}
-              disabled={!isFormValid}
-              onClick={handleSave}
-            >
-              {activeTab === "Education" ? "🚀 Save All Details" : "✓ Save & Next"}
-            </button>
+          className={`premium-save-btn ${activeTab === "Education" ? "final" : ""}`}
+          disabled={!isFormValid}
+          onClick={handleSave}
+        >
+          <span className="btn-content">
+            {activeTab === "Education" ? "🚀 Save All Details" : "Save & Continue"}
+          </span>
+        </button>
             </footer>
           </section>
         </main>

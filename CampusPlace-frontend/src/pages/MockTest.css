@@ -87,7 +87,16 @@
   text-transform: uppercase;
   margin-left: 10px;
 }
+/* ================= CHART SIZE FIX ================= */
 
+.chart-card {
+  height: 320px;   /* 🔥 control size here */
+  padding: 20px;
+}
+
+.chart-card canvas {
+  max-height: 260px !important;
+}
 .quiz-meta {
   display: flex;
   justify-content: center;

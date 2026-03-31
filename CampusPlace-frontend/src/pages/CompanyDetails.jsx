@@ -256,7 +256,7 @@ const CompanyDetails = () => {
 
               {!eligibilityChecked ? (
                 <>
-                  <h3>Check your eligibility</h3>
+                  <h3>🎯 Eligibility Check</h3>
                   <button
                     className="check-btn"
                     onClick={checkEligibility}
@@ -268,12 +268,9 @@ const CompanyDetails = () => {
                 <>
                   <ul className="criteria-check-list">
                     {checkSteps.map((step, i) => (
-                      <li
-                        key={i}
-                        className={step.passed ? "pass" : "fail"}
-                      >
-                        {step.passed ? "✔" : "✖"} {step.label}
-                      </li>
+                      <li key={i} className={step.passed ? "pass" : "fail"}>
+                    {step.passed ? "✅" : "❌"} {step.label}
+                  </li>
                     ))}
                   </ul>
 
@@ -295,9 +292,10 @@ const CompanyDetails = () => {
                           <button
                             className="check-btn"
                             onClick={() => {
-                              setEligibilityChecked(false);
-                              setCheckSteps([]);
-                            }}
+                            setEligibilityChecked(false);
+                            setCheckSteps([]);
+                            setIsEligible(false);
+                          }}
                           >
                             Retry
                           </button>

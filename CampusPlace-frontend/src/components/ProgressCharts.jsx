@@ -27,6 +27,7 @@ const GREEN  = "#2ED873";
 
 const chartDefaults = {
   responsive: true,
+   maintainAspectRatio: false,   // ✅ IMPORTANT FIX
   animation: { duration: 1000, easing: "easeOutQuart" },
   plugins: {
     legend: {
@@ -62,6 +63,7 @@ const chartDefaults = {
 
 const doughnutDefaults = {
   responsive: true,
+   maintainAspectRatio: false,   // ✅ IMPORTANT FIX
   animation: { duration: 1000, easing: "easeOutQuart" },
   plugins: {
     legend: {

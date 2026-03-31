@@ -145,18 +145,6 @@ export default function AdminPanel() {
       </div>
 
       {/* COMPANIES */}
-      <div className="card">
-        <h2>Companies</h2>
-        <div className="company-grid">
-          {companies.map((c) => (
-            <div key={c.id} className="company-card">
-              <h3>{c.name}</h3>
-              <p>{c.industry}</p>
-              <span>{c.location}</span>
-            </div>
-          ))}
-        </div>
-      </div>
 
     </div>
   );
