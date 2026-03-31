@@ -63,7 +63,7 @@ export default function AddQuiz() {
     setMessage("");
 
     try {
-      await axios.post("http://localhost:8082/quiz/faculty/add", quizData);
+      await axios.post("https://campusplace.onrender.com/quiz/faculty/add", quizData);
       setMessage("✅ Quiz created successfully!");
       setTimeout(() => navigate("/mock-test"), 2000);
     } catch (err) {

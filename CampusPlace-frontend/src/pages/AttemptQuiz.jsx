@@ -32,7 +32,7 @@ export default function AttemptQuiz() {
     const fetchData = async () => {
       try {
         const quizRes = await axios.get(
-          `http://localhost:8082/quiz/student/${quizId}`,
+          `https://campusplace.onrender.com/quiz/student/${quizId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setQuiz(quizRes.data);
@@ -45,7 +45,7 @@ export default function AttemptQuiz() {
 
         try {
           const resultRes = await axios.get(
-            `http://localhost:8082/quiz/student/${quizId}/result`,
+            `https://campusplace.onrender.com/quiz/student/${quizId}/result`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
@@ -114,7 +114,7 @@ export default function AttemptQuiz() {
     };
 
     try {
-      const res = await axios.post("http://localhost:8082/quiz/student/submit", payload, {
+      const res = await axios.post("https://campusplace.onrender.com/quiz/student/submit", payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setScore(typeof res.data === "object" ? res.data.score : res.data);

@@ -38,14 +38,14 @@ const CompanyDetails = () => {
 
         // Skills
         const skillRes = await axios.get(
-          "http://localhost:8082/api/student/skills",
+          "https://campusplace.onrender.com/api/student/skills",
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setStudentSkills(skillRes.data || {});
 
         // Company
         const compRes = await axios.get(
-          `http://localhost:8082/api/companies/${id}`,
+          `https://campusplace.onrender.com/api/companies/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -54,7 +54,7 @@ const CompanyDetails = () => {
 
         // Profile
         const profileRes = await axios.get(
-          "http://localhost:8082/api/profile",
+          "https://campusplace.onrender.com/api/profile",
           {
             headers: { Authorization: `Bearer ${token}` },
             params: email ? { email } : {}
@@ -150,7 +150,7 @@ const CompanyDetails = () => {
         localStorage.getItem("accessToken");
 
       await axios.put(
-        `http://localhost:8082/api/companies/${company.id}`,
+        `https://campusplace.onrender.com/api/companies/${company.id}`,
         editedCompany,
         { headers: { Authorization: `Bearer ${token}` } }
       );

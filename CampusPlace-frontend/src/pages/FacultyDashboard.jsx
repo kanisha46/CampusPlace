@@ -32,7 +32,7 @@ export default function FacultyDashboard() {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8082/api/profile?email=${localStorage.getItem("email")}`
+        `https://campusplace.onrender.com/api/profile?email=${localStorage.getItem("email")}`
       );
 
       if (res.data) {
@@ -55,7 +55,7 @@ export default function FacultyDashboard() {
   const fetchQuizCount = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8082/quiz/student/list"
+        "https://campusplace.onrender.com/quiz/student/list"
       );
       setQuizzes(res.data);
     } catch (err) {
@@ -86,7 +86,7 @@ export default function FacultyDashboard() {
       formData.append("profile", JSON.stringify(profileData));
 
       await axios.post(
-        "http://localhost:8082/api/profile",
+        "https://campusplace.onrender.com/api/profile",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

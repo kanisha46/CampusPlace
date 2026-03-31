@@ -19,7 +19,7 @@ export default function ResumeAnalysis() {
     formData.append("file", selectedFile);
 
     try {
-      const response = await fetch("http://localhost:8082/api/resume/analyze", {
+      const response = await fetch("https://campusplace.onrender.com/api/resume/analyze", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,

@@ -15,11 +15,11 @@ export default function AdminPanel() {
   const fetchData = async () => {
     const token = localStorage.getItem("token");
 
-    const usersRes = await axios.get("http://localhost:8082/auth/users", {
+    const usersRes = await axios.get("https://campusplace.onrender.com/auth/users", {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    const companiesRes = await axios.get("http://localhost:8082/api/companies");
+    const companiesRes = await axios.get("https://campusplace.onrender.com/api/companies");
 
     setUsers(usersRes.data);
     setCompanies(companiesRes.data);
@@ -30,7 +30,7 @@ export default function AdminPanel() {
     const token = localStorage.getItem("token");
 
     await axios.delete(
-      `http://localhost:8082/admin/delete/${email}`,
+      `https://campusplace.onrender.com/admin/delete/${email}`,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
@@ -48,7 +48,7 @@ export default function AdminPanel() {
     const token = localStorage.getItem("token");
 
     await axios.put(
-      `http://localhost:8082/admin/promote/${email}`,
+      `https://campusplace.onrender.com/admin/promote/${email}`,
       {},
       {
         headers: { Authorization: `Bearer ${token}` }

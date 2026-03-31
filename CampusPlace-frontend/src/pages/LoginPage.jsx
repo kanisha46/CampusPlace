@@ -27,7 +27,7 @@ export default function LoginPage() {
       setLoading(true);
 
       if (isForgotPassword) {
-        await axios.post("http://localhost:8082/auth/forgot-password", { email });
+        await axios.post("https://campusplace.onrender.com/auth/forgot-password", { email });
         setMessage("Password reset link sent! Check your email.");
         setLoading(false);
         return;
@@ -35,7 +35,7 @@ export default function LoginPage() {
 
       if (isSignup) {
         const res = await axios.post(
-          "http://localhost:8082/auth/signup",
+          "https://campusplace.onrender.com/auth/signup",
           { name, email, password }
         );
 
@@ -47,7 +47,7 @@ export default function LoginPage() {
 
       // -------- LOGIN --------
       // -------- LOGIN --------
-      const res = await axios.post("http://localhost:8082/auth/login", { email, password });
+      const res = await axios.post("https://campusplace.onrender.com/auth/login", { email, password });
       console.log("Full Backend Response:", res.data);
 
       const { accessToken, role: userRole, name: userName } = res.data;
@@ -204,7 +204,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={() =>
                   window.location.href =
-                  "http://localhost:8082/oauth2/authorization/google"
+                  "https://campusplace.onrender.com/oauth2/authorization/google"
                 }
               >
                 <img
@@ -218,7 +218,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={() =>
                   window.location.href =
-                  "http://localhost:8082/oauth2/authorization/github"
+                  "https://campusplace.onrender.com/oauth2/authorization/github"
                 }
               >
                 <Github size={20} />

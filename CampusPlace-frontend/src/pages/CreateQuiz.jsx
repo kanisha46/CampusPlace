@@ -27,7 +27,7 @@ export default function CreateQuiz() {
   const fetchFacultyDept = async () => {
     try {
       const email = localStorage.getItem("email");
-      const res = await axios.get(`http://localhost:8082/api/profile?email=${email}`);
+      const res = await axios.get(`https://campusplace.onrender.com/api/profile?email=${email}`);
       if (res.data && res.data.facultyDept) {
         setBranch(res.data.facultyDept);
       } else {
@@ -73,7 +73,7 @@ export default function CreateQuiz() {
         questions
       };
 
-      await axios.post("http://localhost:8082/quiz/create", payload);
+      await axios.post("https://campusplace.onrender.com/quiz/create", payload);
       setMessage("Quiz created successfully!");
       setTimeout(() => navigate("/faculty"), 1500);
     } catch (error) {

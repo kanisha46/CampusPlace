@@ -3,7 +3,7 @@ import axios from "axios";
 import "./ProgressTracking.css";
 import ProgressCharts from "../components/ProgressCharts";
 
-const API = "http://localhost:8082";
+const API = "https://campusplace.onrender.com";
 
 const MOCK = {
   totalTests: 14,

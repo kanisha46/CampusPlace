@@ -19,7 +19,7 @@ export default function VerifyEmail() {
 
     const verify = async () => {
       try {
-        const res = await axios.get(`http://localhost:8082/auth/verify-email?token=${token}`);
+        const res = await axios.get(`https://campusplace.onrender.com/auth/verify-email?token=${token}`);
         setMessage(res.data.message || "Email verified! You can now login.");
         setStatus("success");
       } catch (error) {

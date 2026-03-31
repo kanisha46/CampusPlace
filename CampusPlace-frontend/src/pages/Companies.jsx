@@ -43,7 +43,7 @@ const Companies = () => {
         const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
         
         const res = await axios.get(
-          "http://localhost:8082/api/companies",
+          "https://campusplace.onrender.com/api/companies",
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -76,7 +76,7 @@ const addCompany = async () => {
     const token = localStorage.getItem("accessToken");
 
     const res = await axios.post(
-      "http://localhost:8082/api/companies",
+      "https://campusplace.onrender.com/api/companies",
       newCompany,
       {
         headers: {
@@ -155,7 +155,7 @@ const handleDelete = async (id) => {
     const token = localStorage.getItem("accessToken");
 
     await axios.delete(
-      `http://localhost:8082/api/companies/${id}`,
+      `https://campusplace.onrender.com/api/companies/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`

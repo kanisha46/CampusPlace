@@ -33,7 +33,7 @@ export default function ResetPassword() {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:8082/auth/reset-password", { token, newPassword: password });
+      const res = await axios.post("https://campusplace.onrender.com/auth/reset-password", { token, newPassword: password });
       setMessage(res.data.message || "Password reset successfully! Redirecting to login...");
       setStatus("success");
       setTimeout(() => navigate("/login"), 3000);

@@ -167,7 +167,7 @@ const Dashboard = () => {
       }
 
       // 3. Add the 'params' object to the GET request
-      const response = await axios.get("http://localhost:8082/api/profile", {
+      const response = await axios.get("https://campusplace.onrender.com/api/profile", {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -277,7 +277,7 @@ const handleSave = async () => {
     }
 
     // API Call
-    await axios.post("http://localhost:8082/api/profile", formData, {
+    await axios.post("https://campusplace.onrender.com/api/profile", formData, {
       headers: { Authorization: `Bearer ${token}` }
     });
 

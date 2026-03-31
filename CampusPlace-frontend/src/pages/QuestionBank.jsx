@@ -3,7 +3,7 @@ import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import "./QuestionBank.css";
 
-const API_BASE = "http://localhost:8082";
+const API_BASE = "https://campusplace.onrender.com";
 
 function getRole() {
   const direct = localStorage.getItem("role");
