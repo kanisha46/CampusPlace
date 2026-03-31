@@ -71,4 +71,4 @@ It helps students prepare for placements and allows admins to manage users and c
 
 ## 📄 License
 
-This project is developed for educational purposes.
+This project is under MIT License.
