@@ -245,7 +245,6 @@ export default function Header() {
             HOME
           </button>
 
-<<<<<<< HEAD
           <NavLink
             to={getDashboardRoute()}
             className={({ isActive }) =>
@@ -255,37 +254,8 @@ export default function Header() {
               setActiveSection("dashboard")
             }
           >
-            DASHBOARD
+            {user?.role === "FACULTY" ? "FACULTY DASHBOARD" : user?.role === "ADMIN" ? "ADMIN DASHBOARD" : "DASHBOARD"}
           </NavLink>
-=======
-          {user?.role !== "FACULTY" && (
-            <NavLink
-              to="/dashboard"
-              className={({ isActive }) =>
-                isActive ? "active" : ""
-              }
-              onClick={() =>
-                setActiveSection("dashboard")
-              }
-            >
-              DASHBOARD
-            </NavLink>
-          )}
-
-          {user?.role === "FACULTY" && (
-            <NavLink
-              to="/faculty"
-              className={({ isActive }) =>
-                isActive ? "active" : ""
-              }
-              onClick={() =>
-                setActiveSection("faculty")
-              }
-            >
-              FACULTY DASHBOARD
-            </NavLink>
-          )}
->>>>>>> 56d2c7d23c0f5a55a5759a63e12f1e6126bd50e3
 
           <NavLink
             to="/companies"
@@ -371,7 +341,6 @@ export default function Header() {
 
                   <hr />
 
-<<<<<<< HEAD
                   <button
                     onClick={() => {
                       navigate(getDashboardRoute());
@@ -379,33 +348,8 @@ export default function Header() {
                     }}
                     type="button"
                   >
-                    My Dashboard
+                    {user?.role === "FACULTY" ? "Faculty Dashboard" : user?.role === "ADMIN" ? "Admin Dashboard" : "My Dashboard"}
                   </button>
-=======
-                  {user?.role !== "FACULTY" && (
-                    <button
-                      onClick={() => {
-                        navigate("/dashboard");
-                        setShowDropdown(false);
-                      }}
-                      type="button"
-                    >
-                      My Dashboard
-                    </button>
-                  )}
-
-                  {user?.role === "FACULTY" && (
-                    <button
-                      onClick={() => {
-                        navigate("/faculty");
-                        setShowDropdown(false);
-                      }}
-                      type="button"
-                    >
-                      Faculty Dashboard
-                    </button>
-                  )}
->>>>>>> 56d2c7d23c0f5a55a5759a63e12f1e6126bd50e3
 
                   <button
                     onClick={handleLogout}

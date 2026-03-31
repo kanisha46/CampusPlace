@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AboutUs from "./AboutUs";
-import { useAuth } from "../context/AuthContext";
 import "./Home.css";
 
 const dashboardItems = [
@@ -18,9 +17,6 @@ const dashboardItems = [
 export default function Home({ setAboutVisible }) {
   const navigate = useNavigate();
   const { user } = useAuth();
-<<<<<<< HEAD
-=======
-
   const filteredDashboardItems = user?.role === "FACULTY" 
     ? dashboardItems.filter(item => 
         item.title !== "Student Dashboard" && 
@@ -28,7 +24,6 @@ export default function Home({ setAboutVisible }) {
         item.title !== "Resume Analysis"
       )
     : dashboardItems.filter(item => item.title !== "Faculty Management");
->>>>>>> 56d2c7d23c0f5a55a5759a63e12f1e6126bd50e3
 
   // Handle scroll reveal animation
   useEffect(() => {
@@ -96,10 +91,9 @@ export default function Home({ setAboutVisible }) {
       </div>
 
       {/* DASHBOARD BLOCKS */}
-<<<<<<< HEAD
       {user?.role !== "ADMIN" && (
         <div id="explore-section" className="dashboard-grid-neon">
-          {dashboardItems.map((item, index) => (
+          {filteredDashboardItems.map((item, index) => (
             <div
               className="feature-card-neon"
               key={item.id}
@@ -112,21 +106,6 @@ export default function Home({ setAboutVisible }) {
                 <h3>{item.title}</h3>
                 <p>{item.desc}</p>
               </div>
-=======
-      <div id="explore-section" className="dashboard-grid-neon">
-        {filteredDashboardItems.map((item, index) => (
-          <div
-            className="feature-card-neon"
-            key={item.id}
-            style={{ animationDelay: `${index * 0.1}s` }}
-            onClick={() => item.path && navigate(item.path)}
-          >
-            <div className="card-border-gradient"></div>
-            <div className="card-content">
-              <div className="icon-neon-box">{item.icon}</div>
-              <h3>{item.title}</h3>
-              <p>{item.desc}</p>
->>>>>>> 56d2c7d23c0f5a55a5759a63e12f1e6126bd50e3
             </div>
           ))}
         </div>
