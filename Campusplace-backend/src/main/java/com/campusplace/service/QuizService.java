@@ -157,7 +157,36 @@ public class QuizService {
                 .findByStudentAndQuiz(user, quiz)
                 .orElse(null);   // IMPORTANT
     }
+    public void updateQuiz(Long quizId, CreateQuizRequest request) {
 
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        // ✅ Update quiz details
+        quiz.setTitle(request.getTitle());
+        quiz.setBranch(request.getBranch());
+        quiz.setSubject(request.getSubject());
+        quiz.setDurationMinutes(request.getDurationMinutes());
+
+        quizRepository.save(quiz);
+
+        // ✅ Delete old questions
+        List<McqQuestion> oldQuestions = questionRepository.findByQuiz(quiz);
+        questionRepository.deleteAll(oldQuestions);
+
+        // ✅ Add new questions
+        for (QuestionRequest q : request.getQuestions()) {
+            McqQuestion question = new McqQuestion();
+            question.setQuiz(quiz);
+            question.setQuestion(q.getQuestion());
+            question.setOptionA(q.getOptionA());
+            question.setOptionB(q.getOptionB());
+            question.setOptionC(q.getOptionC());
+            question.setOptionD(q.getOptionD());
+            question.setCorrectAnswer(q.getCorrectAnswer());
+            questionRepository.save(question);
+        }
+    }
     public void deleteQuiz(Long quizId) {
         quizRepository.deleteById(quizId);
     }
