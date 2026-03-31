@@ -495,6 +495,16 @@
 }
 
 /* Optional press */
+/* FIX DROPDOWN TEXT VISIBILITY */
+select option {
+  color: #000;            /* dark text */
+  background: #fff;       /* light background */
+}
+
+/* OPTIONAL: better dark theme dropdown */
+select {
+  background-color: rgba(20, 22, 35, 0.9) !important;
+}
 .pill-btn:active {
   transform: scale(0.95);
 }

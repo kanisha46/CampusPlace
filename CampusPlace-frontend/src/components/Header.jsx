@@ -239,17 +239,33 @@ export default function Header() {
             HOME
           </button>
 
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-            onClick={() =>
-              setActiveSection("dashboard")
-            }
-          >
-            DASHBOARD
-          </NavLink>
+          {user?.role !== "FACULTY" && (
+            <NavLink
+              to="/dashboard"
+              className={({ isActive }) =>
+                isActive ? "active" : ""
+              }
+              onClick={() =>
+                setActiveSection("dashboard")
+              }
+            >
+              DASHBOARD
+            </NavLink>
+          )}
+
+          {user?.role === "FACULTY" && (
+            <NavLink
+              to="/faculty"
+              className={({ isActive }) =>
+                isActive ? "active" : ""
+              }
+              onClick={() =>
+                setActiveSection("faculty")
+              }
+            >
+              FACULTY DASHBOARD
+            </NavLink>
+          )}
 
           <NavLink
             to="/companies"
@@ -335,15 +351,29 @@ export default function Header() {
 
                   <hr />
 
-                  <button
-                    onClick={() => {
-                      navigate("/dashboard");
-                      setShowDropdown(false);
-                    }}
-                    type="button"
-                  >
-                    My Dashboard
-                  </button>
+                  {user?.role !== "FACULTY" && (
+                    <button
+                      onClick={() => {
+                        navigate("/dashboard");
+                        setShowDropdown(false);
+                      }}
+                      type="button"
+                    >
+                      My Dashboard
+                    </button>
+                  )}
+
+                  {user?.role === "FACULTY" && (
+                    <button
+                      onClick={() => {
+                        navigate("/faculty");
+                        setShowDropdown(false);
+                      }}
+                      type="button"
+                    >
+                      Faculty Dashboard
+                    </button>
+                  )}
 
                   <button
                     onClick={handleLogout}

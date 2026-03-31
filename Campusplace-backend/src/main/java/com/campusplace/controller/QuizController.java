@@ -27,15 +27,13 @@ public class QuizController {
     private final QuizService quizService;
     private final UserService userService;
     private final StudentProfileRepository studentProfileRepository;
+
     @GetMapping("/student/list")
     public List<QuizListResponse> getBranchQuizzes(Authentication authentication) {
-
         User user = userService.getLoggedInUser(authentication);
-
         StudentProfile profile = studentProfileRepository
                 .findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Student profile not found"));
-
         return quizService.getActiveQuizzesByBranch(profile.getSpecialization());
     }
 
@@ -47,7 +45,6 @@ public class QuizController {
     @PostMapping("/student/submit")
     public int submitQuiz(@RequestBody SubmitQuizRequest request,
                           Authentication authentication) {
-
         return quizService.evaluateQuiz(request, authentication);
     }
 
@@ -57,11 +54,9 @@ public class QuizController {
             Authentication authentication
     ) {
         StudentResult result = quizService.getStudentResultForQuiz(quizId, authentication);
-
         if (result == null) {
             return ResponseEntity.ok(null);
         }
-
         return ResponseEntity.ok(result);
     }
 
@@ -73,5 +68,28 @@ public class QuizController {
     @GetMapping("/student/{quizId}/attempts")
     public long getAttemptCount(@PathVariable Long quizId, Authentication auth) {
         return quizService.getAttemptCount(quizId, auth);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createQuiz(@RequestBody CreateQuizRequest request) {
+        quizService.createQuiz(request);
+        return ResponseEntity.ok("Quiz created successfully");
+    }
+
+    @DeleteMapping("/delete/{quizId}")
+    public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId) {
+        quizService.deleteQuiz(quizId);
+        return ResponseEntity.ok("Quiz deleted successfully");
+    }
+
+    @PutMapping("/update/{quizId}")
+    public ResponseEntity<?> updateQuiz(@PathVariable Long quizId, @RequestBody CreateQuizRequest request) {
+        quizService.updateQuiz(quizId, request);
+        return ResponseEntity.ok("Quiz updated successfully");
+    }
+
+    @GetMapping("/faculty/list")
+    public List<QuizListResponse> getFacultyQuizzes(@RequestParam String dept) {
+        return quizService.getActiveQuizzesByBranch(dept);
     }
 }

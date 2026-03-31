@@ -64,7 +64,7 @@ export default function LoginPage() {
         if (userRole === "ADMIN") {
           navigate("/admin");
         } else if (userRole === "FACULTY") {
-           navigate("/faculty");
+           navigate("/");
         } else {
           navigate("/");
         }

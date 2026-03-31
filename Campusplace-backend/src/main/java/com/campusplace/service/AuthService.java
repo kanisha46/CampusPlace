@@ -42,19 +42,20 @@ public class AuthService {
         // 🔐 Email Verification Logic
         String verificationToken = java.util.UUID.randomUUID().toString();
         user.setVerificationToken(verificationToken);
-        user.setEmailVerified(false); // REQUIRE verification
+        user.setEmailVerified(true); // 🔥 INSTANTLY VERIFIED for testing
 
         userRepository.save(user);
 
-        // Send Email
+        // Send Email (Bypassed)
         String verifyUrl = "http://localhost:5173/verify?token=" + verificationToken;
-        emailService.sendEmail(
-                user.getEmail(),
-                "Verify your CampusPlace Account",
-                "Please click the link to verify your account: " + verifyUrl
-        );
+        // emailService.sendEmail(
+        //         user.getEmail(),
+        //         "Verify your CampusPlace Account",
+        //         "Please click the link to verify your account: " + verifyUrl
+        // );
+        System.out.println("🔥 SIMULATION - User verified instantly! Verification URL would be: " + verifyUrl);
 
-        return new ApiResponse("Registration successful! Please check your email to verify your account.");
+        return new ApiResponse("Registration successful! (Email bypassed for testing)");
     }
 
     public ApiResponse verifyEmail(String token) {
@@ -81,13 +82,14 @@ public class AuthService {
         userRepository.save(user);
 
         String resetUrl = "http://localhost:5173/reset-password?token=" + resetToken;
-        emailService.sendEmail(
-                user.getEmail(),
-                "Password Reset Request",
-                "To reset your password, click the link below: " + resetUrl
-        );
+        // emailService.sendEmail(
+        //         user.getEmail(),
+        //         "Password Reset Request",
+        //         "To reset your password, click the link below: " + resetUrl
+        // );
+        System.out.println("🔥 SIMULATION - Password Reset URL: " + resetUrl);
 
-        return new ApiResponse("Password reset link sent to your email.");
+        return new ApiResponse("Password reset link printed to console! (Email bypassed for testing)");
     }
 
     public ApiResponse resetPassword(String token, String newPassword) {
@@ -119,9 +121,9 @@ public class AuthService {
         }
 
         // 🔐 Check Verification
-        if (!user.isEmailVerified()) {
-            throw new RuntimeException("Please verify your email before logging in.");
-        }
+        // if (!user.isEmailVerified()) {
+        //     throw new RuntimeException("Please verify your email before logging in.");
+        // }
 
         // 🔐 Generate tokens
         String accessToken = jwtService.generateAccessToken(user);

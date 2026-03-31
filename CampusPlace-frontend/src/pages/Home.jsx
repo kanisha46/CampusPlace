@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import AboutUs from "./AboutUs";
 import "./Home.css";
 
 const dashboardItems = [
+  { id: 0, title: "Faculty Management", desc: "Manage your professional profile and departmental quizzes.", icon: "👨‍🏫", path: "/faculty" },
   { id: 1, title: "Student Dashboard", desc: "Real-time analytics across your entire preparation journey.", icon: "🌌", path: "/dashboard" },
   { id: 2, title: "Company & Placements", desc: "Discover tier-1 companies and predictive placement insights.", icon: "🏢", path: "/companies" },
   { id: 3, title: "Question Bank", desc: "Master complex algorithms with our high-precision databank.", icon: "⚡", path: "/questions" },
@@ -14,6 +16,15 @@ const dashboardItems = [
 
 export default function Home({ setAboutVisible }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const filteredDashboardItems = user?.role === "FACULTY" 
+    ? dashboardItems.filter(item => 
+        item.title !== "Student Dashboard" && 
+        item.title !== "Progress Tracking" &&
+        item.title !== "Resume Analysis"
+      )
+    : dashboardItems.filter(item => item.title !== "Faculty Management");
 
   // Handle scroll reveal animation
   useEffect(() => {
@@ -82,7 +93,7 @@ export default function Home({ setAboutVisible }) {
 
       {/* DASHBOARD BLOCKS */}
       <div id="explore-section" className="dashboard-grid-neon">
-        {dashboardItems.map((item, index) => (
+        {filteredDashboardItems.map((item, index) => (
           <div
             className="feature-card-neon"
             key={item.id}
