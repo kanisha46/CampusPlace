@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const navigate = useNavigate();
@@ -25,13 +26,20 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
+      if (isForgotPassword) {
+        await axios.post("http://localhost:8082/auth/forgot-password", { email });
+        setMessage("Password reset link sent! Check your email.");
+        setLoading(false);
+        return;
+      }
+
       if (isSignup) {
         const res = await axios.post(
           "http://localhost:8082/auth/signup",
           { name, email, password }
         );
 
-        setMessage("Signup successful! Please login.");
+        setMessage(res.data.message || "Signup successful! Please check your email to verify.");
         setIsSignup(false);
         setLoading(false);
         return;
@@ -56,9 +64,9 @@ export default function LoginPage() {
         if (userRole === "ADMIN") {
           navigate("/admin");
         } else if (userRole === "FACULTY") {
-          navigate("/faculty");
+           navigate("/faculty");
         } else {
-          navigate("/dashboard");
+          navigate("/");
         }
       }
       else {
@@ -66,7 +74,8 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error(error);
-      setMessage("Login failed");
+      const errorMsg = error.response?.data?.message || "Operation failed";
+      setMessage(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -77,10 +86,10 @@ export default function LoginPage() {
       <div className="blob blob-1"></div>
       <div className="blob blob-2"></div>
 
-      <div className={`login-box ${isSignup ? "signup-mode" : ""}`}>
+      <div className={`login-box ${isSignup ? "signup-mode" : ""} ${isForgotPassword ? "forgot-mode" : ""}`}>
         <h2>CampusPlace</h2>
         <p className="subtitle">
-          {isSignup ? "Create your account" : "Welcome back"}
+          {isForgotPassword ? "Reset your password" : isSignup ? "Create your account" : "Welcome back"}
         </p>
 
         {message && (
@@ -118,24 +127,34 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="form-field">
-            <label>Password</label>
-            <div className="input-group">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <span
-                className="eye"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          {!isForgotPassword && (
+            <div className="form-field">
+              <label>Password</label>
+              <div className="input-group">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <span
+                  className="eye"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {!isSignup && !isForgotPassword && (
+            <div className="forgot-link-wrapper">
+              <span className="otp-link" onClick={() => { setIsForgotPassword(true); setMessage(""); }}>
+                Forgot Password?
               </span>
             </div>
-          </div>
+          )}
 
           {isSignup && (
             <div className="form-field">
@@ -161,55 +180,67 @@ export default function LoginPage() {
           >
             {loading
               ? "Processing..."
-              : isSignup
-                ? "Create Account"
-                : "Login"}
+              : isForgotPassword
+                ? "Send Reset Link"
+                : isSignup
+                  ? "Create Account"
+                  : "Login"}
           </button>
         </form>
 
-        <div className="separator">
-          <span>Or continue with</span>
-        </div>
+        {isForgotPassword ? (
+          <p className="otp-link text-center mt-4" onClick={() => { setIsForgotPassword(false); setMessage(""); }}>
+            ← Back to Login
+          </p>
+        ) : (
+          <>
+            <div className="separator">
+              <span>Or continue with</span>
+            </div>
 
-        <div className="social-grid">
-          <button
-            className="social-btn"
-            type="button"
-            onClick={() =>
-              window.location.href =
-              "http://localhost:8082/oauth2/authorization/google"
-            }
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-            />
-            Google
-          </button>
-          <button
-            className="social-btn"
-            type="button"
-            onClick={() =>
-              window.location.href =
-              "http://localhost:8082/oauth2/authorization/github"
-            }
-          >
-            <Github size={20} />
-            GitHub
-          </button>
-        </div>
+            <div className="social-grid">
+              <button
+                className="social-btn"
+                type="button"
+                onClick={() =>
+                  window.location.href =
+                  "http://localhost:8082/oauth2/authorization/google"
+                }
+              >
+                <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google"
+                />
+                Google
+              </button>
+              <button
+                className="social-btn"
+                type="button"
+                onClick={() =>
+                  window.location.href =
+                  "http://localhost:8082/oauth2/authorization/github"
+                }
+              >
+                <Github size={20} />
+                GitHub
+              </button>
+            </div>
+          </>
+        )}
 
-        <p
-          className="otp-link"
-          onClick={() => {
-            setIsSignup(!isSignup);
-            setMessage("");
-          }}
-        >
-          {isSignup
-            ? "Already have an account? Sign in"
-            : "Don’t have an account? Sign up"}
-        </p>
+        {!isForgotPassword && (
+          <p
+            className="otp-link"
+            onClick={() => {
+              setIsSignup(!isSignup);
+              setMessage("");
+            }}
+          >
+            {isSignup
+              ? "Already have an account? Sign in"
+              : "Don’t have an account? Sign up"}
+          </p>
+        )}
       </div>
     </div>
   );

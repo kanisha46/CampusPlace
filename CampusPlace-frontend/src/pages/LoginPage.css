@@ -178,6 +178,33 @@
   font-weight: 500;
 }
 
+.server-msg.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.forgot-link-wrapper {
+  text-align: right;
+  margin-top: -12px;
+  margin-bottom: 24px;
+}
+
+.forgot-link-wrapper .otp-link {
+  margin-top: 0;
+  font-size: 0.85rem;
+}
+
+.text-center { text-align: center; }
+.mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+
 /* ================= SOCIAL AUTH ================= */
 
 .separator {

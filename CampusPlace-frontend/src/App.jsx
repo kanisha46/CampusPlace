@@ -15,6 +15,8 @@ import OAuthSuccess from "./context/OAuthSuccess";
 import AttemptQuiz from "./pages/AttemptQuiz";
 import MockTest from "./pages/MockTest";
 import ProgressTracking from "./pages/ProgressTracking";
+import VerifyEmail from "./pages/VerifyEmail";
+import ResetPassword from "./pages/ResetPassword";
 
 import axios from "axios";
 const token = localStorage.getItem("token");
@@ -45,7 +47,7 @@ const RoleRoute = ({ allowedRole, children }) => {
     if (user.role === "ADMIN") {
       return <Navigate to="/admin" replace />;
     } else {
-      return <Navigate to="/dashboard" replace />;
+      return <Navigate to="/" replace />;
     }
   }
 
@@ -150,6 +152,10 @@ export default function App() {
 
         {/* ===== OAUTH SUCCESS ===== */}
         <Route path="/oauth-success" element={<OAuthSuccess />} />
+
+        {/* ===== EMAIL & PASSWORD FLOWS ===== */}
+        <Route path="/verify" element={<VerifyEmail />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* ===== FALLBACK ===== */}
         <Route path="*" element={<Navigate to="/" replace />} />

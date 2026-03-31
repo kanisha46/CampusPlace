@@ -28,14 +28,44 @@
 /* LOGO */
 
 .logo-link {
-  font-size: 1.7rem;
-  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   text-decoration: none;
-  color: white;
+  transition: all 0.3s ease;
 }
 
-.logo-link span {
+.logo-icon-wrapper {
+  background: #fbbf24;
+  color: #0f172a;
+  padding: 8px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(251, 191, 36, 0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logo-link:hover .logo-icon-wrapper {
+  transform: translateY(-2px) rotate(-3deg);
+  background: #fff;
+  box-shadow: 0 6px 15px rgba(251, 191, 36, 0.3);
+}
+
+.logo-text {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  text-transform: none; /* Keep natural capitalization */
+}
+
+.logo-text span {
   color: #fbbf24;
+  margin-left: 2px;
 }
 
 /* CENTER NAV */

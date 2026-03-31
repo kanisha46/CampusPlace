@@ -17,7 +17,7 @@ export default function OAuthSuccess() {
       login(token, role, name, email);
 
       if (role === "ADMIN") navigate("/admin");
-      else navigate("/dashboard");
+      else navigate("/");
     }
   }, []);
 

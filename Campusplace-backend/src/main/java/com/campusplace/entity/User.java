@@ -50,6 +50,13 @@ public class User implements UserDetails {
 
     private LocalDateTime lockTime;
     private boolean emailVerified = false;
+
+    private String verificationToken;
+
+    private String resetToken;
+
+    private LocalDateTime resetTokenExpiry;
+
     // ===================== SPRING SECURITY METHODS =====================
 
     @JsonIgnore
@@ -72,7 +79,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !accountLocked;
     }
 
     @Override
@@ -82,6 +89,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return emailVerified;
     }
 }

@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import userlogo from "../assets/userlogo.png";
 import campusLogo from "../assets/campuslogo.png";
+import { GraduationCap } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
@@ -217,15 +218,14 @@ export default function Header() {
       <div className="nav-container">
 
         {/* LOGO */}
-            <Link
-      to="/"
-      className="logo-link"
-      onClick={scrollToTop}
-    >
-      <span className="logo-text">
-        Campus<span>Place</span>
-      </span>
-    </Link>
+        <Link to="/" className="logo-link" onClick={scrollToTop}>
+          <div className="logo-icon-wrapper">
+            <GraduationCap size={32} strokeWidth={2.5} />
+          </div>
+          <span className="logo-text">
+            Campus<span>Place</span>
+          </span>
+        </Link>
 
         {/* NAVIGATION */}
         <nav className="nav-links">

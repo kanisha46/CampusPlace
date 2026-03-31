@@ -223,37 +223,54 @@ const handleDelete = async (id) => {
 
 {showUpcoming && upcomingCompanies.length > 0 && (
   <div className="upcoming-section">
-
-    <h2>🚀 Upcoming Placement Drives</h2>
-
-    <div className="upcoming-grid">
-
-      {upcomingCompanies.map((company) => (
-        <div key={company.id} className="upcoming-card">
-
-          <h3>{company.name}</h3>
-
-          <p>📍 {company.location}</p>
-
-          <p>
-            📅 Drive Date:
-            <strong>
-              {new Date(company.driveDate).toLocaleDateString()}
-            </strong>
-          </p>
-
-          <button
-          className="view-details-btn"
-          onClick={() => navigate(`/companies/${company.id}`)}
-        >
-          View Details →
-        </button>
-
-        </div>
-      ))}
-
+    <div className="section-title">
+      <h2>🚀 Upcoming Placement Drives</h2>
+      <p>Don't miss out on these opportunities. Mark your calendars!</p>
     </div>
 
+    <div className="upcoming-grid">
+      {upcomingCompanies.map((company) => {
+        const driveDate = new Date(company.driveDate);
+        const today = new Date();
+        const diffTime = Math.abs(driveDate - today);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return (
+          <div key={company.id} className="upcoming-card">
+            <div className="card-badge">
+              {diffDays === 0 ? "Today" : diffDays === 1 ? "Tomorrow" : `In ${diffDays} Days`}
+            </div>
+            
+            <div className="card-main">
+              <h3>{company.name}</h3>
+              <p className="upcoming-location">📍 {company.location}</p>
+              <div className="upcoming-tags">
+                <span className="tag industry-tag">{company.industry}</span>
+                {company.salaryPackage && <span className="tag salary-tag">💰 {company.salaryPackage}</span>}
+              </div>
+            </div>
+
+            <div className="card-info">
+              <div className="info-item">
+                <span className="label">Role</span>
+                <span className="value">{company.roles || "Multiple Roles"}</span>
+              </div>
+              <div className="info-item">
+                <span className="label">Date</span>
+                <span className="value">{driveDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+              </div>
+            </div>
+
+            <button
+              className="view-details-btn"
+              onClick={() => navigate(`/companies/${company.id}`)}
+            >
+              View Details →
+            </button>
+          </div>
+        );
+      })}
+    </div>
   </div>
 )}
       {/* ===== ADMIN ACTIONS ===== */}
