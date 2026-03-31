@@ -22,9 +22,9 @@ public class QuizService {
     private final StudentResultRepository studentResultRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+
     // ✅ CREATE QUIZ
     public void createQuiz(CreateQuizRequest request) {
-
         Quiz quiz = new Quiz();
         quiz.setTitle(request.getTitle());
         quiz.setBranch(request.getBranch());
@@ -35,7 +35,6 @@ public class QuizService {
         quizRepository.save(quiz);
 
         for (QuestionRequest q : request.getQuestions()) {
-
             McqQuestion question = new McqQuestion();
             question.setQuiz(quiz);
             question.setQuestion(q.getQuestion());
@@ -44,13 +43,11 @@ public class QuizService {
             question.setOptionC(q.getOptionC());
             question.setOptionD(q.getOptionD());
             question.setCorrectAnswer(q.getCorrectAnswer());
-
             questionRepository.save(question);
         }
     }
 
     public int evaluateQuiz(SubmitQuizRequest request, Authentication authentication) {
-
         User student = userRepository
                 .findByEmail(authentication.getName())
                 .orElseThrow();
@@ -68,7 +65,6 @@ public class QuizService {
         int score = 0;
 
         for (AnswerRequest ans : request.getAnswers()) {
-
             McqQuestion question = questionRepository
                     .findById(ans.getQuestionId())
                     .orElseThrow();
@@ -90,9 +86,19 @@ public class QuizService {
 
         return score;
     }
+
     public List<QuizListResponse> getActiveQuizzesByBranch(String specialization) {
 
-        Branch branch = Branch.valueOf(specialization.toUpperCase());
+        String dept = specialization.trim().toUpperCase();
+
+        // ✅ handle full names from frontend
+        if (dept.equals("INFORMATION TECHNOLOGY")) {
+            dept = "IT";
+        } else if (dept.equals("COMPUTER SCIENCE")) {
+            dept = "CS";
+        }
+
+        Branch branch = Branch.valueOf(dept);
 
         return quizRepository.findByBranchAndActiveTrue(branch)
                 .stream()
@@ -124,7 +130,6 @@ public class QuizService {
     }
 
     public List<StudentResult> getLeaderboard(Long quizId) {
-
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
@@ -132,7 +137,6 @@ public class QuizService {
     }
 
     public long getAttemptCount(Long quizId, Authentication auth) {
-
         User student = userRepository
                 .findByEmail(auth.getName())
                 .orElseThrow();
@@ -144,7 +148,6 @@ public class QuizService {
     }
 
     public StudentResult getStudentResultForQuiz(Long quizId, Authentication auth) {
-
         User user = userService.getLoggedInUser(auth);
 
         Quiz quiz = quizRepository.findById(quizId)
@@ -153,5 +156,38 @@ public class QuizService {
         return studentResultRepository
                 .findByStudentAndQuiz(user, quiz)
                 .orElse(null);   // IMPORTANT
+    }
+    public void updateQuiz(Long quizId, CreateQuizRequest request) {
+
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        // ✅ Update quiz details
+        quiz.setTitle(request.getTitle());
+        quiz.setBranch(request.getBranch());
+        quiz.setSubject(request.getSubject());
+        quiz.setDurationMinutes(request.getDurationMinutes());
+
+        quizRepository.save(quiz);
+
+        // ✅ Delete old questions
+        List<McqQuestion> oldQuestions = questionRepository.findByQuiz(quiz);
+        questionRepository.deleteAll(oldQuestions);
+
+        // ✅ Add new questions
+        for (QuestionRequest q : request.getQuestions()) {
+            McqQuestion question = new McqQuestion();
+            question.setQuiz(quiz);
+            question.setQuestion(q.getQuestion());
+            question.setOptionA(q.getOptionA());
+            question.setOptionB(q.getOptionB());
+            question.setOptionC(q.getOptionC());
+            question.setOptionD(q.getOptionD());
+            question.setCorrectAnswer(q.getCorrectAnswer());
+            questionRepository.save(question);
+        }
+    }
+    public void deleteQuiz(Long quizId) {
+        quizRepository.deleteById(quizId);
     }
 }

@@ -11,14 +11,14 @@ import Companies from "./pages/Companies";
 import CompanyDetails from "./pages/CompanyDetails";
 import Dashboard from "./pages/Dashboard";
 import QuestionBank from "./pages/QuestionBank";
+import FacultyDashboard from "./pages/FacultyDashboard";
 import OAuthSuccess from "./context/OAuthSuccess";
 import AttemptQuiz from "./pages/AttemptQuiz";
 import MockTest from "./pages/MockTest";
+import CreateQuiz from "./pages/CreateQuiz";
 import ProgressTracking from "./pages/ProgressTracking";
 import VerifyEmail from "./pages/VerifyEmail";
 import ResetPassword from "./pages/ResetPassword";
-import FacultyDashboard from "./pages/FacultyDashboard";
-import AddQuiz from "./pages/AddQuiz";
 
 import axios from "axios";
 const token = localStorage.getItem("token");
@@ -115,17 +115,7 @@ export default function App() {
             </RoleRoute>
           }
         />
-
-        {/* ===== FACULTY ADD QUIZ ===== */}
-        <Route
-          path="/faculty/add-quiz"
-          element={
-            <RoleRoute allowedRoles={["FACULTY", "ADMIN"]}>
-              <AddQuiz />
-            </RoleRoute>
-          }
-        />
-
+        
         {/* ===== COMPANIES ===== */}
         <Route
           path="/companies"
@@ -167,8 +157,26 @@ export default function App() {
         <Route
           path="/mock-test/:quizId"
           element={
-            <RoleRoute allowedRoles={["STUDENT"]}>
+            <RoleRoute allowedRoles={["STUDENT", "FACULTY"]}>
               <AttemptQuiz />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="/create-quiz"
+          element={
+            <RoleRoute allowedRoles={["FACULTY"]}>
+              <CreateQuiz />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="/faculty/add-quiz"
+          element={
+            <RoleRoute allowedRoles={["FACULTY", "ADMIN"]}>
+              <CreateQuiz />
             </RoleRoute>
           }
         />

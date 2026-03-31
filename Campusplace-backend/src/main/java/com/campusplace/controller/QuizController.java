@@ -13,7 +13,6 @@ import com.campusplace.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,20 +27,17 @@ public class QuizController {
     private final UserService userService;
     private final StudentProfileRepository studentProfileRepository;
 
-    @PostMapping("/faculty/add")
-    public ResponseEntity<String> addQuiz(@RequestBody CreateQuizRequest request, Authentication authentication) {
+    // ✅ CREATE QUIZ (single clean endpoint)
+    @PostMapping("/create")
+    public ResponseEntity<?> createQuiz(@RequestBody CreateQuizRequest request) {
         quizService.createQuiz(request);
         return ResponseEntity.ok("Quiz created successfully");
     }
 
+    // ✅ STUDENT QUIZ LIST
     @GetMapping("/student/list")
     public List<QuizListResponse> getBranchQuizzes(Authentication authentication) {
-
         User user = userService.getLoggedInUser(authentication);
-
-        if (com.campusplace.entity.Role.FACULTY.equals(user.getRole())) {
-            return quizService.getAllActiveQuizzes();
-        }
 
         StudentProfile profile = studentProfileRepository
                 .findByUser(user)
@@ -50,39 +46,61 @@ public class QuizController {
         return quizService.getActiveQuizzesByBranch(profile.getSpecialization());
     }
 
+    // ✅ FACULTY QUIZ LIST
+    @GetMapping("/faculty/list")
+    public List<QuizListResponse> getFacultyQuizzes(@RequestParam String dept) {
+        return quizService.getActiveQuizzesByBranch(dept);
+    }
+
+    // ✅ GET QUIZ WITH QUESTIONS
     @GetMapping("/student/{quizId}")
     public Quiz getQuiz(@PathVariable Long quizId) {
         return quizService.getQuizWithQuestions(quizId);
     }
 
+    // ✅ SUBMIT QUIZ
     @PostMapping("/student/submit")
     public int submitQuiz(@RequestBody SubmitQuizRequest request,
                           Authentication authentication) {
-
         return quizService.evaluateQuiz(request, authentication);
     }
 
+    // ✅ GET RESULT
     @GetMapping("/student/{quizId}/result")
     public ResponseEntity<?> getStudentResult(
             @PathVariable Long quizId,
             Authentication authentication
     ) {
         StudentResult result = quizService.getStudentResultForQuiz(quizId, authentication);
-
-        if (result == null) {
-            return ResponseEntity.ok(null);
-        }
-
         return ResponseEntity.ok(result);
     }
 
+    // ✅ LEADERBOARD
     @GetMapping("/{quizId}/leaderboard")
     public List<StudentResult> getLeaderboard(@PathVariable Long quizId) {
         return quizService.getLeaderboard(quizId);
     }
 
+    // ✅ ATTEMPTS
     @GetMapping("/student/{quizId}/attempts")
     public long getAttemptCount(@PathVariable Long quizId, Authentication auth) {
         return quizService.getAttemptCount(quizId, auth);
+    }
+
+    // ✅ DELETE QUIZ
+    @DeleteMapping("/delete/{quizId}")
+    public ResponseEntity<?> deleteQuiz(@PathVariable Long quizId) {
+        quizService.deleteQuiz(quizId);
+        return ResponseEntity.ok("Quiz deleted successfully");
+    }
+
+    // ✅ UPDATE QUIZ
+    @PutMapping("/update/{quizId}")
+    public ResponseEntity<?> updateQuiz(
+            @PathVariable Long quizId,
+            @RequestBody CreateQuizRequest request
+    ) {
+        quizService.updateQuiz(quizId, request);
+        return ResponseEntity.ok("Quiz updated successfully");
     }
 }
