@@ -62,7 +62,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         // 🔐 Store refresh token in HttpOnly cookie
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
-                .secure(false) // ⚠ set true in production (HTTPS)
+                .secure(true) // ✅ enabled for HTTPS (Production)
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60)
                 .sameSite("Strict")
@@ -72,7 +72,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         // 🔁 Redirect with access token only
         response.sendRedirect(
-                "http://localhost:5173/oauth-success" +
+                "https://campus-place.vercel.app/oauth-success" + // Fixed Vercel URL
                         "?token=" + accessToken +
                         "&role=" + user.getRole() +
                         "&name=" + user.getName()

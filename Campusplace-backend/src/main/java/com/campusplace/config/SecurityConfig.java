@@ -40,7 +40,7 @@ public class SecurityConfig {
 
                     config.setAllowedOrigins(List.of(
                             "http://localhost:5173",
-                            "https://yourdomain.com"  // production domain
+                            "https://campus-place.vercel.app" // Fixed Vercel URL
                     ));
 
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
