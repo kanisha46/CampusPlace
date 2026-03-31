@@ -28,9 +28,26 @@ public class QuizController {
     private final UserService userService;
     private final StudentProfileRepository studentProfileRepository;
 
+<<<<<<< HEAD
+=======
+    @PostMapping("/faculty/add")
+    public ResponseEntity<String> addQuiz(@RequestBody CreateQuizRequest request, Authentication authentication) {
+        quizService.createQuiz(request);
+        return ResponseEntity.ok("Quiz created successfully");
+    }
+
+>>>>>>> e61149e25ad5a39f551d4cd11f6bb8a180d5294b
     @GetMapping("/student/list")
     public List<QuizListResponse> getBranchQuizzes(Authentication authentication) {
         User user = userService.getLoggedInUser(authentication);
+<<<<<<< HEAD
+=======
+
+        if (com.campusplace.entity.Role.FACULTY.equals(user.getRole())) {
+            return quizService.getAllActiveQuizzes();
+        }
+
+>>>>>>> e61149e25ad5a39f551d4cd11f6bb8a180d5294b
         StudentProfile profile = studentProfileRepository
                 .findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Student profile not found"));

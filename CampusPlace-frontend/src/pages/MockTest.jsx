@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 import "./MockTest.css";
 
 export default function MockTest() {
@@ -10,6 +11,7 @@ export default function MockTest() {
   const [error, setError] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const isFaculty = user?.role === "FACULTY";
   const [facultyDept, setFacultyDept] = useState("");
@@ -99,6 +101,7 @@ export default function MockTest() {
         </p>
       </div>
 
+<<<<<<< HEAD
       <div className={isFaculty ? "management-grid" : "mock-grid"}>
         {quizzes.length === 0 && (
           <div className="empty-state">
@@ -191,6 +194,19 @@ export default function MockTest() {
               )}
             </div>
           </div>
+=======
+    <div className="mock-grid">
+      {user?.role === "FACULTY" && (
+        <div className="quiz-card add-quiz-card" onClick={() => navigate("/faculty/add-quiz")}>
+          <div className="add-icon">+</div>
+          <h3>Create New Quiz</h3>
+          <p>Add a new mock test for students</p>
+        </div>
+      )}
+      {quizzes.length === 0 && (
+        <div className="empty-state">
+          No quizzes available.
+>>>>>>> e61149e25ad5a39f551d4cd11f6bb8a180d5294b
         </div>
       )}
 
