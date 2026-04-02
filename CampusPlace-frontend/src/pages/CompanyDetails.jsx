@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./CompanyDetails.css";
+import { API_BASE } from "../config";
 
 const CompanyDetails = () => {
   const { id } = useParams();
@@ -38,14 +39,14 @@ const CompanyDetails = () => {
 
         // Skills
         const skillRes = await axios.get(
-          "https://campusplace.onrender.com/api/student/skills",
+          `${API_BASE}/api/student/skills`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setStudentSkills(skillRes.data || {});
 
         // Company
         const compRes = await axios.get(
-          `https://campusplace.onrender.com/api/companies/${id}`,
+          `${API_BASE}/api/companies/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -54,7 +55,7 @@ const CompanyDetails = () => {
 
         // Profile
         const profileRes = await axios.get(
-          "https://campusplace.onrender.com/api/profile",
+          `${API_BASE}/api/profile`,
           {
             headers: { Authorization: `Bearer ${token}` },
             params: email ? { email } : {}
@@ -150,7 +151,7 @@ const CompanyDetails = () => {
         localStorage.getItem("accessToken");
 
       await axios.put(
-        `https://campusplace.onrender.com/api/companies/${company.id}`,
+        `${API_BASE}/api/companies/${company.id}`,
         editedCompany,
         { headers: { Authorization: `Bearer ${token}` } }
       );

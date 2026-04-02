@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AddQuiz.css";
+import { API_BASE } from "../config";
 
 export default function AddQuiz() {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ export default function AddQuiz() {
     setMessage("");
 
     try {
-      await axios.post("https://campusplace.onrender.com/quiz/faculty/add", quizData);
+      await axios.post(`${API_BASE}/quiz/faculty/add`, quizData);
       setMessage("✅ Quiz created successfully!");
       setTimeout(() => navigate("/mock-test"), 2000);
     } catch (err) {

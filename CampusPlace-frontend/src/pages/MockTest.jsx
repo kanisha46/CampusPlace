@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import "./MockTest.css";
+import { API_BASE } from "../config";
 
 export default function MockTest() {
   const [quizzes, setQuizzes] = useState([]);
@@ -28,7 +29,7 @@ export default function MockTest() {
       try {
         if (isFaculty) {
           const email = localStorage.getItem("email");
-          const profRes = await axios.get(`https://campusplace.onrender.com/api/profile?email=${email}`);
+          const profRes = await axios.get(`${API_BASE}/api/profile?email=${email}`);
           const dept = profRes.data?.facultyDept;
           setFacultyDept(dept || "CS");
 
@@ -38,11 +39,11 @@ export default function MockTest() {
             return;
           }
 
-          const quizRes = await axios.get(`https://campusplace.onrender.com/quiz/faculty/list?dept=${dept}`);
+          const quizRes = await axios.get(`${API_BASE}/quiz/faculty/list?dept=${dept}`);
           setQuizzes(quizRes.data);
         } else {
           // Student path
-          const res = await axios.get("https://campusplace.onrender.com/quiz/student/list");
+          const res = await axios.get(`${API_BASE}/quiz/student/list`);
           setQuizzes(res.data);
         }
       } catch (err) {
@@ -59,7 +60,7 @@ export default function MockTest() {
   const deleteQuiz = async (quizId) => {
     if (!window.confirm("Are you sure you want to delete this quiz?")) return;
     try {
-      await axios.delete(`https://campusplace.onrender.com/quiz/delete/${quizId}`);
+      await axios.delete(`${API_BASE}/quiz/delete/${quizId}`);
       setQuizzes(quizzes.filter(q => q.id !== quizId));
     } catch (err) {
       alert("Failed to delete quiz");
@@ -68,7 +69,7 @@ export default function MockTest() {
 
   const fetchLeaderboard = async (quiz) => {
     try {
-      const res = await axios.get(`https://campusplace.onrender.com/quiz/${quiz.id}/leaderboard`);
+      const res = await axios.get(`${API_BASE}/quiz/${quiz.id}/leaderboard`);
       setLeaderboardData(res.data);
       setSelectedQuiz(quiz);
       setShowLeaderboard(true);

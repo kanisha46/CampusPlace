@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./AdminPanel.css";
+import { API_BASE } from "../config";
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
@@ -15,11 +16,11 @@ export default function AdminPanel() {
   const fetchData = async () => {
     const token = localStorage.getItem("token");
 
-    const usersRes = await axios.get("https://campusplace.onrender.com/auth/users", {
+    const usersRes = await axios.get(`${API_BASE}/auth/users`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
-    const companiesRes = await axios.get("https://campusplace.onrender.com/api/companies");
+    const companiesRes = await axios.get(`${API_BASE}/api/companies`);
 
     setUsers(usersRes.data);
     setCompanies(companiesRes.data);
@@ -30,7 +31,7 @@ export default function AdminPanel() {
     const token = localStorage.getItem("token");
 
     await axios.delete(
-      `https://campusplace.onrender.com/admin/delete/${email}`,
+      `${API_BASE}/admin/delete/${email}`,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
@@ -48,7 +49,7 @@ export default function AdminPanel() {
     const token = localStorage.getItem("token");
 
     await axios.put(
-      `https://campusplace.onrender.com/admin/promote/${email}`,
+      `${API_BASE}/admin/promote/${email}`,
       {},
       {
         headers: { Authorization: `Bearer ${token}` }

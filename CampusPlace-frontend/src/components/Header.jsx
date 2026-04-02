@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import "./Header.css";
 import userlogo from "../assets/userlogo.png";
 import campusLogo from "../assets/campuslogo.png";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
@@ -12,6 +12,7 @@ export default function Header() {
   const [activeSection, setActiveSection] = useState("home");
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const role = localStorage.getItem("role");
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -161,6 +162,7 @@ export default function Header() {
 
   const scrollToTop = () => {
     setActiveSection("home");
+    setIsMobileMenuOpen(false);
 
     if (location.pathname !== "/") {
       navigate("/");
@@ -183,6 +185,7 @@ export default function Header() {
 
   const scrollToAbout = () => {
     setActiveSection("about");
+    setIsMobileMenuOpen(false);
 
     const go = () => {
       const el = document.getElementById("about-us");
@@ -200,6 +203,7 @@ export default function Header() {
 
   const scrollToContact = () => {
     setActiveSection("contact");
+    setIsMobileMenuOpen(false);
 
     const go = () => {
       const el = document.getElementById("contact-us");
@@ -234,7 +238,7 @@ export default function Header() {
         </Link>
 
         {/* NAVIGATION */}
-        <nav className="nav-links">
+        <nav className={`nav-links ${isMobileMenuOpen ? "mobile-open" : ""}`}>
           <button
             className={`nav-btn ${
               activeSection === "home" ? "active" : ""
@@ -250,9 +254,10 @@ export default function Header() {
             className={({ isActive }) =>
               isActive ? "active" : ""
             }
-            onClick={() =>
-              setActiveSection("dashboard")
-            }
+            onClick={() => {
+              setActiveSection("dashboard");
+              setIsMobileMenuOpen(false);
+            }}
           >
             {user?.role === "FACULTY" ? "FACULTY DASHBOARD" : user?.role === "ADMIN" ? "ADMIN DASHBOARD" : "DASHBOARD"}
           </NavLink>
@@ -262,9 +267,10 @@ export default function Header() {
             className={({ isActive }) =>
               isActive ? "active" : ""
             }
-            onClick={() =>
-              setActiveSection("companies")
-            }
+            onClick={() => {
+              setActiveSection("companies");
+              setIsMobileMenuOpen(false);
+            }}
           >
             COMPANIES
           </NavLink>
@@ -299,6 +305,15 @@ export default function Header() {
             type="button"
           >
             {isDarkMode ? "☀️" : "🌙"}
+          </button>
+
+          {/* MOBILE MENU TOGGLE */}
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            type="button"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
 
           {!isLoggedIn ? (

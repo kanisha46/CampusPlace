@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./ResumeAnalysis.css";
+import { API_BASE } from "../config";
 
 export default function ResumeAnalysis() {
   const [file, setFile] = useState(null);
@@ -19,7 +20,7 @@ export default function ResumeAnalysis() {
     formData.append("file", selectedFile);
 
     try {
-      const response = await fetch("https://campusplace.onrender.com/api/resume/analyze", {
+      const response = await fetch(`${API_BASE}/api/resume/analyze`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,

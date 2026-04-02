@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./LoginPage.css";
+import { API_BASE } from "../config";
 
 export default function VerifyEmail() {
   const [params] = useSearchParams();
@@ -19,7 +20,7 @@ export default function VerifyEmail() {
 
     const verify = async () => {
       try {
-        const res = await axios.get(`https://campusplace.onrender.com/auth/verify-email?token=${token}`);
+        const res = await axios.get(`${API_BASE}/auth/verify-email?token=${token}`);
         setMessage(res.data.message || "Email verified! You can now login.");
         setStatus("success");
       } catch (error) {

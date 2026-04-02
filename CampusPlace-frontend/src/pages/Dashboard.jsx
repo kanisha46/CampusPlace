@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import "./Dashboard.css";
 import axios from "axios";
 import userlogo from "../assets/userlogo.png";
+import { API_BASE } from "../config";
 
 /* ================= HELPER FOR GOOGLE-STYLE AVATAR ================= */
 const getAvatarStyle = (name) => {
@@ -167,7 +168,7 @@ const Dashboard = () => {
       }
 
       // 3. Add the 'params' object to the GET request
-      const response = await axios.get("https://campusplace.onrender.com/api/profile", {
+      const response = await axios.get(`${API_BASE}/api/profile`, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -277,7 +278,7 @@ const handleSave = async () => {
     }
 
     // API Call
-    await axios.post("https://campusplace.onrender.com/api/profile", formData, {
+    await axios.post(`${API_BASE}/api/profile`, formData, {
       headers: { Authorization: `Bearer ${token}` }
     });
 

@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import "./LoginPage.css";
+import { API_BASE } from "../config";
 
 export default function ResetPassword() {
   const [params] = useSearchParams();
@@ -33,7 +34,7 @@ export default function ResetPassword() {
 
     try {
       setLoading(true);
-      const res = await axios.post("https://campusplace.onrender.com/auth/reset-password", { token, newPassword: password });
+      const res = await axios.post(`${API_BASE}/auth/reset-password`, { token, newPassword: password });
       setMessage(res.data.message || "Password reset successfully! Redirecting to login...");
       setStatus("success");
       setTimeout(() => navigate("/login"), 3000);

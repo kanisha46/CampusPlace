@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import "./AttemptQuiz.css";
+import { API_BASE } from "../config";
 
 export default function AttemptQuiz() {
   const { quizId } = useParams();
@@ -32,7 +33,7 @@ export default function AttemptQuiz() {
     const fetchData = async () => {
       try {
         const quizRes = await axios.get(
-          `https://campusplace.onrender.com/quiz/student/${quizId}`,
+          `${API_BASE}/quiz/student/${quizId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setQuiz(quizRes.data);
@@ -45,7 +46,7 @@ export default function AttemptQuiz() {
 
         try {
           const resultRes = await axios.get(
-            `https://campusplace.onrender.com/quiz/student/${quizId}/result`,
+            `${API_BASE}/quiz/student/${quizId}/result`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
@@ -114,7 +115,7 @@ export default function AttemptQuiz() {
     };
 
     try {
-      const res = await axios.post("https://campusplace.onrender.com/quiz/student/submit", payload, {
+      const res = await axios.post(`${API_BASE}/quiz/student/submit`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setScore(typeof res.data === "object" ? res.data.score : res.data);

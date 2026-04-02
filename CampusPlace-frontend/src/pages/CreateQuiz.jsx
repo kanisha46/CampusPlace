@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./CreateQuiz.css";
+import { API_BASE } from "../config";
 
 export default function CreateQuiz() {
   const { user } = useAuth();
@@ -27,7 +28,7 @@ export default function CreateQuiz() {
   const fetchFacultyDept = async () => {
     try {
       const email = localStorage.getItem("email");
-      const res = await axios.get(`https://campusplace.onrender.com/api/profile?email=${email}`);
+      const res = await axios.get(`${API_BASE}/api/profile?email=${email}`);
       if (res.data && res.data.facultyDept) {
         setBranch(res.data.facultyDept);
       } else {
@@ -73,7 +74,7 @@ export default function CreateQuiz() {
         questions
       };
 
-      await axios.post("https://campusplace.onrender.com/quiz/create", payload);
+      await axios.post(`${API_BASE}/quiz/create`, payload);
       setMessage("Quiz created successfully!");
       setTimeout(() => navigate("/faculty"), 1500);
     } catch (error) {

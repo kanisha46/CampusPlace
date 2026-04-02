@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./ProgressTracking.css";
 import ProgressCharts from "../components/ProgressCharts";
+import { API_BASE } from "../config";
 
-const API = "https://campusplace.onrender.com";
+
 
 const MOCK = {
   totalTests: 14,
@@ -81,7 +82,7 @@ function ProgressTracking() {
   const fetchProgress = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(`${API}/api/progress`, {
+      const res = await axios.get(`${API_BASE}/api/progress`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProgress(res.data);

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./Companies.css";
+import { API_BASE } from "../config";
 
 const Companies = () => {
   const { user } = useAuth();
@@ -43,7 +44,7 @@ const Companies = () => {
         const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
         
         const res = await axios.get(
-          "https://campusplace.onrender.com/api/companies",
+          `${API_BASE}/api/companies`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -76,7 +77,7 @@ const addCompany = async () => {
     const token = localStorage.getItem("accessToken");
 
     const res = await axios.post(
-      "https://campusplace.onrender.com/api/companies",
+      `${API_BASE}/api/companies`,
       newCompany,
       {
         headers: {
@@ -155,7 +156,7 @@ const handleDelete = async (id) => {
     const token = localStorage.getItem("accessToken");
 
     await axios.delete(
-      `https://campusplace.onrender.com/api/companies/${id}`,
+      `${API_BASE}/api/companies/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./FacultyDashboard.css";
+import { API_BASE } from "../config";
 
 export default function FacultyDashboard() {
   const { user, logout } = useAuth();
@@ -32,7 +33,7 @@ export default function FacultyDashboard() {
   const fetchProfile = async () => {
     try {
       const res = await axios.get(
-        `https://campusplace.onrender.com/api/profile?email=${localStorage.getItem("email")}`
+        `${API_BASE}/api/profile?email=${localStorage.getItem("email")}`
       );
 
       if (res.data) {
@@ -55,7 +56,7 @@ export default function FacultyDashboard() {
   const fetchQuizCount = async () => {
     try {
       const res = await axios.get(
-        "https://campusplace.onrender.com/quiz/student/list"
+        `${API_BASE}/quiz/student/list`
       );
       setQuizzes(res.data);
     } catch (err) {
@@ -86,7 +87,7 @@ export default function FacultyDashboard() {
       formData.append("profile", JSON.stringify(profileData));
 
       await axios.post(
-        "https://campusplace.onrender.com/api/profile",
+        `${API_BASE}/api/profile`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

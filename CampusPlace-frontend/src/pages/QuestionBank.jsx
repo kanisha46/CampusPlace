@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import "./QuestionBank.css";
+import { API_BASE } from "../config";
 
-const API_BASE = "https://campusplace.onrender.com";
+
 
 function getRole() {
   const direct = localStorage.getItem("role");
