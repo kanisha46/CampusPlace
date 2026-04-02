@@ -64,7 +64,7 @@ public class SecurityConfig {
                                 "/auth/refresh",
                                 "/auth/logout",
                                 "/api/companies/**",
-                                "/quiz/student/list"
+                                "/quiz/faculty/list"
                         ).permitAll()
                         .requestMatchers("/api/resume/**").authenticated()  // ✅ REQUIRE LOGIN
                         .requestMatchers("/api/profile/**").authenticated()
