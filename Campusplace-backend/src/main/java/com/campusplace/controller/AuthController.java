@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.HashMap;
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequiredArgsConstructor
 public class AuthController {
 

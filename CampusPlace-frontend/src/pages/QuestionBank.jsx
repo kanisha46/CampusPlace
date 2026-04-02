@@ -67,7 +67,7 @@ export default function QuestionBank() {
   useEffect(()=>{
 
     axios
-      .get(`${API_BASE}/api/companies`,{headers:authHeaders()})
+      .get(`${API_BASE}/api/companies`)
       .then(res=>setCompanies(res.data||[]))
       .catch(err=>console.error(err));
 

@@ -44,12 +44,7 @@ const Companies = () => {
         const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
         
         const res = await axios.get(
-          `${API_BASE}/api/companies`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+          `${API_BASE}/api/companies`
         );
 
         const data = Array.isArray(res.data)
