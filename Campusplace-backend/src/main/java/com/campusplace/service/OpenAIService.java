@@ -23,13 +23,14 @@ public class OpenAIService {
         // Groq is OpenAI-compatible
         String url = "https://api.groq.com/openai/v1/chat/completions";
 
-        // Updated prompt to include projects, missing skills, and study focus
+        // Updated prompt to include ATS Score, Actionable Improvements mapping, and precise tracking arrays
         String prompt = "Analyze this resume text strictly. " +
-                "1. Identify specific projects. If no projects are found, the score MUST be below 50. " +
-                "2. Identify technical skills. " +
-                "3. Based ONLY on the evidence in the text, calculate a unique overallScore. " +
-                "DO NOT return 85 unless it is perfectly earned. " +
-                "Return JSON: { \"overallScore\": 0, \"projectsFound\": [], \"skills\": [], \"feedback\": \"\" } " +
+                "1. Identify specific projects (projectsFound). If no projects are found, the overallScore MUST be below 50. " +
+                "2. Identify technical skills (skills) and specifically point out missing baseline skills (missingSkills). " +
+                "3. Based ONLY on the evidence in the text, calculate a unique overallScore and a separate atsScore (0-100). " +
+                "4. Suggest 3 concrete actionable improvements as array of strings like 'Change X to Y' or 'Modify Z to highlight Q' (improvements). " +
+                "5. Suggest a concise study focus area (studyFocus) and 3 suitable roles with match percentage (suitableRoles: [{role, match}]). " +
+                "Return JSON ONLY: { \"overallScore\": 0, \"atsScore\": 0, \"projectsFound\": [], \"skills\": [], \"missingSkills\": [], \"suitableRoles\": [{\"role\":\"\",\"match\":0}], \"studyFocus\": \"\", \"improvements\": [], \"feedback\": \"\" } " +
                 "Resume text: " + resumeText;
 
         Map<String, Object> body = Map.of(

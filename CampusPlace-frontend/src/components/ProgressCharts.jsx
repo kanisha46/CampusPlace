@@ -156,9 +156,9 @@ function ProgressCharts({ tests }) {
         <Bar data={barData} options={chartDefaults} />
       </div>
 
-      <div className="chart-card" style={{ gridColumn: "span 2", textAlign: "center" }}>
+      <div className="chart-card chart-card-doughnut">
         <h3>Performance Ratio</h3>
-        <div style={{ width: "260px", margin: "0 auto" }}>
+        <div className="doughnut-wrapper">
           <Doughnut data={doughnutData} options={doughnutDefaults} />
         </div>
       </div>

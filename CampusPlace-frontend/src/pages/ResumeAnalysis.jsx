@@ -39,11 +39,12 @@ export default function ResumeAnalysis() {
       // === DEBUGGING LOGS ===
       console.log("--- AI Analysis Raw Result ---");
       console.log("Overall Score:", data.overallScore);
-      console.log("Projects Found by AI:", data.projectsFound);
-      console.log("Extracted Skills:", data.skills);
-      console.log("Suitable Roles Match:", data.suitableRoles);
-      console.log("Missing Skills:", data.missingSkills);
-      console.log("Raw Feedback:", data.aiFeedback || data.feedback);
+      console.log("ATS Score:", data.detailedAnalysis?.atsScore || data.atsScore);
+      console.log("Projects Found by AI:", data.detailedAnalysis?.projectsFound);
+      console.log("Extracted Skills:", data.detailedAnalysis?.skills);
+      console.log("Suitable Roles Match:", data.detailedAnalysis?.suitableRoles);
+      console.log("Missing Skills:", data.detailedAnalysis?.missingSkills);
+      console.log("Actionable Improvements:", data.detailedAnalysis?.improvements);
       // ======================
 
       setResult(data); 
@@ -68,15 +69,18 @@ export default function ResumeAnalysis() {
     return isNaN(num) ? 0 : num;
   };
 
-  const progress = result ? getScore(result.overallScore) : 0;
+const progress = result ? getScore(result.overallScore) : 0;
+  const atsProgress = result ? getScore(result.detailedAnalysis?.atsScore || result.atsScore) : 0;
+  
   const getScoreCategory = (score) => {
-  if (score >= 85) return { label: "Excellent", color: "#10b981" };
-  if (score >= 70) return { label: "Good", color: "#6366f1" };
-  if (score >= 50) return { label: "Needs Improvement", color: "#f59e0b" };
-  return { label: "Poor", color: "#ef4444" };
-};
+    if (score >= 85) return { label: "Excellent", color: "#10b981" };
+    if (score >= 70) return { label: "Good", color: "#6366f1" };
+    if (score >= 50) return { label: "Needs Improvement", color: "#f59e0b" };
+    return { label: "Poor", color: "#ef4444" };
+  };
 
-const scoreCategory = getScoreCategory(progress);
+  const scoreCategory = getScoreCategory(progress);
+  const atsScoreCategory = getScoreCategory(atsProgress);
   return (
     <div className="resume-page light-theme">
       <div className="resume-container">
@@ -122,7 +126,7 @@ const scoreCategory = getScoreCategory(progress);
               <div className="insight-group">
                 <h3>🎯 Career Path Matching</h3>
                 <div className="role-match-list">
-                  {result.suitableRoles?.map((item, i) => (
+                  {result.detailedAnalysis?.suitableRoles?.map((item, i) => (
                     <div key={i} className="role-match-row">
                       <span className="role-name-text">{item.role}</span>
                       <div className="bar-bg">
@@ -134,13 +138,28 @@ const scoreCategory = getScoreCategory(progress);
                 </div>
               </div>
 
+              {/* ACTIONABLE IMPROVEMENTS */}
+              {result.detailedAnalysis?.improvements && result.detailedAnalysis.improvements.length > 0 && (
+                <div className="insight-group focus-highlight improvements-section">
+                  <h3>🛠️ Actionable Improvements</h3>
+                  <ul className="improvements-list">
+                    {result.detailedAnalysis.improvements.map((stmt, idx) => (
+                      <li key={idx} className="improvement-item">
+                        <span className="bullet">⚡</span>
+                        <span className="text">{stmt}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* STUDY FOCUS */}
-              <div className="insight-group focus-highlight">
+              <div className="insight-group study-section">
                 <h3>📚 Study & Improvement Focus</h3>
-                <p className="study-text">{result.studyFocus}</p>
-                {result.missingSkills && (
+                <p className="study-text">{result.detailedAnalysis?.studyFocus || "Focus on building foundational projects in your listed technologies."}</p>
+                {result.detailedAnalysis?.missingSkills && result.detailedAnalysis.missingSkills.length > 0 && (
                   <div className="missing-skills-tag" style={{marginTop: '10px', fontSize: '13px'}}>
-                    <strong>Missing Skills:</strong> {result.missingSkills.join(", ")}
+                    <strong>Missing Targeted Skills:</strong> {result.detailedAnalysis.missingSkills.join(", ")}
                   </div>
                 )}
               </div>
@@ -150,46 +169,50 @@ const scoreCategory = getScoreCategory(progress);
 
         {/* RIGHT SIDE - Circular Score Gauge */}
         <div className="resume-right">
-          <div className="score-card-white">
-            <h3>Overall Score</h3>
-            <div className="progress-circle">
-              <svg width="180" height="180">
-                <circle
-                    cx="90"
-                    cy="90"
-                    r="75"
-                    stroke="#4f46e5"
-                    strokeWidth="12"
-                    fill="none"
-                    strokeDasharray={471}
-                    strokeDashoffset={471 - (471 * progress) / 100}
-                    strokeLinecap="round"
-                    style={{
-                      transition: "stroke-dashoffset 0.8s ease",
-                      transform: "rotate(-90deg)",
-                      transformOrigin: "center"
-                    }}
+          <div className="scores-container-wrapper">
+            {/* ATS SCORE (Primary) */}
+            <div className="score-card-white">
+              <h3>ATS Match Score</h3>
+              <div className="progress-circle">
+                <svg width="180" height="180">
+                  <circle
+                      cx="90"
+                      cy="90"
+                      r="75"
+                      stroke="#e5e7eb"
+                      strokeWidth="12"
+                      fill="none"
                   />
-
-                <defs>
-                  <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#6366f1" />
-                    <stop offset="100%" stopColor="#10b981" />
-                  </linearGradient>
-                </defs>
-              </svg>
-
-              <div className="score-text-overlay">
-                <span className="current-score">{progress}</span>
-                <span className="total-possible">/100</span>
-              </div>
-
-              {/* 🔥 Classification */}
-              <div
-                className="score-classification"
-                style={{ color: scoreCategory.color }}
-              >
-                {scoreCategory.label}
+                  <circle
+                      cx="90"
+                      cy="90"
+                      r="75"
+                      stroke="#4f46e5"
+                      strokeWidth="12"
+                      fill="none"
+                      strokeDasharray={471}
+                      strokeDashoffset={471 - (471 * atsProgress) / 100}
+                      strokeLinecap="round"
+                      style={{
+                        transition: "stroke-dashoffset 0.8s ease",
+                        transform: "rotate(-90deg)",
+                        transformOrigin: "center"
+                      }}
+                    />
+                  <defs>
+                    <linearGradient id="gradientStrokeOverall" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#6366f1" />
+                      <stop offset="100%" stopColor="#10b981" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="score-text-overlay">
+                  <span className="current-score">{atsProgress}</span>
+                  <span className="total-possible">/100</span>
+                </div>
+                <div className="score-classification" style={{ color: atsScoreCategory.color }}>
+                  {atsScoreCategory.label}
+                </div>
               </div>
             </div>
           </div>

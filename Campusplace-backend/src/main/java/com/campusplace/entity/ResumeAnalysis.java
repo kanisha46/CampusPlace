@@ -3,6 +3,7 @@ package com.campusplace.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Entity
 @Getter
@@ -40,4 +41,7 @@ public class ResumeAnalysis {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Transient
+    private JsonNode detailedAnalysis;
 }

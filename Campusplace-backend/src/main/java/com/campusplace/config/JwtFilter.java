@@ -64,9 +64,10 @@ public class JwtFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return;
-    }
+            SecurityContextHolder.clearContext();
+            // Do NOT return 401 here so that permitAll endpoints (like /auth/login) can still be accessed.
+            // Protected endpoints will naturally get intercepted with 401/403 later in the chain.
+        }
 
         filterChain.doFilter(request, response);
     }

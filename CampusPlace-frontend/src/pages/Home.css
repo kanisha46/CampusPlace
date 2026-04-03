@@ -16,6 +16,7 @@ body::before {
   left: -100px;
   filter: blur(100px);
   z-index: 0;
+  pointer-events: none;
 }
 
 body::after {
@@ -28,6 +29,7 @@ body::after {
   right: -150px;
   filter: blur(120px);
   z-index: 0;
+  pointer-events: none;
 }
 .home-container {
   overflow-x: hidden;

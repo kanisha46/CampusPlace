@@ -4,8 +4,6 @@ import ReactMarkdown from "react-markdown";
 import "./QuestionBank.css";
 import { API_BASE } from "../config";
 
-
-
 function getRole() {
   const direct = localStorage.getItem("role");
   if (direct) return String(direct).toUpperCase();
@@ -67,7 +65,7 @@ export default function QuestionBank() {
   useEffect(()=>{
 
     axios
-      .get(`${API_BASE}/api/companies`)
+      .get(`${API_BASE}/api/companies`,{headers:authHeaders()})
       .then(res=>setCompanies(res.data||[]))
       .catch(err=>console.error(err));
 

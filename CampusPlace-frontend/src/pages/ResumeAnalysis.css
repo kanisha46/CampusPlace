@@ -111,6 +111,13 @@
 .study-text { font-size: 15px; color: #cbd5e1; line-height: 1.7; }
 .missing-skills-tag { padding: 15px; background: rgba(0, 0, 0, 0.2); border-radius: 10px; color: #f87171; font-weight: 600; border: 1px solid rgba(239, 68, 68, 0.1); }
 
+/* ── ACTIONABLE IMPROVEMENTS ── */
+.improvements-section { background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.15); }
+.improvements-list { list-style: none; padding: 0; margin: 0; }
+.improvement-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 12px; font-size: 15px; color: #cbd5e1; background: rgba(0, 0, 0, 0.2); padding: 16px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.05); }
+.improvement-item .bullet { font-size: 18px; line-height: 1; }
+.improvement-item .text { line-height: 1.5; font-weight: 500; }
+
 /* ── SCORE CARD RIGHT ── */
 .resume-right {
   position: sticky;
@@ -129,6 +136,12 @@
 
 .score-card-white h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
 
+.scores-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
 .progress-circle { position: relative; width: 180px; height: 180px; margin: 0 auto; }
 
 .score-text-overlay {
@@ -139,8 +152,14 @@
 
 .current-score { display: block; font-size: 52px; font-weight: 900; line-height: 1; color: #fff; }
 .total-possible { color: var(--text-muted); font-size: 18px; font-weight: 700; }
-
 .score-classification { margin-top: 30px; font-weight: 900; font-size: 18px; text-transform: uppercase; letter-spacing: 2px; }
+
+/* Mini ATS Circle */
+.ats-score-card { padding: 30px; border-radius: 24px !important; }
+.mini-circle { width: 140px; height: 140px; margin: 0 auto; }
+.mini-overlay .current-score { font-size: 40px; }
+.ats-desc { margin-top: 25px; font-size: 13px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.ats-eval { margin-top: 20px; font-size: 15px; }
 
 @keyframes slideUpFade {
   from { opacity: 0; transform: translateY(40px); }
