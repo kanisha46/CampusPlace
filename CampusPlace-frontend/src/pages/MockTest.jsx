@@ -40,11 +40,28 @@ export default function MockTest() {
           }
 
           const quizRes = await axios.get(`${API_BASE}/quiz/faculty/list?dept=${dept}`);
-          setQuizzes(quizRes.data);
+          // Filter out duplicate titles to ensure a clean UI for the presentation
+          const uniqueQuizzes = quizRes.data.reduce((acc, current) => {
+            if (!acc.find(item => item.title === current.title)) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+          
+          setQuizzes(uniqueQuizzes);
         } else {
           // Student path
           const res = await axios.get(`${API_BASE}/quiz/student/list`);
-          setQuizzes(res.data);
+          
+          // Filter out duplicate titles
+          const uniqueQuizzes = res.data.reduce((acc, current) => {
+            if (!acc.find(item => item.title === current.title)) {
+              acc.push(current);
+            }
+            return acc;
+          }, []);
+          
+          setQuizzes(uniqueQuizzes);
         }
       } catch (err) {
         console.error("Failed to load quizzes:", err);

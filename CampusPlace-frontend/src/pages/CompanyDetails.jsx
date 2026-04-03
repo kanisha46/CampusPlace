@@ -140,7 +140,9 @@ const CompanyDetails = () => {
 
   /* ================= APPLY ================= */
   const handleApply = () => {
-    alert(`Applied to ${company.name}`);
+    // Generate a fallback careers URL if one isn't explicitly defined in the DB
+    const applyUrl = company.applicationUrl || `https://careers.${company.name.replace(/\s+/g, '').toLowerCase()}.com`;
+    window.open(applyUrl, "_blank");
   };
 
   /* ================= UPDATE ================= */

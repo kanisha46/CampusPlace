@@ -182,6 +182,34 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* 🌐 Social Login */}
+        {!isForgotPassword && (
+          <>
+            <div className="separator">
+              <span>OR CONTINUE WITH</span>
+            </div>
+
+            <div className="social-grid">
+              <button 
+                type="button" 
+                className="social-btn" 
+                onClick={() => window.location.href = `${API_BASE}/oauth2/authorization/google`}
+              >
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+                Google
+              </button>
+              <button 
+                type="button" 
+                className="social-btn"
+                onClick={() => window.location.href = `${API_BASE}/oauth2/authorization/github`}
+              >
+                <Github size={20} />
+                GitHub
+              </button>
+            </div>
+          </>
+        )}
+
         {/* 🔁 Toggle */}
         <div className="forgot-link-wrapper mt-4 text-center">
           {!isForgotPassword && (

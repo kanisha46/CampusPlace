@@ -25,6 +25,9 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.url}")
+    private String frontendUrl;
+
     @Bean
     public JwtFilter jwtFilter() {
         return new JwtFilter(jwtService, userDetailsService);
@@ -40,7 +43,8 @@ public class SecurityConfig {
 
                     config.setAllowedOrigins(List.of(
                             "http://localhost:5173",
-                            "https://campus-place.vercel.app" // Fixed Vercel URL
+                            "https://campus-place.vercel.app",
+                            frontendUrl
                     ));
 
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

@@ -27,6 +27,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.url}")
+    private String frontendUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -72,7 +75,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         // 🔁 Redirect with access token only
         response.sendRedirect(
-                "https://campus-place.vercel.app/oauth-success" + // Fixed Vercel URL
+                frontendUrl + "/oauth-success" +
                         "?token=" + accessToken +
                         "&role=" + user.getRole() +
                         "&name=" + user.getName()
