@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd CampusPlace-frontend && npm install && npm run build",
-  "outputDirectory": "CampusPlace-frontend/dist",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
     {
@@ -9,5 +9,3 @@
     }
   ]
 }
-
-
