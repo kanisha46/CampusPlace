@@ -18,7 +18,7 @@ body {
   background: #f4f6fb;
 }
 body {
-  padding-top: 82px; /* same as header height */
+  padding-top: 68px; /* same as header height */
 }
 html {
   scroll-behavior: smooth;
@@ -34,7 +34,7 @@ html {
 }
 
 .logo {
-  font-size: 28px;
+  font-size: 22px;
 }
 
 .header button {
@@ -61,7 +61,7 @@ html {
 }
 
 .hero h2 {
-  font-size: 42px;
+  font-size: 32px;
 }
 
 .cta {
@@ -88,10 +88,10 @@ html {
 
 .card {
   background: white;
-  padding: 30px;
+  padding: 24px;
   border-radius: 12px;
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   transition: transform 0.3s;
 }

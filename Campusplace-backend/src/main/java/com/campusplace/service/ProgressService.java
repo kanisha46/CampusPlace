@@ -63,6 +63,15 @@ public class ProgressService {
 
         res.setRecentTests(recent);
 
+        // ✅ Strong & Weak topic from actual results
+        results.stream()
+                .max(Comparator.comparingInt(StudentResult::getScore))
+                .ifPresent(r -> res.setStrongTopic(r.getQuiz().getTitle()));
+
+        results.stream()
+                .min(Comparator.comparingInt(StudentResult::getScore))
+                .ifPresent(r -> res.setWeakTopic(r.getQuiz().getTitle()));
+
         return res;
     }
 }

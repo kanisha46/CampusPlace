@@ -10,6 +10,8 @@ public class ProgressResponse {
     private double averageScore;
     private int highestScore;
     private int lowestScore;
+    private String strongTopic;
+    private String weakTopic;
 
     private List<TestSummary> recentTests;
 }

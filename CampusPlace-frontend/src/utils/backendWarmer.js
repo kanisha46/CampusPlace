@@ -6,7 +6,7 @@ class BackendWarmer {
     this.isWarming = false;
     this.isWarmed = false;
     this.warmingAttempts = 0;
-    this.maxAttempts = 3;
+    this.maxAttempts = 8; // More attempts for Render cold starts (up to ~80s)
     this.pingInterval = null;
   }
 
@@ -20,7 +20,15 @@ class BackendWarmer {
     }
 
     if (this.isWarming) {
-      return { success: false, message: 'Warming already in progress' };
+      // Wait for existing warming to complete instead of returning failure
+      return new Promise((resolve) => {
+        const checkInterval = setInterval(() => {
+          if (!this.isWarming) {
+            clearInterval(checkInterval);
+            resolve({ success: this.isWarmed, message: this.isWarmed ? 'Backend warmed up' : 'Warming failed' });
+          }
+        }, 500);
+      });
     }
 
     this.isWarming = true;
@@ -29,7 +37,6 @@ class BackendWarmer {
     try {
       if (onProgress) onProgress('Connecting to server...');
 
-      // Try to ping the health endpoint
       const startTime = Date.now();
       
       while (this.warmingAttempts < this.maxAttempts) {
@@ -37,11 +44,21 @@ class BackendWarmer {
           this.warmingAttempts++;
           
           if (onProgress) {
-            onProgress(`Attempt ${this.warmingAttempts}/${this.maxAttempts}...`);
+            const messages = [
+              'Waking up server...',
+              'Server is starting...',
+              'Loading modules...',
+              'Almost ready...',
+              'Connecting to database...',
+              'Finalizing setup...',
+              'Just a moment...',
+              'Nearly there...',
+            ];
+            onProgress(messages[Math.min(this.warmingAttempts - 1, messages.length - 1)]);
           }
 
           const response = await axios.get(`${API_BASE}/health`, {
-            timeout: 10000, // 10 second timeout
+            timeout: 12000, // 12 second timeout per attempt
           });
 
           if (response.status === 200) {
@@ -66,9 +83,9 @@ class BackendWarmer {
           // If we haven't reached max attempts, wait and retry
           if (this.warmingAttempts < this.maxAttempts) {
             if (onProgress) {
-              onProgress(`Server starting... Retrying in 3s...`);
+              onProgress(`Server is waking up... (${this.warmingAttempts}/${this.maxAttempts})`);
             }
-            await this.sleep(3000);
+            await this.sleep(2000); // 2 second delay between retries
           }
         }
       }
@@ -91,7 +108,7 @@ class BackendWarmer {
 
   /**
    * Start periodic pinging to keep the backend alive
-   * Ping every 5 minutes
+   * Ping every 2 minutes to prevent Render from sleeping
    */
   startPeriodicPing() {
     // Clear any existing interval
@@ -99,7 +116,7 @@ class BackendWarmer {
       clearInterval(this.pingInterval);
     }
 
-    // Ping every 5 minutes (300000 ms)
+    // Ping every 2 minutes (120000 ms) - aggressive to prevent sleep during presentation
     this.pingInterval = setInterval(async () => {
       try {
         await axios.get(`${API_BASE}/health`, { timeout: 5000 });
@@ -109,7 +126,7 @@ class BackendWarmer {
         // Mark as not warmed so next action will trigger warming
         this.isWarmed = false;
       }
-    }, 300000); // 5 minutes
+    }, 120000); // 2 minutes
   }
 
   /**
@@ -156,4 +173,3 @@ class BackendWarmer {
 
 // Export a singleton instance
 export const backendWarmer = new BackendWarmer();
-

@@ -1,14 +1,14 @@
 /* ================= ABOUT SECTION ================= */
 
 .about-section {
-  padding: 120px 8%;
+  padding: 90px 8% 60px;
   background: radial-gradient(circle at top, #0b0f1a, #020617);
   text-align: center;
 }
 
 /* Title */
 .about-section h2 {
-  font-size: 44px;
+  font-size: 32px;
   font-weight: 800;
   margin-bottom: 10px;
 
@@ -21,7 +21,7 @@
 .about-subtitle {
   font-size: 18px;
   color: #94a3b8;
-  margin-bottom: 70px;
+  margin-bottom: 40px;
 }
 
 /* ================= GRID ================= */
@@ -36,7 +36,7 @@
 /* ================= CARD ================= */
 
 .about-card {
-  padding: 50px 35px;
+  padding: 32px 24px;
   border-radius: 22px;
   position: relative;
   overflow: hidden;
@@ -72,7 +72,7 @@
 
 /* Icon */
 .about-icon {
-  font-size: 50px;
+  font-size: 40px;
   margin-bottom: 25px;
 }
 

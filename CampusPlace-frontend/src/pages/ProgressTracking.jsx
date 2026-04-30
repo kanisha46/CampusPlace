@@ -81,7 +81,7 @@ function ProgressTracking() {
 
   const fetchProgress = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
       const res = await axios.get(`${API_BASE}/api/progress`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -105,6 +105,19 @@ function ProgressTracking() {
 
   const p = progress;
 
+  // ✅ Compute strong & weak topic from actual recentTests results
+  const computedStrongTopic = (() => {
+    if (!p.recentTests || p.recentTests.length === 0) return p.strongTopic || "—";
+    const best = p.recentTests.reduce((a, b) => (a.score > b.score ? a : b));
+    return best.quizTitle;
+  })();
+
+  const computedWeakTopic = (() => {
+    if (!p.recentTests || p.recentTests.length === 0) return p.weakTopic || "—";
+    const worst = p.recentTests.reduce((a, b) => (a.score < b.score ? a : b));
+    return worst.quizTitle;
+  })();
+
   return (
     <div className="pt-wrapper">
 
@@ -123,13 +136,13 @@ function ProgressTracking() {
               Track, analyse, and improve your performance across all mock tests &amp; assessments.
             </p>
             <div className="pt-hero-tags">
-              <span className="pt-tag">🔥 {p.streak}-day streak</span>
-              <span className="pt-tag">🏅 Rank #{p.rank ?? "—"} / {p.totalStudents ?? "—"}</span>
-            </div>
+            <span className="pt-tag">📝 {p.totalTests} Tests Taken</span>
+            <span className="pt-tag">🏆 Best: {p.highestScore || 0} pts</span>
+          </div>
           </div>
           <div className="pt-hero-rings">
-            <ScoreRing value={p.averageScore} label="Avg Score" color="#C9A84C" />
-            <ScoreRing value={p.accuracy} label="Accuracy" color="#26A69A" />
+            <ScoreRing value={Math.round(p.averageScore || 0)} label="Avg Score" color="#C9A84C" />
+            <ScoreRing value={Math.min(p.totalTests * 7, 100)} label="Completion" color="#26A69A" />
           </div>
         </div>
       </div>
@@ -155,21 +168,19 @@ function ProgressTracking() {
         {activeTab === "overview" && (
           <>
             <div className="pt-stats-grid">
-              <StatCard icon="📝" label="Total Tests Taken" value={p.totalTests} accentClass="accent-teal" />
-              <StatCard icon="🎯" label="Average Score" value={`${p.averageScore}%`} accentClass="accent-bronze" />
-              <StatCard icon="✅" label="Overall Accuracy" value={`${p.accuracy}%`} accentClass="accent-teal" />
-              <StatCard icon="🔥" label="Current Streak" value={`${p.streak ?? 0} days`} sub="Keep it up!" accentClass="accent-bronze" />
-              <StatCard icon="💪" label="Strong Topic" value={p.strongTopic || "—"} accentClass="accent-green" />
-              <StatCard icon="⚠️" label="Weak Topic" value={p.weakTopic || "—"} sub="Focus here" accentClass="accent-red" />
+              <StatCard icon="📝" label="Total Tests Taken" value={p.totalTests || 0} accentClass="accent-teal" />
+              <StatCard icon="🎯" label="Average Score" value={`${Math.round(p.averageScore || 0)}%`} accentClass="accent-bronze" />
+              <StatCard icon="💪" label="Strong Topic" value={p.strongTopic || computedStrongTopic} sub="Your best result" accentClass="accent-green" />
+              <StatCard icon="⚠️" label="Weak Topic" value={p.weakTopic || computedWeakTopic} sub="Focus here" accentClass="accent-red" />
             </div>
 
             {/* Progress bar section */}
             <div className="pt-section-card">
               <h2 className="pt-section-title">Performance Breakdown</h2>
               <div className="pt-bar-group">
-                <ProgressBar label="Strong Topics Mastery" value={p.averageScore} color="#26A69A" />
-                <ProgressBar label="Weak Area Coverage" value={100 - p.accuracy} color="#C9A84C" />
-                <ProgressBar label="Test Completion Rate" value={Math.min(p.totalTests * 7, 100)} color="#7C3AED" />
+                <ProgressBar label={`Best: ${computedStrongTopic}`} value={p.recentTests?.length > 0 ? Math.max(...p.recentTests.map(t => t.score)) : 0} color="#26A69A" />
+                <ProgressBar label={`Needs Work: ${computedWeakTopic}`} value={p.recentTests?.length > 0 ? Math.min(...p.recentTests.map(t => t.score)) : 0} color="#C9A84C" />
+                <ProgressBar label="Test Completion Rate" value={Math.min((p.totalTests || 0) * 7, 100)} color="#7C3AED" />
               </div>
             </div>
           </>
