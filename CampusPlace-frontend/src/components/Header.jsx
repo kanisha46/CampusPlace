@@ -98,7 +98,9 @@ export default function Header() {
       setActiveSection("companies");
     else if (location.pathname === "/")
       setActiveSection("home");
-  }, [location.pathname]);
+    else
+      setActiveSection(""); // clear highlight for unhandled routes
+  }, [location.pathname, user?.role]);
 
   // Scroll highlight on HOME page only
   useEffect(() => {
