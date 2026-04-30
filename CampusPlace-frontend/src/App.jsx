@@ -1,5 +1,7 @@
 import { useAuth } from "./context/AuthContext";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import SplashScreen from "./components/SplashScreen";
+import { useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
@@ -76,8 +78,14 @@ const RoleRoute = ({ allowedRoles, children }) => {
 
 export default function App() {
   const location = useLocation();
+  const { backendReady } = useAuth();
+  const [showSplash, setShowSplash] = useState(true);
 
   const hideLayout = location.pathname === "/login";
+
+  if (!backendReady && showSplash) {
+    return <SplashScreen onReady={() => setShowSplash(false)} />;
+  }
 
   return (
     <>
