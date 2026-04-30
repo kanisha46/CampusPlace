@@ -110,7 +110,7 @@
 /* ================= COMPANIES GRID ================= */
 .companies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
 }
 
@@ -519,8 +519,19 @@
 @media (max-width: 900px) {
   .modal-form { grid-template-columns: 1fr; }
   .modal-form textarea, .modal-form h4, .modal-actions { grid-column: span 1; }
-  .filter-bar { padding: 20px; }
-  .filter-bar input, .filter-bar select { min-width: 100%; }
+  .filter-bar { padding: 20px; flex-direction: column; }
+  .filter-bar input, .filter-bar select { min-width: 100%; width: 100%; box-sizing: border-box; }
   .upcoming-section { padding: 30px; border-radius: 24px; }
   .section-title h2 { font-size: 28px; }
+}
+
+@media (max-width: 600px) {
+  .companies-page { padding: 100px 15px 40px; }
+  .companies-header h1 { font-size: 26px; }
+  .company-card { padding: 20px; }
+  .company-card h3 { font-size: 20px; }
+  .modal-card { padding: 30px 20px; }
+  .modal-card h2 { font-size: 24px; }
+  .upcoming-grid { grid-template-columns: 1fr; }
+  .upcoming-section { padding: 20px; }
 }

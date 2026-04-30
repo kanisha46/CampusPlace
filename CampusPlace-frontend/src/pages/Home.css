@@ -377,5 +377,26 @@ body::after {
 @media (max-width: 600px) {
   .dashboard-grid-neon {
     grid-template-columns: 1fr;
+    padding: 20px 5%;
   }
+  .hero-neon-section {
+    padding: 90px 15px 40px;
+    gap: 20px;
+  }
+  .hero-title { font-size: 2rem; }
+  .hero-subtitle { font-size: 0.9rem; margin-bottom: 25px; }
+  .hero-graphic { height: 250px; }
+  .ring-1 { width: 220px; height: 220px; }
+  .ring-2 { width: 180px; height: 180px; }
+  .cube { width: 80px; height: 80px; }
+  .front { transform: rotateY(0deg) translateZ(40px); }
+  .back { transform: rotateY(180deg) translateZ(40px); }
+  .right { transform: rotateY(90deg) translateZ(40px); }
+  .left { transform: rotateY(-90deg) translateZ(40px); }
+  .top { transform: rotateX(90deg) translateZ(40px); }
+  .bottom { transform: rotateX(-90deg) translateZ(40px); }
+  
+  .feature-card-neon { padding: 20px; }
+  .icon-neon-box { width: 45px; height: 45px; font-size: 1.3rem; }
+  .feature-card-neon h3 { font-size: 1.15rem; }
 }

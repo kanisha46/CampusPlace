@@ -231,3 +231,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 600px) {
+  .company-details-page { padding: 90px 15px 40px; }
+  .details-card { padding: 25px; border-radius: 20px; }
+  .details-card h1 { font-size: 32px; }
+  .info-group li { padding: 12px 15px; font-size: 14px; flex-direction: column; gap: 8px; }
+  .action-card { padding: 25px; border-radius: 18px; top: 0; position: relative; margin-top: 20px; }
+}

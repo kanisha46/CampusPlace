@@ -205,7 +205,6 @@
   color: #fff;
 }
 
-/* COMPANY CARDS IN ADMIN */
 .company-card {
   background: rgba(255, 255, 255, 0.03);
   padding: 25px;
@@ -213,7 +212,26 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 @keyframes slideDownFade {
   from { opacity: 0; transform: translateY(-30px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .admin-container { padding: 90px 15px 40px; }
+  .top-bar { flex-direction: column; gap: 15px; align-items: flex-start; }
+  .top-bar h1 { font-size: 32px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .card-header { flex-direction: column; gap: 15px; align-items: flex-start; }
+  .card-header input { width: 100%; box-sizing: border-box; }
+  .card { padding: 25px 20px; }
+  .modern-table th, .modern-table td { padding: 12px 10px; font-size: 14px; }
+  .promote-btn, .delete-btn { padding: 6px 12px; font-size: 12px; margin-bottom: 5px; }
 }

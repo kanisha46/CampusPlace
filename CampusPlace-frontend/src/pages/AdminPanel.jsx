@@ -104,45 +104,47 @@ export default function AdminPanel() {
           />
         </div>
 
-        <table className="modern-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map((u) => (
-              <tr key={u.email}>
-                <td>{u.name}</td>
-                <td>{u.email}</td>
-                <td>
-                  <span className={u.role === "ADMIN" ? "badge admin" : "badge student"}>
-                    {u.role}
-                  </span>
-                </td>
-                <td>
-                  {u.role !== "ADMIN" && (
-                    <button 
-                      className="promote-btn"
-                      onClick={() => promoteUser(u.email)}
-                    >
-                      Promote
-                    </button>
-                  )}
-                  <button 
-                    className="delete-btn"
-                    onClick={() => deleteUser(u.email)}
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="table-responsive">
+          <table className="modern-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredUsers.map((u) => (
+                <tr key={u.email}>
+                  <td>{u.name}</td>
+                  <td>{u.email}</td>
+                  <td>
+                    <span className={u.role === "ADMIN" ? "badge admin" : "badge student"}>
+                      {u.role}
+                    </span>
+                  </td>
+                  <td>
+                    {u.role !== "ADMIN" && (
+                      <button 
+                        className="promote-btn"
+                        onClick={() => promoteUser(u.email)}
+                      >
+                        Promote
+                      </button>
+                    )}
+                    <button 
+                      className="delete-btn"
+                      onClick={() => deleteUser(u.email)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* COMPANIES */}
