@@ -3,8 +3,6 @@ package com.campusplace.controller;
 import com.campusplace.entity.Company;
 import com.campusplace.entity.CompanyCriteria;
 import com.campusplace.repository.CompanyRepository;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +20,10 @@ public class CompanyController {
 
     // PUBLIC - Anyone can view
     @GetMapping
-    @Cacheable("companies")
     public List<Company> getAllCompanies() {
         return companyRepository.findAll();
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompanyById(@PathVariable Long id) {
 
@@ -33,22 +31,20 @@ public class CompanyController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
     // 🔐 ADMIN ONLY
     @PostMapping
-    @CacheEvict(value = "companies", allEntries = true)
     public Company addCompany(@RequestBody Company company) {
         return companyRepository.save(company);
     }
 
     // 🔐 ADMIN ONLY
     @DeleteMapping("/{id}")
-    @CacheEvict(value = "companies", allEntries = true)
     public void deleteCompany(@PathVariable Long id) {
         companyRepository.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    @CacheEvict(value = "companies", allEntries = true)
     public Company updateCompany(
             @PathVariable Long id,
             @RequestBody Company updated) {
