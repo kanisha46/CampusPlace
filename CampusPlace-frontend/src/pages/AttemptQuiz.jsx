@@ -50,9 +50,12 @@ export default function AttemptQuiz() {
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
-          if (resultRes.data) {
-            setScore(resultRes.data.score);
+          if (resultRes.data !== null && resultRes.data !== "") {
+            setScore(typeof resultRes.data === "object" ? resultRes.data.score : resultRes.data);
             setAlreadyAttempted(true);
+          } else {
+            setAlreadyAttempted(false);
+            setTimeLeft(quizRes.data.durationMinutes * 60);
           }
         } catch (err) {
           setAlreadyAttempted(false);
